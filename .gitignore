@@ -6,6 +6,7 @@ Desktop.ini
 
 # Archivos de PDF (se genera desde el código fuente)
 dist/*.pdf
+*.pdf
 
 # Archivos de Node.js (si se usa en el futuro)
 node_modules/
@@ -35,3 +36,7 @@ logs/*.log
 
 # Archivos de Windows
 *.lnk
+
+# Archivos de imagen generados (no originales)
+menu-check-*.png
+menu-pagina-*.png
