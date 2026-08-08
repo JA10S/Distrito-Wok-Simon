@@ -1,4 +1,7 @@
-# AGENTS.md - Restaurante Distrito Wok Simón
+# DIS_WOK - AGENTS.md
+
+> **Project ID:** `dis_wok-distrito-wok-simon`
+> **Firebase:** `distrito-wok-simon`
 
 ## Contexto del Proyecto
 Sistema de gestión integral para restaurante de comida oriental colombiana.

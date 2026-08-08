@@ -1,8 +1,9 @@
 {
-  "name": "distrito-wok-simon",
+  "name": "dis_wok-restaurante",
   "version": "1.0.0",
-  "description": "Sistema de gestión para restaurante Distrito Wok Simón",
+  "description": "DIS_WOK - Sistema de gestión para restaurante Distrito Wok Simón",
   "private": true,
+  "projectId": "dis_wok-distrito-wok-simon",
   "dependencies": {
     "axios": "^1.6.0",
     "date-fns": "^2.30.0",

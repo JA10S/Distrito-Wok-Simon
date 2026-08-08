@@ -1,4 +1,8 @@
-# 🍜 Restaurante Distrito Wok Simón
+# DIS_WOK - Restaurante Distrito Wok Simón
+
+> **Project ID:** `dis_wok-distrito-wok-simon`
+> **Firebase:** `distrito-wok-simon`
+> **Repo:** `github.com/JA10S/Distrito-Wok-Simon`
 
 Sistema de gestión integral para el restaurante **Distrito Wok Simón** - Comida oriental colombiana.
 
