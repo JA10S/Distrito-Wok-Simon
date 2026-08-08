@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Menú - Distrito Wok Simón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+  :root{
+    --gold:#FFD700;
+    --gold-dark:#B8860B;
+    --gold-light:#FFE44D;
+    --red:#E63946;
+    --red-dark:#9B1B1B;
+    --orange:#FF6B35;
+    --green:#25D366;
+    --black:#080808;
+    --black-card:#141414;
+  }
+
+  html{
+    scroll-behavior:smooth;
+  }
+
+  body{
+    font-family:'Open Sans',sans-serif;
+    background:var(--black);
+    color:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ====== FULLSCREEN HERO ====== */
+  .hero{
+    position:relative;
+    height:100vh;
+    min-height:600px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+    overflow:hidden;
+    background:
+      radial-gradient(ellipse at center 40%, rgba(230,57,70,0.4) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(255,107,53,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(255,215,0,0.15) 0%, transparent 50%),
+      url('https://images.pexels.com/photos/1907228/pexels-photo-1907228.jpeg?auto=compress&cs=tinysrgb&w=1200') center/cover;
+  }
+
+  .hero::before{
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:linear-gradient(180deg, rgba(8,8,8,0.3) 0%, rgba(8,8,8,0.6) 50%, rgba(8,8,8,0.95) 100%);
+    z-index:1;
+  }
+
+  .hero::after{
+    content:"";
+    position:absolute;
+    bottom:0; left:0;
+    width:100%; height:120px;
+    background:linear-gradient(transparent, var(--black));
+    z-index:2;
+  }
+
+  .hero-content{
+    position:relative;
+    z-index:3;
+    animation:fadeInUp 1s ease-out;
+  }
+
+  @keyframes fadeInUp{
+    0%{ opacity:0; transform:translateY(30px); }
+    100%{ opacity:1; transform:translateY(0); }
+  }
+
+  .lantern-float{
+    position:absolute;
+    font-size:60px;
+    top:30px;
+    opacity:0.9;
+    filter:drop-shadow(0 0 20px rgba(230,57,70,0.7));
+    animation:float 3s ease-in-out infinite;
+    z-index:3;
+  }
+
+  .lantern-float.left{ left:20px; }
+  .lantern-float.right{ right:20px; animation-delay:0.5s; }
+
+  @keyframes float{
+    0%,100%{ transform:translateY(0) rotate(-5deg); }
+    50%{ transform:translateY(-15px) rotate(5deg); }
+  }
+
+  .chinese-chars{
+    font-size:14px;
+    letter-spacing:12px;
+    color:var(--gold);
+    margin-bottom:16px;
+    opacity:0.9;
+    text-shadow:0 2px 10px rgba(0,0,0,0.8);
+  }
+
+  .restaurant-name{
+    font-family:'Bebas Neue',sans-serif;
+    line-height:0.95;
+    margin-bottom:12px;
+  }
+
+  .restaurant-name .line1{
+    font-size:48px;
+    letter-spacing:6px;
+    color:#fff;
+    display:block;
+    text-shadow:0 4px 20px rgba(0,0,0,0.8);
+  }
+
+  .restaurant-name .wok{
+    font-size:100px;
+    color:var(--gold);
+    display:block;
+    text-shadow:
+      0 4px 30px rgba(255,215,0,0.6),
+      0 0 80px rgba(255,215,0,0.3),
+      0 0 120px rgba(230,57,70,0.2);
+    animation:glowText 3s ease-in-out infinite alternate;
+    position:relative;
+  }
+
+  @keyframes glowText{
+    0%{ text-shadow:0 4px 30px rgba(255,215,0,0.6), 0 0 80px rgba(255,215,0,0.3); }
+    100%{ text-shadow:0 4px 40px rgba(255,215,0,0.8), 0 0 100px rgba(255,215,0,0.5), 0 0 150px rgba(230,57,70,0.3); }
+  }
+
+  .restaurant-name .simon{
+    font-size:48px;
+    letter-spacing:6px;
+    color:#fff;
+    display:block;
+    text-shadow:0 4px 20px rgba(0,0,0,0.8);
+  }
+
+  .tagline{
+    font-family:'Oswald',sans-serif;
+    font-size:14px;
+    letter-spacing:8px;
+    color:var(--orange);
+    text-transform:uppercase;
+    margin-top:16px;
+    text-shadow:0 2px 10px rgba(255,107,53,0.5);
+  }
+
+  .scroll-indicator{
+    position:absolute;
+    bottom:40px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:3;
+    animation:bounce 2s infinite;
+  }
+
+  .scroll-indicator span{
+    display:block;
+    width:30px;
+    height:50px;
+    border:2px solid var(--gold);
+    border-radius:25px;
+    position:relative;
+  }
+
+  .scroll-indicator span::before{
+    content:"";
+    position:absolute;
+    top:8px;
+    left:50%;
+    transform:translateX(-50%);
+    width:6px;
+    height:6px;
+    background:var(--gold);
+    border-radius:50%;
+    animation:scrollDot 2s infinite;
+  }
+
+  @keyframes bounce{
+    0%,100%{ transform:translateX(-50%) translateY(0); }
+    50%{ transform:translateX(-50%) translateY(10px); }
+  }
+
+  @keyframes scrollDot{
+    0%{ opacity:1; top:8px; }
+    100%{ opacity:0; top:30px; }
+  }
+
+  /* ====== CATEGORY PILLS ====== */
+  .category-bar{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(8,8,8,0.98);
+    backdrop-filter:blur(20px);
+    padding:16px 20px;
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    scrollbar-width:none;
+    border-bottom:1px solid rgba(255,215,0,0.2);
+  }
+
+  .category-bar::-webkit-scrollbar{ display:none; }
+
+  .cat-pill{
+    flex:0 0 auto;
+    padding:10px 20px;
+    background:linear-gradient(135deg, rgba(255,215,0,0.1) 0%, rgba(230,57,70,0.1) 100%);
+    border:1px solid rgba(255,215,0,0.3);
+    border-radius:25px;
+    font-family:'Oswald',sans-serif;
+    font-size:13px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--gold);
+    cursor:pointer;
+    transition:all 0.3s ease;
+    white-space:nowrap;
+  }
+
+  .cat-pill:hover, .cat-pill:active{
+    background:linear-gradient(135deg, var(--gold) 0%, var(--orange) 100%);
+    color:#000;
+    border-color:var(--gold);
+    transform:scale(1.05);
+  }
+
+  /* ====== SECTION ====== */
+  .section{
+    padding:24px 0;
+  }
+
+  .section-header{
+    text-align:center;
+    padding:0 20px 20px;
+    position:relative;
+  }
+
+  .section-header h2{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:36px;
+    letter-spacing:5px;
+    color:var(--gold);
+    text-shadow:0 3px 15px rgba(255,215,0,0.4);
+  }
+
+  .section-header .fire{
+    animation:fireFlicker 0.4s ease-in-out infinite alternate;
+  }
+
+  @keyframes fireFlicker{
+    0%{ opacity:0.7; }
+    100%{ opacity:1; }
+  }
+
+  .section-header::after{
+    content:"";
+    display:block;
+    width:100px;
+    height:3px;
+    background:linear-gradient(90deg, transparent, var(--gold), var(--red), var(--gold), transparent);
+    margin:12px auto 0;
+    border-radius:2px;
+    box-shadow:0 0 15px rgba(255,215,0,0.5);
+  }
+
+  .section-subtitle{
+    font-size:11px;
+    color:var(--gold-dark);
+    font-style:italic;
+    margin-top:8px;
+    letter-spacing:2px;
+  }
+
+  /* ====== FOOD CARDS ====== */
+  .food-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+    padding:0 16px;
+  }
+
+  .food-card{
+    background:var(--black-card);
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid rgba(255,215,0,0.1);
+    transition:all 0.3s ease;
+    position:relative;
+  }
+
+  .food-card:active{
+    transform:scale(0.97);
+  }
+
+  .food-card .img-wrap{
+    width:100%;
+    height:110px;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .food-card .img-wrap::after{
+    content:"";
+    position:absolute;
+    bottom:0; left:0;
+    width:100%; height:50%;
+    background:linear-gradient(transparent, var(--black-card));
+    pointer-events:none;
+  }
+
+  .food-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:transform 0.4s ease;
+  }
+
+  .food-card:active img{
+    transform:scale(1.1);
+  }
+
+  .food-card .badge{
+    position:absolute;
+    top:8px;
+    right:8px;
+    background:var(--red);
+    color:#fff;
+    font-family:'Oswald',sans-serif;
+    font-size:10px;
+    padding:4px 10px;
+    border-radius:12px;
+    letter-spacing:1px;
+    z-index:1;
+  }
+
+  .food-card .info{
+    padding:12px;
+  }
+
+  .food-card .name{
+    font-family:'Oswald',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color:#fff;
+    letter-spacing:1px;
+    margin-bottom:4px;
+    line-height:1.2;
+  }
+
+  .food-card .desc{
+    font-size:9px;
+    color:rgba(255,255,255,0.5);
+    line-height:1.4;
+    margin-bottom:8px;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+  }
+
+  .food-card .price-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+
+  .food-card .price{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px;
+    color:var(--gold);
+    text-shadow:0 2px 8px rgba(255,215,0,0.3);
+  }
+
+  .food-card .price .sep{
+    font-size:14px;
+    color:var(--gold-dark);
+    margin:0 2px;
+  }
+
+  /* ====== SIMPLE LIST ====== */
+  .simple-list{
+    padding:0 20px;
+  }
+
+  .simple-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 0;
+    border-bottom:1px solid rgba(255,215,0,0.08);
+    transition:all 0.2s ease;
+  }
+
+  .simple-item:active{
+    background:rgba(255,215,0,0.05);
+    padding-left:10px;
+  }
+
+  .simple-item:last-child{
+    border-bottom:none;
+  }
+
+  .simple-item .left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .simple-item .icon{
+    width:36px;
+    height:36px;
+    background:linear-gradient(135deg, rgba(230,57,70,0.2) 0%, rgba(255,107,53,0.2) 100%);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+  }
+
+  .simple-item .name{
+    font-size:14px;
+    color:#fff;
+    font-weight:600;
+  }
+
+  .simple-item .dots{
+    flex:1;
+    border-bottom:1px dotted rgba(255,255,255,0.1);
+    margin:0 12px;
+    min-width:20px;
+  }
+
+  .simple-item .price{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px;
+    color:var(--gold);
+    text-shadow:0 2px 8px rgba(255,215,0,0.3);
+  }
+
+  /* ====== DRINKS CARDS ====== */
+  .drinks-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    padding:0 16px;
+  }
+
+  .drink-card{
+    background:linear-gradient(135deg, rgba(20,20,20,0.9) 0%, rgba(15,15,15,0.95) 100%);
+    border:1px solid rgba(255,215,0,0.12);
+    border-radius:12px;
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    transition:all 0.2s ease;
+  }
+
+  .drink-card:active{
+    transform:scale(0.96);
+    border-color:var(--gold);
+  }
+
+  .drink-card .emoji{
+    font-size:24px;
+  }
+
+  .drink-card .name{
+    font-size:11px;
+    color:#fff;
+    font-weight:600;
+    line-height:1.3;
+  }
+
+  .drink-card .price{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:18px;
+    color:var(--gold);
+    text-shadow:0 2px 8px rgba(255,215,0,0.3);
+  }
+
+  /* ====== FULL WIDTH BANNER ====== */
+  .promo-banner{
+    margin:24px 16px;
+    background:
+      radial-gradient(ellipse at center, rgba(255,107,53,0.3) 0%, transparent 70%),
+      linear-gradient(135deg, var(--red-dark) 0%, var(--red) 40%, var(--orange) 100%);
+    border-radius:20px;
+    padding:32px 24px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    border:2px solid var(--gold);
+    box-shadow:0 10px 40px rgba(230,57,70,0.3);
+  }
+
+  .promo-banner::before{
+    content:"";
+    position:absolute;
+    top:-50%; left:-50%;
+    width:200%; height:200%;
+    background:conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255,215,0,0.1) 90deg, transparent 180deg, rgba(255,215,0,0.05) 270deg, transparent 360deg);
+    animation:rotateBanner 10s linear infinite;
+  }
+
+  @keyframes rotateBanner{
+    0%{ transform:rotate(0deg); }
+    100%{ transform:rotate(360deg); }
+  }
+
+  .promo-banner .text{
+    position:relative;
+    z-index:1;
+  }
+
+  .promo-banner .big{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:42px;
+    color:#fff;
+    line-height:1;
+    text-shadow:0 4px 20px rgba(0,0,0,0.5);
+  }
+
+  .promo-banner .highlight{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:52px;
+    color:var(--gold);
+    display:block;
+    text-shadow:
+      0 4px 20px rgba(255,215,0,0.6),
+      0 0 60px rgba(255,215,0,0.4);
+    animation:glowBanner 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glowBanner{
+    0%{ text-shadow:0 4px 20px rgba(255,215,0,0.6); }
+    100%{ text-shadow:0 4px 30px rgba(255,215,0,0.9), 0 0 80px rgba(255,215,0,0.5); }
+  }
+
+  .promo-banner .heart{
+    font-size:36px;
+    margin-top:12px;
+    animation:pulse 1s infinite;
+    position:relative;
+    z-index:1;
+  }
+
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); }
+    50%{ transform:scale(1.3); }
+  }
+
+  /* ====== CONTACT SECTION ====== */
+  .contact-section{
+    padding:32px 20px;
+    text-align:center;
+    background:linear-gradient(180deg, var(--black) 0%, #0a0a0a 100%);
+    border-top:1px solid rgba(255,215,0,0.15);
+  }
+
+  .contact-title{
+    font-family:'Oswald',sans-serif;
+    font-size:20px;
+    color:var(--gold);
+    letter-spacing:4px;
+    text-transform:uppercase;
+    margin-bottom:20px;
+  }
+
+  .whatsapp-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    padding:18px 36px;
+    background:linear-gradient(135deg, var(--green) 0%, #128C7E 100%);
+    border-radius:60px;
+    text-decoration:none;
+    transition:all 0.3s ease;
+    box-shadow:0 8px 30px rgba(37,211,102,0.4);
+  }
+
+  .whatsapp-btn:active{
+    transform:scale(0.95);
+  }
+
+  .whatsapp-btn .icon{
+    font-size:28px;
+  }
+
+  .whatsapp-btn .text{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:32px;
+    color:#fff;
+    letter-spacing:3px;
+  }
+
+  .social-row{
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    margin-top:24px;
+    flex-wrap:wrap;
+  }
+
+  .social-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 18px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:25px;
+    color:rgba(255,255,255,0.7);
+    font-size:12px;
+    transition:all 0.2s ease;
+  }
+
+  .social-btn:active{
+    background:rgba(255,215,0,0.1);
+    border-color:var(--gold);
+    color:var(--gold);
+  }
+
+  .social-btn .icon{
+    font-size:16px;
+  }
+
+  .footer-text{
+    font-family:'Oswald',sans-serif;
+    font-size:12px;
+    color:var(--gold-dark);
+    letter-spacing:3px;
+    margin-top:20px;
+    font-style:italic;
+  }
+
+  /* ====== SCROLL TO TOP ====== */
+  .scroll-top{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    width:50px;
+    height:50px;
+    background:linear-gradient(135deg, var(--gold) 0%, var(--orange) 100%);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    box-shadow:0 4px 20px rgba(255,215,0,0.4);
+    z-index:1000;
+    opacity:0;
+    transform:translateY(20px);
+    transition:all 0.3s ease;
+    cursor:pointer;
+    border:none;
+  }
+
+  .scroll-top.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .scroll-top:active{
+    transform:scale(0.9);
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO FULLSCREEN -->
+<div class="hero">
+  <div class="lantern-float left">🏮</div>
+  <div class="lantern-float right">🏮</div>
+  <div class="hero-content">
+    <div class="chinese-chars">道 場 名 店 ・ 風 味 東 方</div>
+    <div class="restaurant-name">
+      <span class="line1">DISTRITO</span>
+      <span class="wok">WOK</span>
+      <span class="simon">SIMÓN</span>
+    </div>
+    <div class="tagline">★ Sabor que enamora ★</div>
+  </div>
+  <div class="scroll-indicator">
+    <span></span>
+  </div>
+</div>
+
+<!-- CATEGORY BAR -->
+<div class="category-bar" id="categories">
+  <div class="cat-pill" onclick="scrollToSection('arroces')">🍳 Arroces</div>
+  <div class="cat-pill" onclick="scrollToSection('corrientes')">🥩 Corrientes</div>
+  <div class="cat-pill" onclick="scrollToSection('porciones')">🍽️ Porciones</div>
+  <div class="cat-pill" onclick="scrollToSection('bebidas')">🥤 Bebidas</div>
+  <div class="cat-pill" onclick="scrollToSection('contacto')">📱 Pedido</div>
+</div>
+
+<!-- ARROCES -->
+<div class="section" id="arroces">
+  <div class="section-header">
+    <h2><span class="fire">🔥</span> NUESTROS ARROCES <span class="fire">🔥</span></h2>
+    <div class="section-subtitle">precio · personal / especial</div>
+  </div>
+
+  <div class="food-grid">
+    <div class="food-card">
+      <div class="img-wrap">
+        <span class="badge">⭐ Popular</span>
+        <img src="https://images.pexels.com/photos/5720819/pexels-photo-5720819.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Costeño">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Costeño Wok</div>
+        <div class="desc">Cerdo, pollo, chorizo y butifarra, coronado con jamón y vegetales frescos al wok</div>
+        <div class="price-row">
+          <span class="price">30K <span class="sep">/</span> 40K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <span class="badge">⭐ Popular</span>
+        <img src="https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Especial">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Especial Wok</div>
+        <div class="desc">Cerdo, pollo y camarón salteados con jamón, raíz china crujiente y cebollín</div>
+        <div class="price-row">
+          <span class="price">27K <span class="sep">/</span> 37K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/1907228/pexels-photo-1907228.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Valenciana">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Valenciana Wok</div>
+        <div class="desc">Generosas porciones de pollo y jamón sobre un lecho de vegetales frescos</div>
+        <div class="price-row">
+          <span class="price">25K <span class="sep">/</span> 33K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <span class="badge">🔥 Especial</span>
+        <img src="https://images.pexels.com/photos/5638527/pexels-photo-5638527.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Currambero">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Currambero Wok</div>
+        <div class="desc">Chorizo, butifarra, cerdo y pollo, con chicharrón crocante y plátano maduro</div>
+        <div class="price-row">
+          <span class="price">32K <span class="sep">/</span> 40K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/3026808/pexels-photo-3026808.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Tres Carnes">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Tres Carnes Wok</div>
+        <div class="desc">El trío clásico: pollo, carne y cerdo salteados con vegetales frescos al wok</div>
+        <div class="price-row">
+          <span class="price">27K <span class="sep">/</span> 37K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <span class="badge">👑 Insignia</span>
+        <img src="https://images.pexels.com/photos/36293910/pexels-photo-36293910.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Oriental">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Oriental Wok</div>
+        <div class="desc">Nuestra receta insignia: cerdo, pollo, camarón y jamón, coronado con doble porción</div>
+        <div class="price-row">
+          <span class="price">32K <span class="sep">/</span> 47K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/24334865/pexels-photo-24334865.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Criollo">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Criollo Wok</div>
+        <div class="desc">Cerdo, pollo y jamón salteados con el sazón criollo de la casa</div>
+        <div class="price-row">
+          <span class="price">29K <span class="sep">/</span> 37K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/5409019/pexels-photo-5409019.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Vegetal">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Vegetal Wok</div>
+        <div class="desc">Vegetales frescos salteados al wok junto a la proteína de tu preferencia</div>
+        <div class="price-row">
+          <span class="price">29K <span class="sep">/</span> 37K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/36998847/pexels-photo-36998847.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Pollo">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Pollo Wok</div>
+        <div class="desc">Pollo jugoso salteado al wok con vegetales frescos</div>
+        <div class="price-row">
+          <span class="price">26K <span class="sep">/</span> 35K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/35228295/pexels-photo-35228295.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Cerdo">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Cerdo Wok</div>
+        <div class="desc">Nuestro cerdo especial de la casa, salteado a fuego alto con vegetales frescos</div>
+        <div class="price-row">
+          <span class="price">26K <span class="sep">/</span> 35K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/34683317/pexels-photo-34683317.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Camarón">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Camarón Wok</div>
+        <div class="desc">Camarones salteados al wok en su punto justo, con vegetales frescos</div>
+        <div class="price-row">
+          <span class="price">31K <span class="sep">/</span> 40K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/28573375/pexels-photo-28573375.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Carne">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Carne Wok</div>
+        <div class="desc">Nuestra carne especial de la casa, salteada al wok con vegetales frescos</div>
+        <div class="price-row">
+          <span class="price">30K <span class="sep">/</span> 38K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/5720819/pexels-photo-5720819.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Pollo y Carne">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Pollo y Carne</div>
+        <div class="price-row">
+          <span class="price">30K <span class="sep">/</span> 38K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Pollo y Cerdo">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Pollo y Cerdo</div>
+        <div class="price-row">
+          <span class="price">26K <span class="sep">/</span> 36K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/36293910/pexels-photo-36293910.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Pollo y Camarón">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Pollo y Camarón</div>
+        <div class="price-row">
+          <span class="price">30K <span class="sep">/</span> 40K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <img src="https://images.pexels.com/photos/1907228/pexels-photo-1907228.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Parrillada">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Parrillada Wok</div>
+        <div class="desc">Chorizo ranchera, pollo y carne a la parrilla, salteados con vegetales frescos</div>
+        <div class="price-row">
+          <span class="price">27K <span class="sep">/</span> 37K</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="food-card">
+      <div class="img-wrap">
+        <span class="badge">🤝 Fusión</span>
+        <img src="https://images.pexels.com/photos/5638527/pexels-photo-5638527.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Arroz Rey Colis">
+      </div>
+      <div class="info">
+        <div class="name">Arroz Rey Colis Wok</div>
+        <div class="desc">La fusión de la casa: nuestro arroz especial junto a un chow mein bien logrado</div>
+        <div class="price-row">
+          <span class="price">27K <span class="sep">/</span> 37K</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CORRIENTES -->
+<div class="section" id="corrientes">
+  <div class="section-header">
+    <h2><span class="fire">🔥</span> CORRIENTAZOS <span class="fire">🔥</span></h2>
+  </div>
+
+  <div class="simple-list">
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🥩</div>
+        <span class="name">Carne Asada</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">17K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🥩</div>
+        <span class="name">Carne en Bisteck</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">18K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🍖</div>
+        <span class="name">Chuleta de Cerdo</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">16K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🐟</div>
+        <span class="name">Mojarra Frita</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">18K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🐟</div>
+        <span class="name">Mojarra Sudada</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">20K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🥩</div>
+        <span class="name">Lomo de Cerdo</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">16K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🍗</div>
+        <span class="name">Pechuga Asada</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">16K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🍗</div>
+        <span class="name">Pollo Frito</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">16K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🍗</div>
+        <span class="name">Pollo Apanado</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">16K</span>
+    </div>
+  </div>
+</div>
+
+<!-- PORCIONES -->
+<div class="section" id="porciones">
+  <div class="section-header">
+    <h2><span class="fire">🔥</span> PORCIONES <span class="fire">🔥</span></h2>
+  </div>
+
+  <div class="simple-list">
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🍳</div>
+        <span class="name">Valenciana</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">12K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🍚</div>
+        <span class="name">Porción de Arroz</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">5K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🥔</div>
+        <span class="name">Papas</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">7K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🍗</div>
+        <span class="name">Pollo</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">6K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🥔</div>
+        <span class="name">Papas con Pollo</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">12K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🍜</div>
+        <span class="name">Sopas</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">6K</span>
+    </div>
+    <div class="simple-item">
+      <div class="left">
+        <div class="icon">🍲</div>
+        <span class="name">Sancocho</span>
+      </div>
+      <span class="dots"></span>
+      <span class="price">10K</span>
+    </div>
+  </div>
+</div>
+
+<!-- BEBIDAS -->
+<div class="section" id="bebidas">
+  <div class="section-header">
+    <h2><span class="fire">🔥</span> BEBIDAS <span class="fire">🔥</span></h2>
+  </div>
+
+  <div class="drinks-grid">
+    <div class="drink-card">
+      <span class="emoji">🥤</span>
+      <span class="name">Coca Cola 1.5LT</span>
+      <span class="price">$8,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🥤</span>
+      <span class="name">Quatro 1.5 LT</span>
+      <span class="price">$6,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🥤</span>
+      <span class="name">Coca-Cola 600ML</span>
+      <span class="price">$4,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🥤</span>
+      <span class="name">Coca-Cola 400ML</span>
+      <span class="price">$3,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🥭</span>
+      <span class="name">Fuze Mango 400ML</span>
+      <span class="price">$3,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🍑</span>
+      <span class="name">Fuze Negro Durazno 400ML</span>
+      <span class="price">$3,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🥤</span>
+      <span class="name">Kola Roman 400 ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🍋</span>
+      <span class="name">Sprite 400 ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🧃</span>
+      <span class="name">Jugo del Valle 400ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🥤</span>
+      <span class="name">Quatro 400ML</span>
+      <span class="price">$2,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">💧</span>
+      <span class="name">Agua Brisa 1 LT</span>
+      <span class="price">$3,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🍊</span>
+      <span class="name">Brisa Maracuyá 600ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🍎</span>
+      <span class="name">Brisa Manzana 600ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">💧</span>
+      <span class="name">Agua Brisa 600ML</span>
+      <span class="price">$2,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="emoji">🍎</span>
+      <span class="name">Brisa Manzana 280ML</span>
+      <span class="price">$1,500</span>
+    </div>
+  </div>
+</div>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner">
+  <div class="text">
+    <div class="big">¡SABOR QUE</div>
+    <span class="highlight">ENAMORA!</span>
+  </div>
+  <div class="heart">❤️</div>
+</div>
+
+<!-- CONTACTO -->
+<div class="contact-section" id="contacto">
+  <div class="contact-title">📱 Domicilios & Pedidos</div>
+  <a href="https://wa.me/573242658227" class="whatsapp-btn">
+    <span class="icon">💬</span>
+    <span class="text">324 265 8227</span>
+  </a>
+  <div class="social-row">
+    <div class="social-btn"><span class="icon">📷</span> @distritowoksimon</div>
+    <div class="social-btn"><span class="icon">📘</span> Distrito Wok Simón</div>
+  </div>
+  <div class="footer-text">Sabor que enamora ♡</div>
+</div>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  // Smooth scroll to section
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Show/hide scroll to top button
+  const scrollBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 600) {
+      scrollBtn.classList.add('visible');
+    } else {
+      scrollBtn.classList.remove('visible');
+    }
+  });
+
+  // Add touch feedback
+  document.querySelectorAll('.food-card, .simple-item, .drink-card, .cat-pill').forEach(el => {
+    el.addEventListener('touchstart', () => {}, { passive: true });
+  });
+</script>
+
+</body>
+</html>

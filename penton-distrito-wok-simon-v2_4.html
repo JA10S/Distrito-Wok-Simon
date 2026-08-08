@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Pendón - Distrito Wok Simón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --rojo-top:#C40F0F;
+    --rojo-mid:#9C0808;
+    --rojo-bottom:#650303;
+    --dorado:#E3B341;
+    --dorado-claro:#F6DE9A;
+    --dorado-oscuro:#B4842A;
+    --blanco:#FFFFFF;
+    --crema:#FFF6E2;
+    --amarillo:#F3C11A;
+    --amarillo-oscuro:#D9A400;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  html,body{ width:100cm; height:150cm; }
+
+  @page{ size:100cm 150cm; margin:0; }
+  @media print{ html,body{ width:100cm; height:150cm; } }
+
+  body{
+    font-family:'Montserrat',Arial,Helvetica,sans-serif;
+    color:var(--blanco);
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(120cm 90cm at 50% 0%, var(--rojo-top) 0%, var(--rojo-mid) 45%, var(--rojo-bottom) 100%);
+  }
+
+  /* textura sutil tipo tela */
+  body::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0 0.15cm, transparent 0.15cm 0.6cm);
+    pointer-events:none;
+  }
+
+  svg.defs{ position:absolute; width:0; height:0; }
+
+  /* ===================== MARCO ===================== */
+  .marco{
+    position:absolute; inset:1.1cm;
+    border:0.2cm solid var(--dorado);
+    border-radius:0.1cm;
+    box-shadow: inset 0 0 0 0.04cm rgba(255,255,255,0.25);
+  }
+  .marco::after{
+    content:"";
+    position:absolute; inset:0.35cm;
+    border:0.05cm solid rgba(246,222,154,0.55);
+    border-radius:0.08cm;
+    pointer-events:none;
+  }
+
+  .esquina{
+    position:absolute;
+    width:9.6cm; height:9.6cm;
+    opacity:0.95;
+  }
+  .esquina svg{ width:100%; height:100%; }
+  .esquina.tl{ top:1.1cm; left:1.1cm; }
+  .esquina.tr{ top:1.1cm; right:1.1cm; transform:scaleX(-1); }
+  .esquina.bl{ bottom:1.1cm; left:1.1cm; transform:scaleY(-1); }
+  .esquina.br{ bottom:1.1cm; right:1.1cm; transform:scale(-1,-1); }
+
+  .lienzo{
+    position:absolute; inset:2.6cm;
+    display:flex; flex-direction:column;
+  }
+
+  /* ===================== ENCABEZADO / HERO ===================== */
+  .encabezado{
+    flex:0 0 auto;
+    position:relative;
+    text-align:center;
+    padding-bottom:0.5cm;
+  }
+
+  .farol{ position:absolute; top:0.3cm; width:6.4cm; height:9.6cm; }
+  .farol.izq{ left:0.2cm; transform:rotate(-6deg); }
+  .farol.der{ right:0.2cm; transform:rotate(6deg) scaleX(-1); }
+  .farol svg{ width:100%; height:100%; }
+
+  .marca-topo{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:0.9cm;
+    color:var(--dorado-claro);
+    font-weight:800;
+    font-size:2.2cm;
+    letter-spacing:0.5cm;
+    text-transform:uppercase;
+    text-shadow: 0 0.08cm 0 var(--rojo-bottom), 0 0.05cm 0.25cm rgba(0,0,0,0.4);
+    margin-bottom:0.6cm;
+  }
+  .marca-topo .estrella{ width:1.5cm; height:1.5cm; flex:0 0 auto; }
+  .marca-topo .estrella svg{ width:100%; height:100%; }
+
+  /* --- frase principal --- */
+  .hero{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:0.5cm 0 0.3cm;
+  }
+  .hero-glow{
+    position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    width:72cm; height:26cm;
+    background:radial-gradient(50% 50% at 50% 50%, rgba(243,193,26,0.32) 0%, rgba(243,193,26,0.12) 45%, rgba(243,193,26,0) 72%);
+    pointer-events:none;
+  }
+  .hero-t1{
+    position:relative; z-index:1;
+    font-size:6.8cm;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.5cm;
+    line-height:1.02;
+  }
+  .hero-t2{
+    position:relative; z-index:1;
+    font-size:8.2cm;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:0.1cm;
+    line-height:1.04;
+    margin-top:0.15cm;
+  }
+  .hero-t1,.hero-t2{
+    background:linear-gradient(180deg,#FFF7DC 0%, #F6DE9A 38%, #E3B341 68%, #C88F1E 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    filter: drop-shadow(0 0.3cm 0 #5E0202) drop-shadow(0 0.1cm 0.2cm rgba(0,0,0,0.55));
+  }
+  .hero-t2 .acento{
+    background:linear-gradient(180deg,#FFFFFF 0%, #FFEBB2 45%, #FFD94D 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    filter: drop-shadow(0 0.3cm 0 #5E0202) drop-shadow(0 0 0.4cm rgba(255,225,140,0.9));
+  }
+
+  /* --- línea decorativa con diamante --- */
+  .hero-flourish{
+    position:relative;
+    width:68cm; height:0.12cm;
+    background:linear-gradient(90deg, transparent, var(--dorado) 12%, var(--dorado-claro) 50%, var(--dorado) 88%, transparent);
+    margin:0.8cm auto 0.6cm;
+  }
+  .hero-flourish::before{
+    content:"";
+    position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%) rotate(45deg);
+    width:1.4cm; height:1.4cm;
+    background:linear-gradient(135deg,#FFF7DC,var(--dorado));
+    border:0.05cm solid var(--dorado-oscuro);
+    box-shadow:0 0 0.5cm rgba(243,193,26,0.8);
+  }
+
+  .tagline-pill{
+    display:inline-block;
+    background:linear-gradient(180deg, var(--amarillo) 0%, var(--amarillo-oscuro) 100%);
+    color:var(--rojo-bottom);
+    font-weight:900;
+    font-size:2.7cm;
+    text-transform:uppercase;
+    letter-spacing:0.12cm;
+    padding:0.5cm 1.9cm;
+    border-radius:1.4cm;
+    border:0.06cm solid var(--crema);
+    box-shadow:0 0.22cm 0 rgba(0,0,0,0.32);
+    margin-bottom:0.7cm;
+  }
+
+  .separador-header{
+    margin:0 auto;
+    width:46cm; height:0.09cm;
+    background:linear-gradient(90deg, transparent, var(--dorado) 15%, var(--dorado) 85%, transparent);
+  }
+
+  /* ===================== FRANJA DE ILUSTRACIONES ===================== */
+  .franja-platos{
+    flex:0 0 auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:1.6cm;
+    padding:1cm 0 1.1cm;
+  }
+
+  .plato-ico{
+    width:10.5cm; height:10.5cm;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--crema), #F1D9A6 70%);
+    border:0.16cm solid var(--dorado);
+    box-shadow:0 0.2cm 0.5cm rgba(0,0,0,0.35);
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .plato-ico svg{ width:80%; height:80%; }
+  .plato-ico img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .plato-ico.grande{ width:12.5cm; height:12.5cm; }
+
+  /* ===================== MENU ===================== */
+  .menu{
+    flex:1 1 auto;
+    display:grid;
+    grid-template-columns: 1.62fr 1fr;
+    gap:0.0cm;
+    min-height:0;
+  }
+
+  .columna{ display:flex; flex-direction:column; min-height:0; }
+
+  .pill-seccion{
+    align-self:center;
+    background:var(--crema);
+    color:var(--rojo-mid);
+    font-weight:800;
+    font-size:1.95cm;
+    text-transform:uppercase;
+    letter-spacing:0.01cm;
+    padding:0.4cm 1.3cm;
+    border-radius:1.6cm;
+    box-shadow:0 0.14cm 0 rgba(0,0,0,0.25);
+    margin-bottom:0.9cm;
+  }
+
+  /* --- panel destacado de arroces --- */
+  .panel-arroz{
+    position:relative;
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    background:linear-gradient(180deg, rgba(227,179,65,0.16), rgba(227,179,65,0.03) 40%);
+    border:0.1cm solid var(--dorado);
+    border-radius:0.7cm;
+    padding:1.3cm 1.1cm 0.1cm;
+    box-shadow:0 0.2cm 0.6cm rgba(0,0,0,0.28), inset 0 0 0 0.03cm rgba(255,255,255,0.15);
+  }
+
+  .cinta-especialidad{
+    position:absolute;
+    top:-0.85cm; left:-0.9cm;
+    background:linear-gradient(135deg, #E8151A, var(--rojo-bottom));
+    color:var(--dorado-claro);
+    font-weight:800;
+    font-size:1cm;
+    letter-spacing:0.05cm;
+    padding:0.4cm 1.5cm;
+    transform:rotate(-7deg);
+    border:0.06cm solid var(--dorado);
+    border-radius:0.18cm;
+    box-shadow:0 0.14cm 0.35cm rgba(0,0,0,0.45);
+    text-transform:uppercase;
+    white-space:nowrap;
+    z-index:5;
+  }
+
+  .pill-seccion-arroz{
+    align-self:center;
+    display:flex;
+    align-items:center;
+    gap:0.05cm;
+    background:linear-gradient(180deg, var(--amarillo) 0%, var(--amarillo-oscuro) 100%);
+    color:var(--rojo-bottom);
+    font-weight:900;
+    font-size:2.35cm;
+    text-transform:uppercase;
+    letter-spacing:0.04cm;
+    padding:0.45cm 1.8cm;
+    border-radius:0.4cm;
+    border:0.06cm solid var(--crema);
+    box-shadow:0 0.18cm 0 rgba(0,0,0,0.3);
+    margin-bottom:1cm;
+  }
+  .pill-seccion-arroz svg{ width:2.5cm; height:2.5cm; }
+
+  /* --- tabla arroces --- */
+  .tabla-arroces{ display:flex; flex-direction:column; flex:0 0 auto; }
+
+  .fila-encabezado-tabla{
+    display:grid;
+    grid-template-columns: 2.0fr 1fr 1fr;
+    padding:0 0.3cm 0.45cm;
+    font-size:0.95cm;
+    font-weight:700;
+    color:var(--dorado-claro);
+    text-transform:uppercase;
+    letter-spacing:0.05cm;
+  }
+  .fila-encabezado-tabla span:nth-child(2),
+  .fila-encabezado-tabla span:nth-child(3){ text-align:center; }
+
+  .fila-plato{
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns: 2.3fr 1fr 1fr;
+    align-items:center;
+    column-gap:0.35cm;
+    padding:0.35cm 0.1cm;
+  }
+
+  .nombre-plato{
+    font-size:1.95cm;
+    font-weight:700;
+    line-height:1;
+  }
+
+  .precio-pill{
+    background:linear-gradient(180deg, #FFFDF6, #F6E6BE);
+    color:var(--rojo-mid);
+    font-weight:700;
+    font-size:1.3cm;
+    text-align:center;
+    border-radius:0.4cm;
+    padding:0.05cm 0.1cm;
+    min-height:2.1cm;
+    box-shadow:0 0.09cm 0 rgba(0,0,0,0.2);
+  }
+
+  .relleno-izq{
+    flex:1 1 auto;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:1.2cm;
+  }
+
+  .galeria-inferior{
+    display:flex;
+    gap:1cm;
+    justify-content:center;
+    align-items:center;
+  }
+
+  .galeria-inferior .plato-ico{
+    width:14cm;
+    height:14cm;
+  }
+
+  .frase-decorativa{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:0.8cm;
+    color:var(--dorado-claro);
+    font-weight:800;
+    font-size:2.8cm;
+    text-transform:uppercase;
+    letter-spacing:0.3cm;
+    text-shadow: 0 0.08cm 0 var(--rojo-bottom), 0 0.05cm 0.25cm rgba(0,0,0,0.4);
+    margin-top:0.5cm;
+  }
+
+  .estrella-grande{ width:2.2cm; height:2.2cm; flex:0 0 auto; }
+  .estrella-grande svg{ width:100%; height:100%; }
+
+  /* --- corrientes --- */
+  .tabla-corrientes{ display:flex; flex-direction:column; flex:0 0 auto; min-height:0; justify-content:flex-start; }
+
+  .fila-corriente{
+    flex:0 0 auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:0.5cm;
+    padding:0.62cm 0.3cm;
+    border-bottom:0.045cm dashed rgba(255,255,255,0.32);
+  }
+  .fila-corriente:last-child{ border-bottom:none; }
+
+  .nombre-corriente{
+    font-size:1.95cm;
+    font-weight:700;
+    line-height:1.05;
+  }
+
+  .precio-pill-corriente{
+    background:linear-gradient(180deg, #FFFDF6, #F6E6BE);
+    color:var(--rojo-mid);
+    font-weight:800;
+    font-size:1.75cm;
+    text-align:center;
+    border-radius:0.45cm;
+    padding:0.2cm 0.8cm;
+    min-width:9cm;
+    min-height:2.1cm;
+    box-shadow:0 0.09cm 0 rgba(0,0,0,0.2);
+    white-space:nowrap;
+  }
+
+  .bloque-decorativo{
+    flex:1 1 auto;
+    margin-top:1.4cm;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:1.3cm;
+  }
+
+  /* ===================== BEBIDAS ===================== */
+  .bebidas-pill{
+    align-self:center;
+    background:var(--crema);
+    color:var(--rojo-mid);
+    font-weight:800;
+    font-size:1.95cm;
+    text-transform:uppercase;
+    letter-spacing:0.01cm;
+    padding:0.4cm 1.3cm;
+    border-radius:1.6cm;
+    box-shadow:0 0.14cm 0 rgba(0,0,0,0.25);
+    margin-top:0.8cm;
+    margin-bottom:0.9cm;
+  }
+
+  .tabla-bebidas{ display:flex; flex-direction:column; flex:0 0 auto; min-height:0; justify-content:flex-start; }
+
+  .fila-bebida{
+    flex:0 0 auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:0.5cm;
+    padding:0.45cm 0.3cm;
+    border-bottom:0.045cm dashed rgba(255,255,255,0.32);
+  }
+  .fila-bebida:last-child{ border-bottom:none; }
+
+  .nombre-bebida{
+    font-size:1.95cm;
+    font-weight:700;
+    line-height:1.05;
+  }
+
+  .precio-pill-bebida{
+    background:linear-gradient(180deg, #FFFDF6, #F6E6BE);
+    color:var(--rojo-mid);
+    font-weight:800;
+    font-size:1.75cm;
+    text-align:center;
+    border-radius:0.45cm;
+    padding:0.2cm 0.8cm;
+    min-width:9cm;
+    min-height:2.1cm;
+    box-shadow:0 0.09cm 0 rgba(0,0,0,0.2);
+    white-space:nowrap;
+  }
+
+  /* ===================== PORCIONES Y ADICIONALES ===================== */
+  .porciones-pill{
+    align-self:center;
+    background:var(--crema);
+    color:var(--rojo-mid);
+    font-weight:800;
+    font-size:1.95cm;
+    text-transform:uppercase;
+    letter-spacing:0.01cm;
+    padding:0.4cm 1.3cm;
+    border-radius:1.6cm;
+    box-shadow:0 0.14cm 0 rgba(0,0,0,0.25);
+    margin-top:0.8cm;
+    margin-bottom:0.9cm;
+  }
+
+  .tabla-porciones{ display:flex; flex-direction:column; flex:0 0 auto; min-height:0; justify-content:flex-start; }
+
+  .fila-porcion{
+    flex:0 0 auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:0.5cm;
+    padding:0.45cm 0.3cm;
+    border-bottom:0.045cm dashed rgba(255,255,255,0.32);
+  }
+  .fila-porcion:last-child{ border-bottom:none; }
+
+  .nombre-porcion{
+    font-size:1.95cm;
+    font-weight:700;
+    line-height:1.05;
+  }
+
+  .precio-pill-porcion{
+    background:linear-gradient(180deg, #FFFDF6, #F6E6BE);
+    color:var(--rojo-mid);
+    font-weight:700;
+    font-size:1.3cm;
+    text-align:center;
+    border-radius:0.4cm;
+    padding:0.05cm 0.1cm;
+    min-height:2.1cm;
+    min-width:15cm;
+    box-shadow:0 0.09cm 0 rgba(0,0,0,0.2);
+  }
+
+  .nota-corrientes{
+    text-align:center;
+    font-size:1.3cm;
+    font-weight:600;
+    color:var(--dorado-claro);
+    letter-spacing:0.04cm;
+    line-height:1.35;
+    padding:0.9cm 1cm;
+    border:0.08cm solid var(--dorado);
+    border-radius:0.4cm;
+    background:rgba(230,179,37,0.1);
+    max-width:22cm;
+  }
+
+  /* ===================== PIE ===================== */
+  .pie{
+    flex:0 0 auto;
+    margin-top:1.6cm;
+    position:relative;
+    background:linear-gradient(180deg, var(--amarillo) 0%, var(--amarillo-oscuro) 100%);
+    border:0.14cm solid var(--blanco);
+    border-radius:0.5cm;
+    box-shadow:0 0.2cm 0.8cm rgba(0,0,0,0.35);
+    padding:1.8cm 1cm;
+    text-align:center;
+    overflow:hidden;
+  }
+
+  .pie .etiqueta{
+    font-size:2.2cm;
+    font-weight:800;
+    color:var(--rojo-bottom);
+    text-transform:uppercase;
+    letter-spacing:0.15cm;
+    margin-bottom:0.5cm;
+  }
+
+  .pie .telefono{
+    font-size:5.5cm;
+    font-weight:900;
+    color:#3A0A0A;
+    letter-spacing:0.08cm;
+    line-height:1;
+  }
+
+  .destello{
+    position:absolute;
+    width:1.4cm; height:1.4cm;
+    opacity:0.85;
+  }
+  .destello.d1{ top:0.6cm; right:1.2cm; }
+  .destello.d2{ bottom:0.6cm; left:1.4cm; width:0.9cm; height:0.9cm; }
+  .destello svg{ width:100%; height:100%; }
+
+</style>
+</head>
+<body>
+
+<!-- ============ DEFINICIONES SVG REUTILIZABLES ============ -->
+<svg class="defs" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+
+    <!-- Farol chino -->
+    <symbol id="farol" viewBox="0 0 100 160">
+      <line x1="50" y1="0" x2="50" y2="14" stroke="#E3B341" stroke-width="2"/>
+      <rect x="30" y="10" width="40" height="8" rx="2" fill="#E3B341"/>
+      <ellipse cx="50" cy="80" rx="38" ry="52" fill="#D6281C" stroke="#B4842A" stroke-width="2"/>
+      <ellipse cx="50" cy="80" rx="38" ry="52" fill="none" stroke="#F6DE9A" stroke-width="1.4" stroke-dasharray="3 6"/>
+      <path d="M15 55 Q50 70 85 55" stroke="#B4842A" stroke-width="1.6" fill="none" opacity="0.7"/>
+      <path d="M15 105 Q50 90 85 105" stroke="#B4842A" stroke-width="1.6" fill="none" opacity="0.7"/>
+      <rect x="30" y="130" width="40" height="8" rx="2" fill="#E3B341"/>
+      <circle cx="50" cy="90" r="14" fill="#F6DE9A" opacity="0.9"/>
+      <circle cx="50" cy="90" r="5.5" fill="#9C0808"/>
+      <circle cx="50" cy="90" r="9.5" fill="none" stroke="#9C0808" stroke-width="1.6"/>
+      <line x1="50" y1="138" x2="50" y2="150" stroke="#B4842A" stroke-width="2"/>
+      <path d="M42 150 L50 160 L58 150" stroke="#B4842A" stroke-width="2" fill="none"/>
+    </symbol>
+
+    <!-- Ornamento de esquina, estilo llave griega/china -->
+    <symbol id="ornamento-esquina" viewBox="0 0 200 200">
+      <g fill="none" stroke="#E3B341" stroke-width="4">
+        <path d="M10 60 V10 H60"/>
+        <path d="M30 60 V30 H60"/>
+        <path d="M10 90 V150 H30"/>
+        <path d="M10 90 H45"/>
+        <rect x="90" y="15" width="95" height="45" rx="3"/>
+        <rect x="105" y="27" width="65" height="21" rx="2"/>
+        <path d="M10 175 h60 v10 h-60z" fill="#E3B341" stroke="none" opacity="0.9"/>
+      </g>
+    </symbol>
+
+    <!-- Estrella / destello -->
+    <symbol id="estrellita" viewBox="0 0 40 40">
+      <path d="M20 2 L24.5 15.5 L38 20 L24.5 24.5 L20 38 L15.5 24.5 L2 20 L15.5 15.5 Z" fill="#F6DE9A"/>
+    </symbol>
+
+    <!-- Icono: tazón de arroz con palillos (base) -->
+    <symbol id="ico-arroz" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="62" rx="34" ry="12" fill="#B4842A"/>
+      <path d="M18 55 Q50 80 82 55 L78 40 Q50 55 22 40 Z" fill="#FFFFFF"/>
+      <ellipse cx="50" cy="40" rx="28" ry="11" fill="#FFFFFF"/>
+      <ellipse cx="50" cy="38" rx="22" ry="8" fill="#F3E7CF"/>
+      <circle cx="42" cy="36" r="2.4" fill="#C40F0F"/>
+      <circle cx="55" cy="34" r="2.4" fill="#3B7A2B"/>
+      <circle cx="48" cy="41" r="2.4" fill="#C40F0F"/>
+      <rect x="58" y="10" width="3.2" height="34" rx="1.4" fill="#B4842A" transform="rotate(18 58 10)"/>
+      <rect x="65" y="10" width="3.2" height="34" rx="1.4" fill="#8F6A22" transform="rotate(18 65 10)"/>
+    </symbol>
+
+    <!-- Icono: tazón arroz oriental (huevo, cebollín, zanahoria) -->
+    <symbol id="ico-arroz-oriental" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="62" rx="34" ry="12" fill="#B4842A"/>
+      <path d="M18 55 Q50 80 82 55 L78 40 Q50 55 22 40 Z" fill="#FFFFFF"/>
+      <ellipse cx="50" cy="40" rx="28" ry="11" fill="#FFFFFF"/>
+      <ellipse cx="50" cy="38" rx="22" ry="8" fill="#F3E7CF"/>
+      <circle cx="40" cy="35" r="2.6" fill="#F2C230"/>
+      <circle cx="52" cy="33" r="2.2" fill="#3B7A2B"/>
+      <circle cx="60" cy="38" r="2.4" fill="#E06A1B"/>
+      <circle cx="46" cy="41" r="2.2" fill="#3B7A2B"/>
+      <rect x="58" y="10" width="3.2" height="34" rx="1.4" fill="#B4842A" transform="rotate(18 58 10)"/>
+      <rect x="65" y="10" width="3.2" height="34" rx="1.4" fill="#8F6A22" transform="rotate(18 65 10)"/>
+    </symbol>
+
+    <!-- Icono: tazón arroz vegetal (arveja, zanahoria, maíz) -->
+    <symbol id="ico-arroz-vegetal" viewBox="0 0 100 100">
+      <ellipse cx="50" cy="62" rx="34" ry="12" fill="#B4842A"/>
+      <path d="M18 55 Q50 80 82 55 L78 40 Q50 55 22 40 Z" fill="#FFFFFF"/>
+      <ellipse cx="50" cy="40" rx="28" ry="11" fill="#FFFFFF"/>
+      <ellipse cx="50" cy="38" rx="22" ry="8" fill="#F3E7CF"/>
+      <circle cx="41" cy="35" r="2.3" fill="#3B7A2B"/>
+      <circle cx="49" cy="41" r="2.3" fill="#3B7A2B"/>
+      <circle cx="58" cy="35" r="2.3" fill="#E06A1B"/>
+      <circle cx="55" cy="42" r="2.1" fill="#F2C230"/>
+      <rect x="58" y="10" width="3.2" height="34" rx="1.4" fill="#B4842A" transform="rotate(18 58 10)"/>
+      <rect x="65" y="10" width="3.2" height="34" rx="1.4" fill="#8F6A22" transform="rotate(18 65 10)"/>
+    </symbol>
+
+    <!-- Icono: wok con fideos y vapor -->
+    <symbol id="ico-wok" viewBox="0 0 100 100">
+      <line x1="26" y1="30" x2="20" y2="14" stroke="#F6DE9A" stroke-width="3.5" stroke-linecap="round" opacity="0.85"/>
+      <line x1="50" y1="26" x2="50" y2="8" stroke="#F6DE9A" stroke-width="3.5" stroke-linecap="round" opacity="0.85"/>
+      <line x1="74" y1="30" x2="80" y2="14" stroke="#F6DE9A" stroke-width="3.5" stroke-linecap="round" opacity="0.85"/>
+      <path d="M10 52 Q50 88 90 52" fill="#4A4A4A"/>
+      <path d="M10 52 Q50 88 90 52" fill="none" stroke="#2A2A2A" stroke-width="4"/>
+      <line x1="10" y1="52" x2="0" y2="40" stroke="#2A2A2A" stroke-width="6" stroke-linecap="round"/>
+      <line x1="90" y1="52" x2="100" y2="40" stroke="#2A2A2A" stroke-width="6" stroke-linecap="round"/>
+      <path d="M18 51 Q50 40 82 51 Q50 62 18 51 Z" fill="#E3B341"/>
+      <path d="M26 50 Q50 44 74 50" stroke="#C40F0F" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M32 53 Q50 47 68 53" stroke="#3B7A2B" stroke-width="3" fill="none" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Icono: camaron (silueta clasica en C) -->
+    <symbol id="ico-camaron" viewBox="0 0 100 100">
+      <path d="M72 20 C90 28 92 55 74 68 C60 78 42 78 34 68 C28 60 32 50 40 48 C48 46 50 54 44 57"
+            fill="none" stroke="#D6281C" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="74" cy="22" r="5.5" fill="#D6281C"/>
+      <circle cx="76" cy="20" r="1.6" fill="#2A2A2A"/>
+      <path d="M67 15 L60 8 M72 14 L70 5" stroke="#D6281C" stroke-width="3" stroke-linecap="round"/>
+      <path d="M30 68 L18 66 M32 74 L22 78 M36 79 L30 88" stroke="#D6281C" stroke-width="3.5" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Icono: rollitos primavera -->
+    <symbol id="ico-rollitos" viewBox="0 0 100 100">
+      <rect x="18" y="35" width="60" height="20" rx="10" fill="#E9C878"/>
+      <rect x="18" y="35" width="60" height="20" rx="10" fill="none" stroke="#B4842A" stroke-width="2"/>
+      <rect x="15" y="60" width="66" height="20" rx="10" fill="#E9C878"/>
+      <rect x="15" y="60" width="66" height="20" rx="10" fill="none" stroke="#B4842A" stroke-width="2"/>
+      <circle cx="30" cy="45" r="2" fill="#7A3B12"/>
+      <circle cx="45" cy="45" r="2" fill="#7A3B12"/>
+      <circle cx="60" cy="45" r="2" fill="#7A3B12"/>
+    </symbol>
+
+    <!-- destello / brillo -->
+    <symbol id="destello" viewBox="0 0 40 40">
+      <path d="M20 0 L24 16 L40 20 L24 24 L20 40 L16 24 L0 20 L16 16 Z" fill="#FFFFFF" opacity="0.9"/>
+    </symbol>
+
+  </defs>
+</svg>
+
+  <!-- ============ MARCO Y ESQUINAS ============ -->
+  <div class="marco"></div>
+  <div class="esquina tl"><svg viewBox="0 0 200 200"><use href="#ornamento-esquina"/></svg></div>
+  <div class="esquina tr"><svg viewBox="0 0 200 200"><use href="#ornamento-esquina"/></svg></div>
+  <div class="esquina bl"><svg viewBox="0 0 200 200"><use href="#ornamento-esquina"/></svg></div>
+  <div class="esquina br"><svg viewBox="0 0 200 200"><use href="#ornamento-esquina"/></svg></div>
+
+  <div class="lienzo">
+
+    <!-- ENCABEZADO / HERO -->
+    <header class="encabezado">
+      <div class="farol izq"><svg viewBox="0 0 100 160"><use href="#farol"/></svg></div>
+      <div class="farol der"><svg viewBox="0 0 100 160"><use href="#farol"/></svg></div>
+
+      <div class="marca-topo">
+        <span class="estrella"><svg viewBox="0 0 40 40"><use href="#estrellita"/></svg></span>
+        Distrito Wok Simón
+        <span class="estrella"><svg viewBox="0 0 40 40"><use href="#estrellita"/></svg></span>
+      </div>
+
+      <div class="hero">
+        <div class="hero-glow"></div>
+        <div class="hero-t1">Restaurante</div>
+        <div class="hero-t2">de Arroz <span class="acento">Chino</span></div>
+      </div>
+
+      <div class="hero-flourish"></div>
+
+      <div class="tagline-pill">Cocina China &amp; Wok</div>
+      <div class="separador-header"></div>
+    </header>
+
+    <!-- FRANJA ILUSTRADA DE PLATOS -->
+    <div class="franja-platos">
+      <div class="plato-ico"><img src="https://images.pexels.com/photos/35228295/pexels-photo-35228295.jpeg?auto=compress&cs=tinysrgb&w=1000&h=1000&fit=crop" alt="Arroz salteado al wok"></div>
+      <div class="plato-ico"><img src="https://images.pexels.com/photos/28503594/pexels-photo-28503594.jpeg?auto=compress&cs=tinysrgb&w=1000&h=1000&fit=crop" alt="Arroz oriental con huevo"></div>
+      <div class="plato-ico grande"><img src="https://images.pexels.com/photos/28573375/pexels-photo-28573375.jpeg?auto=compress&cs=tinysrgb&w=1000&h=1000&fit=crop" alt="Arroz frito en wok"></div>
+      <div class="plato-ico"><img src="https://images.pexels.com/photos/35588196/pexels-photo-35588196.jpeg?auto=compress&cs=tinysrgb&w=1000&h=1000&fit=crop" alt="Arroz vegetal al wok"></div>
+      <div class="plato-ico"><img src="https://images.pexels.com/photos/34683317/pexels-photo-34683317.jpeg?auto=compress&cs=tinysrgb&w=1000&h=1000&fit=crop" alt="Arroz de camarón al wok"></div>
+    </div>
+
+    <!-- MENU -->
+    <main class="menu">
+
+      <!-- COLUMNA IZQUIERDA: ARROCES -->
+      <section class="columna">
+        <div class="panel-arroz">
+          <div class="cinta-especialidad">Especialidad de la casa</div>
+          <div class="pill-seccion-arroz">
+            <svg viewBox="0 0 100 100"><use href="#ico-arroz"/></svg>
+            Nuestros Arroces
+          </div>
+          <div class="tabla-arroces">
+            <div class="fila-encabezado-tabla">
+              <span>Plato</span><span>Medio</span><span>Entero</span>
+            </div>
+
+            <div class="fila-plato"><span class="nombre-plato">Arroz Costeño Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Especial Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Valenciana Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Currambero Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Tres Carnes Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Oriental Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Criolla Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Vegetal Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Pollo Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Cerdo Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Camarón Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Carne Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Pollo y Carne Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Pollo y Cerdo Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Pollo y Camarón Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Parrillada Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+            <div class="fila-plato"><span class="nombre-plato">Arroz Rey Colis Wok</span><span class="precio-pill"></span><span class="precio-pill"></span></div>
+          </div>
+        </div>
+
+        <div class="pill-seccion porciones-pill">Porciones y Adicionales</div>
+        <div class="tabla-porciones">
+          <div class="fila-porcion"><span class="nombre-porcion">Valenciana</span><span class="precio-pill-porcion"></span></div>
+          <div class="fila-porcion"><span class="nombre-porcion">Porción de Arroz</span><span class="precio-pill-porcion"></span></div>
+          <div class="fila-porcion"><span class="nombre-porcion">Papas</span><span class="precio-pill-porcion"></span></div>
+          <div class="fila-porcion"><span class="nombre-porcion">Pollo</span><span class="precio-pill-porcion"></span></div>
+          <div class="fila-porcion"><span class="nombre-porcion">Papas con Pollo</span><span class="precio-pill-porcion"></span></div>
+          <div class="fila-porcion"><span class="nombre-porcion">Sopas</span><span class="precio-pill-porcion"></span></div>
+          <div class="fila-porcion"><span class="nombre-porcion">Sancocho</span><span class="precio-pill-porcion"></span></div>
+        </div>
+
+        <div class="relleno-izq">
+          <div class="frase-decorativa">
+            <span class="estrella-grande"><svg viewBox="0 0 40 40"><use href="#estrellita"/></svg></span>
+            Sabor que enamora
+            <span class="estrella-grande"><svg viewBox="0 0 40 40"><use href="#estrellita"/></svg></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUMNA DERECHA: CORRIENTES -->
+      <section class="columna">
+        <div class="pill-seccion">Corrientes</div>
+        <div class="tabla-corrientes">
+          <div class="fila-corriente"><span class="nombre-corriente">Carne Asada</span><span class="precio-pill-corriente"></span></div>
+          <div class="fila-corriente"><span class="nombre-corriente">Carne en Bisteck</span><span class="precio-pill-corriente"></span></div>
+          <div class="fila-corriente"><span class="nombre-corriente">Chuleta de Cerdo</span><span class="precio-pill-corriente"></span></div>
+          <div class="fila-corriente"><span class="nombre-corriente">Mojarra Frita</span><span class="precio-pill-corriente"></span></div>
+          <div class="fila-corriente"><span class="nombre-corriente">Mojarra Sudada</span><span class="precio-pill-corriente"></span></div>
+          <div class="fila-corriente"><span class="nombre-corriente">Lomo de Cerdo</span><span class="precio-pill-corriente"></span></div>
+          <div class="fila-corriente"><span class="nombre-corriente">Pechuga Asada</span><span class="precio-pill-corriente"></span></div>
+          <div class="fila-corriente"><span class="nombre-corriente">Pollo Frito</span><span class="precio-pill-corriente"></span></div>
+        </div>
+
+        <div class="pill-seccion bebidas-pill">Bebidas</div>
+        <div class="tabla-bebidas">
+          <div class="fila-bebida"><span class="nombre-bebida">Coca Cola 1.5LT</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Quatro 1.5 LT</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Coca-Cola 600ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Coca-Cola 400ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Fuze Mango 400ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Fuze Negro Durazno 400ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Kola Roman 400 ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Sprite 400 ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Jugo del Valle 400ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Quatro 400ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Agua Brisa 1 LT</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Brisa Maracuyá 600ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Brisa Manzana 600ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Agua Brisa 600ML</span><span class="precio-pill-bebida"></span></div>
+          <div class="fila-bebida"><span class="nombre-bebida">Brisa Manzana 280ML</span><span class="precio-pill-bebida"></span></div>
+        </div>
+
+        <div class="bloque-decorativo">
+          <div class="nota-corrientes">Todas nuestras corrientes se sirven con ensalada y patacón</div>
+          <div class="plato-ico" style="width:11cm;height:11cm;"><svg viewBox="0 0 100 160" style="width:62%;height:62%;"><use href="#farol"/></svg></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- PIE DE PAGINA -->
+    <footer class="pie">
+      <div class="destello d1"><svg viewBox="0 0 40 40"><use href="#destello"/></svg></div>
+      <div class="destello d2"><svg viewBox="0 0 40 40"><use href="#destello"/></svg></div>
+      <div class="etiqueta">Domicilios &amp; Pedidos</div>
+      <div class="telefono">324 265 8227</div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menú - Distrito Wok Simón</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  :root{
+    --gold:#D4A843;
+    --gold-light:#F6DE9A;
+    --gold-dark:#8B6914;
+    --red:#C40F0F;
+    --red-dark:#8B0000;
+    --black:#0a0a0a;
+    --black-soft:#141414;
+    --black-card:#1a1a1a;
+  }
+
+  body{
+    font-family:'Raleway',sans-serif;
+    background:var(--black);
+    color:var(--gold-light);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  /* ====== BACKGROUND PATTERN ====== */
+  body::before{
+    content:"";
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(196,15,15,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(212,168,67,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, rgba(139,0,0,0.05) 0%, transparent 50%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .container{
+    max-width:100%;
+    padding:0;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ====== HERO HEADER ====== */
+  .hero{
+    position:relative;
+    padding:40px 20px 30px;
+    text-align:center;
+    background:
+      linear-gradient(180deg, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.7) 50%, rgba(10,10,10,0.95) 100%),
+      url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="1" fill="%23D4A84320"/><circle cx="80" cy="40" r="0.8" fill="%23D4A84315"/><circle cx="40" cy="80" r="1.2" fill="%23D4A84310"/><circle cx="90" cy="90" r="0.6" fill="%23D4A84320"/></svg>');
+    border-bottom:2px solid var(--gold-dark);
+    overflow:hidden;
+  }
+
+  .hero::before{
+    content:"";
+    position:absolute;
+    top:-50%; left:-50%;
+    width:200%; height:200%;
+    background:conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(212,168,67,0.03) 90deg, transparent 180deg, rgba(212,168,67,0.02) 270deg, transparent 360deg);
+    animation:rotate 60s linear infinite;
+  }
+
+  @keyframes rotate{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
+  }
+
+  .hero-content{
+    position:relative;
+    z-index:1;
+  }
+
+  .chinese-chars{
+    font-size:11px;
+    letter-spacing:8px;
+    color:var(--gold-dark);
+    margin-bottom:12px;
+    opacity:0.8;
+  }
+
+  .logo-main{
+    font-family:'Playfair Display',serif;
+    font-size:36px;
+    font-weight:700;
+    letter-spacing:3px;
+    color:var(--gold-light);
+    text-shadow:0 4px 20px rgba(0,0,0,0.8);
+    margin-bottom:4px;
+  }
+
+  .logo-main span{
+    color:var(--red);
+    font-style:italic;
+  }
+
+  .tagline{
+    font-size:10px;
+    letter-spacing:6px;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-top:8px;
+  }
+
+  .hero-divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    margin-top:20px;
+  }
+
+  .hero-divider .line{
+    width:80px;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .hero-divider .diamond{
+    width:10px; height:10px;
+    background:var(--gold);
+    transform:rotate(45deg);
+    box-shadow:0 0 15px rgba(212,168,67,0.6);
+  }
+
+  /* ====== SECTION HEADERS ====== */
+  .section-header{
+    text-align:center;
+    padding:28px 20px 20px;
+    position:relative;
+  }
+
+  .section-header::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:60px;
+    height:2px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .section-header h2{
+    font-family:'Playfair Display',serif;
+    font-size:24px;
+    font-weight:600;
+    letter-spacing:4px;
+    text-transform:uppercase;
+    color:var(--gold);
+    text-shadow:0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .section-header .subtitle{
+    font-size:10px;
+    color:var(--gold-dark);
+    font-style:italic;
+    margin-top:6px;
+    letter-spacing:2px;
+  }
+
+  /* ====== TWO COLUMN GRID ====== */
+  .two-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    padding:16px 20px;
+  }
+
+  .menu-card{
+    background:linear-gradient(145deg, var(--black-card) 0%, rgba(20,20,20,0.9) 100%);
+    border:1px solid rgba(212,168,67,0.15);
+    border-radius:12px;
+    padding:16px;
+    position:relative;
+    overflow:hidden;
+    transition:all 0.3s ease;
+  }
+
+  .menu-card::before{
+    content:"";
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:3px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity:0.5;
+  }
+
+  .menu-card:hover{
+    border-color:rgba(212,168,67,0.3);
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    transform:translateY(-2px);
+  }
+
+  .card-img{
+    width:100%;
+    height:100px;
+    background:linear-gradient(135deg, rgba(212,168,67,0.1) 0%, rgba(139,0,0,0.1) 100%);
+    border-radius:8px;
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  .card-img .icon{
+    font-size:32px;
+    opacity:0.4;
+  }
+
+  .card-name{
+    font-family:'Playfair Display',serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--gold-light);
+    margin-bottom:6px;
+    line-height:1.3;
+  }
+
+  .card-desc{
+    font-size:10px;
+    color:var(--gold-dark);
+    font-style:italic;
+    line-height:1.5;
+    margin-bottom:10px;
+  }
+
+  .card-price{
+    font-size:16px;
+    font-weight:600;
+    color:var(--gold);
+    text-align:right;
+    font-family:'Playfair Display',serif;
+  }
+
+  .card-price .sep{
+    color:var(--gold-dark);
+    margin:0 4px;
+    font-weight:400;
+  }
+
+  /* ====== SIMPLE LIST SECTION ====== */
+  .list-section{
+    padding:0 20px 20px;
+  }
+
+  .list-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px 0;
+    border-bottom:1px solid rgba(212,168,67,0.1);
+    transition:all 0.2s ease;
+  }
+
+  .list-item:hover{
+    background:rgba(212,168,67,0.03);
+    padding-left:8px;
+  }
+
+  .list-item:last-child{
+    border-bottom:none;
+  }
+
+  .list-item .name{
+    font-family:'Playfair Display',serif;
+    font-size:15px;
+    color:var(--gold-light);
+  }
+
+  .list-item .price{
+    font-size:14px;
+    font-weight:600;
+    color:var(--gold);
+    font-family:'Playfair Display',serif;
+  }
+
+  /* ====== DRINKS GRID ====== */
+  .drinks-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    padding:0 20px 20px;
+  }
+
+  .drink-card{
+    background:rgba(20,20,20,0.8);
+    border:1px solid rgba(212,168,67,0.1);
+    border-radius:8px;
+    padding:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    transition:all 0.2s ease;
+  }
+
+  .drink-card:hover{
+    border-color:rgba(212,168,67,0.25);
+    background:rgba(30,30,30,0.9);
+  }
+
+  .drink-card .name{
+    font-size:11px;
+    color:var(--gold-light);
+    font-weight:500;
+  }
+
+  .drink-card .price{
+    font-size:12px;
+    font-weight:600;
+    color:var(--gold);
+  }
+
+  /* ====== FOOTER ====== */
+  .footer{
+    text-align:center;
+    padding:30px 20px 40px;
+    position:relative;
+  }
+
+  .footer::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:80%;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold-dark), transparent);
+  }
+
+  .thank-you{
+    background:linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+    color:var(--gold-light);
+    display:inline-block;
+    padding:16px 40px;
+    font-family:'Playfair Display',serif;
+    font-size:13px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    border:1px solid var(--gold-dark);
+    box-shadow:0 6px 24px rgba(196,15,15,0.3);
+    border-radius:4px;
+  }
+
+  .footer-ornament{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-top:20px;
+  }
+
+  .footer-ornament .line{
+    width:30px;
+    height:1px;
+    background:var(--gold-dark);
+  }
+
+  .footer-ornament .dot{
+    width:5px; height:5px;
+    background:var(--gold);
+    border-radius:50%;
+    box-shadow:0 0 8px rgba(212,168,67,0.5);
+  }
+
+  /* ====== DECORATIVE ELEMENTS ====== */
+  .section-divider{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:8px 20px;
+  }
+
+  .section-divider .line{
+    flex:1;
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(212,168,67,0.3), transparent);
+  }
+
+  .section-divider .icon{
+    color:var(--gold-dark);
+    font-size:14px;
+    opacity:0.6;
+  }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width:400px){
+    .logo-main{ font-size:28px; }
+    .two-col{ grid-template-columns:1fr; }
+    .drinks-grid{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO HEADER -->
+  <div class="hero">
+    <div class="hero-content">
+      <div class="chinese-chars">道 場 名 店 ・ 風 味 東 方</div>
+      <div class="logo-main">Distrito <span>Wok</span> Simón</div>
+      <div class="tagline">El verdadero sabor oriental</div>
+      <div class="hero-divider">
+        <div class="line"></div>
+        <div class="diamond"></div>
+        <div class="line"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUESTROS ARROCES -->
+  <div class="section-header">
+    <h2>Nuestros Arroces</h2>
+    <div class="subtitle">precio · personal / especial</div>
+  </div>
+
+  <div class="two-col">
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Costeño Wok</div>
+      <div class="card-desc">Un festín costeño de cerdo, pollo, chorizo y butifarra, coronado con jamón y salteado con vegetales frescos al wok</div>
+      <div class="card-price">30K <span class="sep">/</span> 40K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Especial Wok</div>
+      <div class="card-desc">Cerdo, pollo y camarón salteados con jamón, raíz china crujiente y un toque fresco de cebollín</div>
+      <div class="card-price">27K <span class="sep">/</span> 37K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Valenciana Wok</div>
+      <div class="card-desc">Generosas porciones de pollo y jamón sobre un lecho de vegetales frescos salteados al wok</div>
+      <div class="card-price">25K <span class="sep">/</span> 33K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Currambero Wok</div>
+      <div class="card-desc">El sabor de la Curramba en un solo plato: chorizo, butifarra, cerdo y pollo, con chicharrón crocante y plátano maduro</div>
+      <div class="card-price">32K <span class="sep">/</span> 40K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Tres Carnes Wok</div>
+      <div class="card-desc">El trío clásico: pollo, carne y cerdo salteados juntos con vegetales frescos al wok</div>
+      <div class="card-price">27K <span class="sep">/</span> 37K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Oriental Wok</div>
+      <div class="card-desc">Nuestra receta insignia: cerdo, pollo, camarón y jamón, coronado con doble porción de pollo</div>
+      <div class="card-price">32K <span class="sep">/</span> 47K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Criolla Wok</div>
+      <div class="card-desc">Cerdo, pollo y jamón salteados con el sazón criollo de la casa</div>
+      <div class="card-price">29K <span class="sep">/</span> 37K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Vegetal Wok</div>
+      <div class="card-desc">Vegetales frescos salteados al wok junto a la proteína de tu preferencia</div>
+      <div class="card-price">29K <span class="sep">/</span> 37K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Pollo Wok</div>
+      <div class="card-desc">Pollo jugoso salteado al wok con vegetales frescos</div>
+      <div class="card-price">26K <span class="sep">/</span> 35K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Cerdo Wok</div>
+      <div class="card-desc">Nuestro cerdo especial de la casa, salteado a fuego alto con vegetales frescos</div>
+      <div class="card-price">26K <span class="sep">/</span> 35K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Camarón Wok</div>
+      <div class="card-desc">Camarones salteados al wok en su punto justo, con vegetales frescos</div>
+      <div class="card-price">31K <span class="sep">/</span> 40K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Carne Wok</div>
+      <div class="card-desc">Nuestra carne especial de la casa, salteada al wok con vegetales frescos</div>
+      <div class="card-price">30K <span class="sep">/</span> 38K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Pollo y Carne Wok</div>
+      <div class="card-price">30K <span class="sep">/</span> 38K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Pollo y Cerdo Wok</div>
+      <div class="card-price">26K <span class="sep">/</span> 36K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Pollo y Camarón Wok</div>
+      <div class="card-price">30K <span class="sep">/</span> 40K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Parrillada Wok</div>
+      <div class="card-desc">Chorizo ranchera, pollo y carne a la parrilla, salteados con vegetales frescos al wok</div>
+      <div class="card-price">27K <span class="sep">/</span> 37K</div>
+    </div>
+    <div class="menu-card">
+      <div class="card-img"><span class="icon">🍜</span></div>
+      <div class="card-name">Arroz Rey Colis Wok</div>
+      <div class="card-desc">La fusión de la casa: nuestro arroz especial junto a un chow mein bien logrado</div>
+      <div class="card-price">27K <span class="sep">/</span> 37K</div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="section-divider">
+    <div class="line"></div>
+    <span class="icon">◆</span>
+    <div class="line"></div>
+  </div>
+
+  <!-- CORRIENTES -->
+  <div class="section-header">
+    <h2>Corrientes</h2>
+  </div>
+
+  <div class="list-section">
+    <div class="list-item">
+      <span class="name">Carne Asada</span>
+      <span class="price">17K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Carne en Bisteck</span>
+      <span class="price">18K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Chuleta de Cerdo</span>
+      <span class="price">16K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Mojarra Frita</span>
+      <span class="price">18K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Mojarra Sudada</span>
+      <span class="price">20K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Lomo de Cerdo</span>
+      <span class="price">16K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Pechuga Asada</span>
+      <span class="price">16K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Pollo Frito</span>
+      <span class="price">16K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Pollo Apanado</span>
+      <span class="price">16K</span>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="section-divider">
+    <div class="line"></div>
+    <span class="icon">◆</span>
+    <div class="line"></div>
+  </div>
+
+  <!-- BEBIDAS -->
+  <div class="section-header">
+    <h2>Bebidas</h2>
+  </div>
+
+  <div class="drinks-grid">
+    <div class="drink-card">
+      <span class="name">Coca Cola 1.5LT</span>
+      <span class="price">$8,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Quatro 1.5 LT</span>
+      <span class="price">$6,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Coca-Cola 600ML</span>
+      <span class="price">$4,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Coca-Cola 400ML</span>
+      <span class="price">$3,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Fuze Mango 400ML</span>
+      <span class="price">$3,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Fuze Negro Durazno 400ML</span>
+      <span class="price">$3,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Kola Roman 400 ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Sprite 400 ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Jugo del Valle 400ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Quatro 400ML</span>
+      <span class="price">$2,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Agua Brisa 1 LT</span>
+      <span class="price">$3,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Brisa Maracuyá 600ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Brisa Manzana 600ML</span>
+      <span class="price">$3,000</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Agua Brisa 600ML</span>
+      <span class="price">$2,500</span>
+    </div>
+    <div class="drink-card">
+      <span class="name">Brisa Manzana 280ML</span>
+      <span class="price">$1,500</span>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div class="section-divider">
+    <div class="line"></div>
+    <span class="icon">◆</span>
+    <div class="line"></div>
+  </div>
+
+  <!-- PORCIONES Y ADICIONALES -->
+  <div class="section-header">
+    <h2>Porciones y Adicionales</h2>
+  </div>
+
+  <div class="list-section">
+    <div class="list-item">
+      <span class="name">Valenciana</span>
+      <span class="price">12K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Porción de Arroz</span>
+      <span class="price">5K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Papas</span>
+      <span class="price">7K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Pollo</span>
+      <span class="price">6K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Papas con Pollo</span>
+      <span class="price">12K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Sopas</span>
+      <span class="price">6K</span>
+    </div>
+    <div class="list-item">
+      <span class="name">Sancocho</span>
+      <span class="price">10K</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="thank-you">¡Gracias por su visita!</div>
+    <div class="footer-ornament">
+      <div class="line"></div>
+      <div class="dot"></div>
+      <div class="line"></div>
+      <div class="dot"></div>
+      <div class="line"></div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
