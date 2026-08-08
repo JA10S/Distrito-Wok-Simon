@@ -1,14 +1,14 @@
 // Configuración de Firebase para Distrito Wok Simón
-// IMPORTANTE: Reemplaza estos valores con tu configuración real de Firebase
+// https://console.firebase.google.com
 
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
+  apiKey: "AIzaSyCQn0wLcAi8thj4Z4ACYG_oSEHntmW1EuU",
   authDomain: "distrito-wok-simon.firebaseapp.com",
   projectId: "distrito-wok-simon",
-  storageBucket: "distrito-wok-simon.appspot.com",
-  messagingSenderId: "TU_SENDER_ID",
-  appId: "TU_APP_ID",
-  measurementId: "TU_MEASUREMENT_ID"
+  storageBucket: "distrito-wok-simon.firebasestorage.app",
+  messagingSenderId: "49428529400",
+  appId: "1:49428529400:web:dd4cc51361c13cc17bbb0d",
+  measurementId: "G-6KZHP588VQ"
 };
 
 export default firebaseConfig;
