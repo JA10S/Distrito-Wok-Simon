@@ -5,7 +5,7 @@ const menuData = {
     { name: 'Arroz Costeño Wok', desc: 'Cerdo, pollo, chorizo y butifarra, coronado con jamón', price: '30K / 40K' },
     { name: 'Arroz Especial Wok', desc: 'Cerdo, pollo, camarón y chorizo', price: '27K / 37K' },
     { name: 'Arroz Valenciana Wok', desc: 'Cerdo, pollo, camarón, chorizo y butifarra', price: '25K / 33K' },
-    { name: 'Arroz Currambero Wok', desc: 'Chorizo, butifarra, cerdo y pollo con chicharrón', price: '32K / 40K' },
+    { name: 'Arroz Currambero Wok', desc: 'Chorizo, butifarra, cerdo y pollo con chicharrón', price: '37K / 50K' },
     { name: 'Arroz Tres Carnes Wok', desc: 'Pollo, cerdo y res', price: '27K / 37K' },
     { name: 'Arroz Oriental Wok', desc: 'Camarón, pollo, cerdo y vegetales', price: '32K / 47K' },
     { name: 'Arroz Criollo Wok', desc: 'Pollo, cerdo, chorizo y huevo', price: '29K / 37K' },
