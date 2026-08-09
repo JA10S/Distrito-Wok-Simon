@@ -61,8 +61,29 @@ npm test           # Tests
 - `docs/INTEGRATION_GUIDE.md` - Guía de integración
 - `docs/PROJECT_STRUCTURE.md` - Estructura para IA
 
-## ⚠️ Notas Importantes
-- El menú completo está en `src/pages/client/MenuPage.js`
+## ⚠️ REGLA IMPORTANTE - ACTUALIZACIÓN DE MENÚS
+
+> **SIEMPRE actualizar ambos menús al mismo tiempo:**
+> 1. **Menú Web** → `src/pages/client/MenuPage.js`
+> 2. **Menú PDF** → Ejecutar `.\scripts\generate-menu-pdf.ps1`
+
+### Flujo de actualización del menú:
+```
+1. Editar MenuPage.js (precios, platos, descripciones)
+2. Ejecutar: npm run build
+3. Ejecutar: firebase deploy --only hosting
+4. Ejecutar: .\scripts\generate-menu-pdf.ps1
+5. Abrir HTML en navegador → Ctrl+P → Guardar como PDF
+6. Guardar PDF en: archive/pdfs/
+```
+
+### Archivos del menú:
+| Archivo | Tipo | Ubicación |
+|---------|------|-----------|
+| MenuPage.js | Código fuente | `src/pages/client/` |
+| menu-distrito-wok-simon-actualizado.pdf | PDF | `archive/pdfs/` |
+
+## 📌 Otras Notas
 - Firebase ya está configurado y funcionando
 - Hosting desplegado en `https://distrito-wok-simon.web.app`
 - Skill `firebase-db-modeler` disponible para modelado de BD
