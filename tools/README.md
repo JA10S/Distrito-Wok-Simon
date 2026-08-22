@@ -8,20 +8,68 @@ Herramienta de automatizacion para el proyecto restaurante-distrito-wok.
 .\tools\harness.ps1 [comando] [-AutoDeploy]
 ```
 
+Todos los comandos retornan un **exit code** (0 = exito, 1 = fallo), util para CI.
+
 ## Comandos Disponibles
 
 ### status
-Muestra el estado actual del proyecto (Git, Build, Firebase).
+Muestra el estado actual del proyecto (Git, Herramientas, Build, Firebase).
 
 ```powershell
 .\tools\harness.ps1 status
 ```
 
 **Muestra:**
-- Estado de Git (commits pendientes, archivos modificados)
+- Estado de Git (rama, cambios sin commit, sincronizacion con remoto)
 - Ultimo commit del repositorio
+- Versiones de Node.js, npm y Firebase CLI
 - Estado del build (si existe, fecha de modificacion)
+- Si el servidor de desarrollo esta activo en http://localhost:3000
 - Configuracion de Firebase
+
+### test
+Ejecuta la suite de tests en modo CI (sin watch).
+
+```powershell
+.\tools\harness.ps1 test
+```
+
+**Ejecuta:**
+- `npm test -- --watchAll=false` con `CI=true`
+
+### doctor
+Verifica problemas conocidos del proyecto (bugs documentados en AGENTS.md).
+
+```powershell
+.\tools\harness.ps1 doctor
+```
+
+**Verifica:**
+- Import de `messaging` inexistente en `pushNotification.js`
+- `useRoles.js` retorna boolean pero `RolesManager.js` accede a `.success`
+- `create-users.js` usa campo `role` (string) en vez de `roles` (array)
+- `migrate-menu.js` obsoleto (coleccion unica `menu`)
+- `console.log`/`warn` en `src/`
+
+### pdf
+Regenera el menu PDF desde Firestore.
+
+```powershell
+.\tools\harness.ps1 pdf
+```
+
+**Ejecuta:**
+- `node scripts/generate-pdf-from-firestore.js`
+
+### seed
+Inicializa roles y datos base en Firestore.
+
+```powershell
+.\tools\harness.ps1 seed
+```
+
+**Ejecuta:**
+- `node scripts/init-roles.js`
 
 ### deploy
 Construye y despliega el proyecto a Firebase Hosting.
@@ -57,7 +105,7 @@ Elimina archivos de build y cache temporales.
 - Cache de npm en `node_modules/.cache`
 
 ### validate
-Verifica que todos los archivos requeridos existan.
+Verifica que todos los archivos requeridos existan y valida los datos en Firestore.
 
 ```powershell
 .\tools\harness.ps1 validate
@@ -67,6 +115,10 @@ Verifica que todos los archivos requeridos existan.
 - Archivos de configuracion (package.json, firebase.json, etc.)
 - Estructura de carpetas (components, pages, services, etc.)
 - Archivos de documentacion
+- Datos en Firestore (`node scripts/validate-firestore.js`):
+  - Menus (arroces, corrientes, porciones, bebidas) con campos en ingles (`name`, `price`)
+  - Roles con `permissions` como array
+  - Usuarios con `roles` como array (no `role` string)
 
 ### reset
 Limpia todo, reinstala dependencias y reconstruye.
@@ -130,6 +182,26 @@ Esto es util cuando quieres verificar que el build es correcto y luego desplegar
 ### Validar estructura antes de commits
 ```powershell
 .\tools\harness.ps1 validate
+```
+
+### Ejecutar tests antes de deploy
+```powershell
+.\tools\harness.ps1 test
+```
+
+### Verificar bugs conocidos
+```powershell
+.\tools\harness.ps1 doctor
+```
+
+### Regenerar PDF del menu
+```powershell
+.\tools\harness.ps1 pdf
+```
+
+### Inicializar roles en Firestore
+```powershell
+.\tools\harness.ps1 seed
 ```
 
 ### Ver resumen completo

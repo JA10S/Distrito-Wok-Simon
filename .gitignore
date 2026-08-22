@@ -30,6 +30,12 @@ logs/*.log
 *.tmp
 *.temp
 
+# HTML temporales generados por scripts (menu)
+temp-menu*.html
+
+# Build de produccion (se genera con npm run build)
+build/
+
 # Archivos de Office
 ~$*.docx
 ~$*.xlsx
