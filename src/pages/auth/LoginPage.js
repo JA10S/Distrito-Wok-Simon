@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -8,8 +8,23 @@ function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { login, userRole } = useAuth();
+  const { login, userRoles, currentUser } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentUser && userRoles && userRoles.length > 0) {
+      const targetRoute = getRouteForRoles(userRoles);
+      navigate(targetRoute, { replace: true });
+    }
+  }, [userRoles, currentUser, navigate]);
+
+  const getRouteForRoles = (roles) => {
+    if (roles.includes('admin')) return '/admin';
+    if (roles.includes('waiter')) return '/waiter';
+    if (roles.includes('cashier')) return '/cashier';
+    if (roles.includes('delivery')) return '/delivery';
+    return '/menu';
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -18,24 +33,8 @@ function LoginPage() {
 
     try {
       await login(email, password);
-      // Redirigir según el rol
-      switch (userRole) {
-        case 'waiter':
-          navigate('/waiter');
-          break;
-        case 'cashier':
-          navigate('/cashier');
-          break;
-        case 'delivery':
-          navigate('/delivery');
-          break;
-        case 'admin':
-          navigate('/admin');
-          break;
-        default:
-          navigate('/');
-      }
     } catch (error) {
+      console.error('Error:', error);
       setError('Credenciales incorrectas. Intente de nuevo.');
     } finally {
       setLoading(false);
@@ -45,7 +44,6 @@ function LoginPage() {
   return (
     <div className="min-h-screen bg-negro flex items-center justify-center px-4">
       <div className="max-w-md w-full">
-        {/* Logo */}
         <div className="text-center mb-8">
           <h1 className="font-cormorant text-4xl font-bold text-dorado-claro">
             Distrito <span className="text-rojo italic">Wok</span> Simón
@@ -53,7 +51,6 @@ function LoginPage() {
           <p className="text-dorado-oscuro mt-2">Sistema de Gestión</p>
         </div>
 
-        {/* Formulario de Login */}
         <div className="bg-gray-900 rounded-lg p-8 shadow-xl border border-dorado-oscuro/30">
           <h2 className="text-2xl font-cormorant text-dorado text-center mb-6">
             Iniciar Sesión

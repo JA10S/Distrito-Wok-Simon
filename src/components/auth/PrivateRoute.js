@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 function PrivateRoute({ children, allowedRoles }) {
-  const { currentUser, userRole, loading } = useAuth();
+  const { currentUser, userRoles, loading } = useAuth();
 
   if (loading) {
     return (
@@ -17,8 +17,14 @@ function PrivateRoute({ children, allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
 
-  if (allowedRoles && !allowedRoles.includes(userRole)) {
-    return <Navigate to="/" replace />;
+  if (!allowedRoles || allowedRoles.length === 0) {
+    return children;
+  }
+
+  const hasAllowedRole = userRoles.some(role => allowedRoles.includes(role));
+  
+  if (!hasAllowedRole) {
+    return <Navigate to="/login" replace />;
   }
 
   return children;

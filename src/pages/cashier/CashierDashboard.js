@@ -1,48 +1,48 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useOrders } from '../../hooks/useOrders';
 
 function CashierDashboard() {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, hasPermission, logout } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('orders');
+  
+  const { orders: readyOrders, loading, processPayment } = useOrders('ready');
+  const { orders: paidOrders } = useOrders('paid');
+  
+  const [paymentMethods, setPaymentMethods] = useState({});
 
-  // Datos de ejemplo para pedidos pendientes
-  const pendingOrders = [
-    {
-      id: 1,
-      table: 2,
-      items: [
-        { name: 'Arroz Costeño Wok', quantity: 2, price: 40000 },
-        { name: 'Coca-Cola 600ML', quantity: 2, price: 4500 },
-      ],
-      subtotal: 89000,
-      tax: 8900,
-      total: 97900,
-      status: 'ready',
-    },
-    {
-      id: 2,
-      table: 6,
-      items: [
-        { name: 'Arroz Currambero Wok', quantity: 1, price: 47000 },
-        { name: 'Agua Brisa 600ML', quantity: 2, price: 2000 },
-      ],
-      subtotal: 51000,
-      tax: 5100,
-      total: 56100,
-      status: 'ready',
-    },
-  ];
-
-  const [paymentMethod, setPaymentMethod] = useState('');
-
-  const handlePayment = (orderId) => {
-    if (!paymentMethod) {
+  const handlePayment = async (orderId) => {
+    const method = paymentMethods[orderId];
+    if (!method) {
       alert('Seleccione un método de pago');
       return;
     }
-    alert(`Pago procesado: Pedido #${orderId} - Método: ${paymentMethod}`);
-    setPaymentMethod('');
+
+    const result = await processPayment(orderId, method);
+    if (result.success) {
+      alert('Pago procesado exitosamente');
+      setPaymentMethods({ ...paymentMethods, [orderId]: '' });
+    } else {
+      alert('Error al procesar pago: ' + result.error);
+    }
   };
+
+  const getPaymentMethodName = (method) => {
+    const methods = {
+      cash: 'Efectivo',
+      bold: 'Bold (Nequi/Tarjeta)',
+      nequi: 'Nequi Directo',
+      card: 'Tarjeta Crédito/Débito'
+    };
+    return methods[method] || method;
+  };
+
+  const todaySales = paidOrders.reduce((sum, order) => sum + (order.total || 0), 0);
+  const cashSales = paidOrders.filter(o => o.paymentMethod === 'cash').reduce((sum, o) => sum + (o.total || 0), 0);
+  const boldSales = paidOrders.filter(o => o.paymentMethod === 'bold' || o.paymentMethod === 'nequi').reduce((sum, o) => sum + (o.total || 0), 0);
+  const cardSales = paidOrders.filter(o => o.paymentMethod === 'card').reduce((sum, o) => sum + (o.total || 0), 0);
 
   return (
     <div className="min-h-screen bg-negro">
@@ -70,6 +70,14 @@ function CashierDashboard() {
       <nav className="bg-gray-800 border-b border-dorado-oscuro/30">
         <div className="container mx-auto px-4">
           <div className="flex space-x-4">
+            {hasPermission('view_dashboard') && (
+              <button
+                onClick={() => navigate('/admin')}
+                className="py-3 px-4 font-medium text-dorado-oscuro hover:text-dorado"
+              >
+                ← Admin
+              </button>
+            )}
             <button
               onClick={() => setActiveTab('orders')}
               className={`py-3 px-4 font-medium ${
@@ -78,7 +86,7 @@ function CashierDashboard() {
                   : 'text-dorado-oscuro hover:text-dorado'
               }`}
             >
-              Pedidos para Cobrar
+              Pedidos para Cobrar ({readyOrders.length})
             </button>
             <button
               onClick={() => setActiveTab('history')}
@@ -110,7 +118,12 @@ function CashierDashboard() {
           <div>
             <h2 className="text-xl font-cormorant text-dorado mb-6">Pedidos para Cobrar</h2>
             
-            {pendingOrders.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="text-4xl mb-4 animate-bounce">🏮</div>
+                <p className="text-dorado">Cargando pedidos...</p>
+              </div>
+            ) : readyOrders.length === 0 ? (
               <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
                 <p className="text-dorado-oscuro text-center">
                   No hay pedidos pendientes de pago
@@ -118,7 +131,7 @@ function CashierDashboard() {
               </div>
             ) : (
               <div className="grid gap-4">
-                {pendingOrders.map((order) => (
+                {readyOrders.map((order) => (
                   <div
                     key={order.id}
                     className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20"
@@ -126,10 +139,10 @@ function CashierDashboard() {
                     <div className="flex justify-between items-start mb-4">
                       <div>
                         <h3 className="font-cormorant text-xl font-bold text-dorado-claro">
-                          Pedido #{order.id}
+                          Pedido #{order.id.slice(-6).toUpperCase()}
                         </h3>
                         <p className="text-dorado-oscuro text-sm">
-                          Mesa {order.table}
+                          Mesa {order.tableNumber || 'N/A'}
                         </p>
                       </div>
                       <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm">
@@ -138,7 +151,7 @@ function CashierDashboard() {
                     </div>
 
                     <div className="space-y-2 mb-4">
-                      {order.items.map((item, index) => (
+                      {(order.items || []).map((item, index) => (
                         <div key={index} className="flex justify-between text-dorado-claro">
                           <span>
                             {item.quantity}x {item.name}
@@ -148,18 +161,26 @@ function CashierDashboard() {
                       ))}
                     </div>
 
+                    {/* Notas del pedido */}
+                    {order.notes && (
+                      <div className="mb-4 p-2 bg-yellow-900/30 border border-yellow-600/30 rounded">
+                        <div className="text-yellow-400 text-xs font-bold mb-1">📝 Notas:</div>
+                        <div className="text-yellow-200 text-sm">{order.notes}</div>
+                      </div>
+                    )}
+
                     <div className="border-t border-dorado-oscuro/30 pt-4">
                       <div className="flex justify-between text-dorado-claro mb-2">
                         <span>Subtotal:</span>
-                        <span>${order.subtotal.toLocaleString()}</span>
+                        <span>${(order.subtotal || 0).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between text-dorado-claro mb-2">
                         <span>IVA (10%):</span>
-                        <span>${order.tax.toLocaleString()}</span>
+                        <span>${(order.tax || 0).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between text-dorado font-bold text-xl">
                         <span>Total:</span>
-                        <span>${order.total.toLocaleString()}</span>
+                        <span>${(order.total || 0).toLocaleString()}</span>
                       </div>
                     </div>
 
@@ -168,8 +189,11 @@ function CashierDashboard() {
                         Método de Pago
                       </label>
                       <select
-                        value={paymentMethod}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        value={paymentMethods[order.id] || ''}
+                        onChange={(e) => setPaymentMethods({ 
+                          ...paymentMethods, 
+                          [order.id]: e.target.value 
+                        })}
                         className="w-full bg-negro border border-dorado-oscuro rounded px-4 py-3 text-dorado-claro mb-4"
                       >
                         <option value="">Seleccionar...</option>
@@ -196,11 +220,39 @@ function CashierDashboard() {
         {activeTab === 'history' && (
           <div>
             <h2 className="text-xl font-cormorant text-dorado mb-6">Historial de Ventas</h2>
-            <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
-              <p className="text-dorado-oscuro text-center">
-                Historial de ventas del día
-              </p>
-            </div>
+            
+            {paidOrders.length === 0 ? (
+              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
+                <p className="text-dorado-oscuro text-center">
+                  No hay ventas registradas hoy
+                </p>
+              </div>
+            ) : (
+              <div className="bg-gray-900 rounded-lg border border-dorado-oscuro/20">
+                <div className="divide-y divide-dorado-oscuro/20">
+                  {paidOrders.map((order) => (
+                    <div key={order.id} className="p-4 flex justify-between items-center">
+                      <div>
+                        <span className="text-dorado-claro font-bold">
+                          Pedido #{order.id.slice(-6).toUpperCase()}
+                        </span>
+                        <span className="text-dorado-oscuro text-sm ml-2">
+                          Mesa {order.tableNumber || 'N/A'}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-dorado font-bold">
+                          ${(order.total || 0).toLocaleString()}
+                        </span>
+                        <span className="text-dorado-oscuro text-sm ml-2">
+                          {getPaymentMethodName(order.paymentMethod)}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -214,19 +266,19 @@ function CashierDashboard() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-dorado-claro">
                       <span>Total Ventas:</span>
-                      <span>$0</span>
+                      <span className="font-bold">${todaySales.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-dorado-claro">
                       <span>Efectivo:</span>
-                      <span>$0</span>
+                      <span>${cashSales.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-dorado-claro">
                       <span>Bold/Nequi:</span>
-                      <span>$0</span>
+                      <span>${boldSales.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-dorado-claro">
                       <span>Tarjeta:</span>
-                      <span>$0</span>
+                      <span>${cardSales.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -235,11 +287,15 @@ function CashierDashboard() {
                   <div className="space-y-2">
                     <div className="flex justify-between text-dorado-claro">
                       <span>Total Pedidos:</span>
-                      <span>0</span>
+                      <span>{paidOrders.length}</span>
                     </div>
                     <div className="flex justify-between text-dorado-claro">
                       <span>Promedio por Pedido:</span>
-                      <span>$0</span>
+                      <span>
+                        ${paidOrders.length > 0 
+                          ? Math.round(todaySales / paidOrders.length).toLocaleString() 
+                          : 0}
+                      </span>
                     </div>
                   </div>
                 </div>

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 function DeliveryDashboard() {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, userRoles, hasPermission, logout } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('available');
 
   // Datos de ejemplo para pedidos de domicilio
@@ -95,6 +97,14 @@ function DeliveryDashboard() {
       <nav className="bg-gray-800 border-b border-dorado-oscuro/30">
         <div className="container mx-auto px-4">
           <div className="flex space-x-4">
+            {hasPermission('view_dashboard') && (
+              <button
+                onClick={() => navigate('/admin')}
+                className="py-3 px-4 font-medium text-dorado-oscuro hover:text-dorado"
+              >
+                ← Admin
+              </button>
+            )}
             <button
               onClick={() => setActiveTab('available')}
               className={`py-3 px-4 font-medium ${
