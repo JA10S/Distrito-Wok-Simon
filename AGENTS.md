@@ -180,8 +180,8 @@ match /arroces/{itemId} {
 ### 📋 Pendiente:
 - [ ] Integrar pagos Bold
 - [ ] Configurar WhatsApp Business API
-- [ ] Conectar CashierDashboard a Firestore (datos hardcodeados)
-- [ ] Conectar DeliveryDashboard a Firestore (datos hardcodeados)
+- [x] Conectar CashierDashboard a Firestore
+- [x] Conectar DeliveryDashboard a Firestore (hook useDeliveries, colección deliveries)
 - [ ] Crear flujo completo de pedidos en WaiterDashboard
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
