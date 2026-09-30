@@ -217,6 +217,16 @@ match /arroces/{itemId} {
   - Sin documento en Firestore → se usan los valores por defecto; cambios sin guardar se descartan al salir de la pestaña
   - `firestore.rules` sin cambios: `settings` ya era lectura pública y escritura autenticada
   - Tests: 49 totales (`themeUtils.test` 7 casos, `ThemeManager.test` 4 casos)
+- [x] Rediseño visual: logo propio, iconos y layouts responsive
+  - **Logo**: SVG propio de sello circular con wok y vapor — `src/components/common/Logo.js` (`LogoMark` + variante `showText` con wordmark en degradado dorado) y `public/assets/icons/logo.svg` (favicon; `index.html` ya no referencia el `favicon.ico` inexistente)
+  - **`DashboardHeader`** (`src/components/layout/DashboardHeader.js`): header+nav común para los 4 dashboards (logo, título, email, cerrar sesión, tabs con iconos de `react-icons`, badge de conteo, botón ← Admin, nav sticky con `backdrop-blur` y `no-scrollbar`)
+  - **Iconos**: `react-icons` (ya estaba en dependencies) — `Fa*`, `Gi*` (secciones del menú), `Tb*`; nada de librerías nuevas
+  - **CSS dinámico** (`App.css`): `.hover-lift`, `.text-gold-gradient`, `.glass`, `.pattern-bg`, `.glow`, `.animate-fade-in-up`, `.animate-float`, `.no-scrollbar`
+  - **LoginPage**: layout 2 columnas en desktop (marca + features con iconos) y 1 en móvil, iconos dentro de los inputs, spinner en botón
+  - **MenuPage**: header con logo grande + gradiente + patrón, nav glass, badges de icono por sección, cards con `hover-lift`, FAB de carrito con contador, footer de 3 columnas (logo, contacto, agradecimiento) responsive
+  - **AdminDashboard**: stats cards con iconos + animación de entrada, tabs con iconos, dashboards por rol con `hover-lift`
+  - Google Fonts unificados en `public/index.html` (6 familias del tema); `App.css` ya no tiene `@import`
+  - Tests: 49 totales sin cambios (textos clave conservados)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)

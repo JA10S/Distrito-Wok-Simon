@@ -7,6 +7,20 @@ import MenuManager from '../../components/admin/MenuManager';
 import RolesManager from '../../components/admin/RolesManager';
 import UsersManager from '../../components/admin/UsersManager';
 import ThemeManager from '../../components/admin/ThemeManager';
+import DashboardHeader from '../../components/layout/DashboardHeader';
+import {
+  FaThLarge,
+  FaTachometerAlt,
+  FaUtensils,
+  FaUserShield,
+  FaUsers,
+  FaPalette,
+  FaChartBar,
+  FaChair,
+  FaCashRegister,
+  FaMotorcycle,
+  FaReceipt
+} from 'react-icons/fa';
 import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
 
 function AdminDashboard() {
@@ -49,61 +63,29 @@ function AdminDashboard() {
   const pendingOrders = orders.filter(o => o.status === 'pending').length;
 
   const dashboards = [
-    { name: 'Camarero', path: '/waiter', icon: '🍽️', color: 'bg-green-600' },
-    { name: 'Cajero', path: '/cashier', icon: '💰', color: 'bg-blue-600' },
-    { name: 'Domiciliario', path: '/delivery', icon: '🛵', color: 'bg-yellow-600' },
+    { name: 'Camarero', path: '/waiter', icon: <FaChair />, emoji: '🍽️', color: 'bg-green-600' },
+    { name: 'Cajero', path: '/cashier', icon: <FaCashRegister />, emoji: '💰', color: 'bg-blue-600' },
+    { name: 'Domiciliario', path: '/delivery', icon: <FaMotorcycle />, emoji: '🛵', color: 'bg-yellow-600' },
   ];
 
   return (
     <div className="min-h-screen bg-negro">
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-dorado-oscuro/30 py-4">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div>
-            <h1 className="font-cormorant text-2xl font-bold text-dorado-claro">
-              Panel de Administración
-            </h1>
-            <p className="text-dorado-oscuro text-sm">
-              Bienvenido, {currentUser?.email}
-            </p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="bg-rojo hover:bg-rojo-oscuro text-white px-4 py-2 rounded"
-          >
-            Cerrar Sesión
-          </button>
-        </div>
-      </header>
-
-      {/* Navegación */}
-      <nav className="bg-gray-800 border-b border-dorado-oscuro/30">
-        <div className="container mx-auto px-4">
-          <div className="flex space-x-4 overflow-x-auto">
-            {[
-              { id: 'overview', label: 'Resumen' },
-              { id: 'dashboards', label: 'Dashboards' },
-              { id: 'menu', label: 'Menú' },
-              { id: 'roles', label: 'Roles' },
-              { id: 'users', label: 'Usuarios' },
-              { id: 'theme', label: '🎨 Apariencia' },
-              { id: 'reports', label: 'Reportes' }
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`py-3 px-4 font-medium whitespace-nowrap ${
-                  activeTab === tab.id
-                    ? 'text-dorado border-b-2 border-dorado'
-                    : 'text-dorado-oscuro hover:text-dorado'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </nav>
+      <DashboardHeader
+        title="Panel de Administración"
+        user={currentUser?.email}
+        onLogout={handleLogout}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        tabs={[
+          { id: 'overview', label: 'Resumen', icon: <FaThLarge /> },
+          { id: 'dashboards', label: 'Dashboards', icon: <FaTachometerAlt /> },
+          { id: 'menu', label: 'Menú', icon: <FaUtensils /> },
+          { id: 'roles', label: 'Roles', icon: <FaUserShield /> },
+          { id: 'users', label: 'Usuarios', icon: <FaUsers /> },
+          { id: 'theme', label: 'Apariencia', icon: <FaPalette /> },
+          { id: 'reports', label: 'Reportes', icon: <FaChartBar /> }
+        ]}
+      />
 
       {/* Contenido principal */}
       <main className="container mx-auto px-4 py-8">
@@ -115,20 +97,32 @@ function AdminDashboard() {
             
             {/* Estadísticas */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
-                <div className="text-dorado-oscuro text-sm">Mesas Disponibles</div>
+              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift animate-fade-in-up">
+                <div className="flex items-center justify-between text-dorado-oscuro text-sm">
+                  <span>Mesas Disponibles</span>
+                  <FaChair className="text-green-500" aria-hidden="true" />
+                </div>
                 <div className="text-2xl font-bold text-green-500">{availableTables}</div>
               </div>
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
-                <div className="text-dorado-oscuro text-sm">Mesas Ocupadas</div>
+              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
+                <div className="flex items-center justify-between text-dorado-oscuro text-sm">
+                  <span>Mesas Ocupadas</span>
+                  <FaChair className="text-red-500" aria-hidden="true" />
+                </div>
                 <div className="text-2xl font-bold text-red-500">{occupiedTables}</div>
               </div>
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
-                <div className="text-dorado-oscuro text-sm">Pedidos Pendientes</div>
+              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                <div className="flex items-center justify-between text-dorado-oscuro text-sm">
+                  <span>Pedidos Pendientes</span>
+                  <FaReceipt className="text-yellow-500" aria-hidden="true" />
+                </div>
                 <div className="text-2xl font-bold text-yellow-500">{pendingOrders}</div>
               </div>
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
-                <div className="text-dorado-oscuro text-sm">Total Mesas</div>
+              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+                <div className="flex items-center justify-between text-dorado-oscuro text-sm">
+                  <span>Total Mesas</span>
+                  <FaThLarge className="text-dorado" aria-hidden="true" />
+                </div>
                 <div className="text-2xl font-bold text-dorado">{tables.length}</div>
               </div>
             </div>
@@ -140,7 +134,7 @@ function AdminDashboard() {
                 <button
                   key={dash.path}
                   onClick={() => navigate(dash.path)}
-                  className={`${dash.color} hover:opacity-90 text-white font-bold py-6 px-6 rounded-lg flex items-center justify-center space-x-3`}
+                  className={`${dash.color} hover:opacity-90 text-white font-bold py-6 px-6 rounded-lg flex items-center justify-center space-x-3 hover-lift`}
                 >
                   <span className="text-3xl">{dash.icon}</span>
                   <span className="text-xl">{dash.name}</span>
@@ -195,9 +189,9 @@ function AdminDashboard() {
             <h2 className="text-xl font-cormorant text-dorado mb-6">Dashboards por Rol</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {dashboards.map((dash) => (
-                <div key={dash.path} className="bg-gray-900 rounded-lg border border-dorado-oscuro/20 p-6">
+                <div key={dash.path} className="bg-gray-900 rounded-lg border border-dorado-oscuro/20 p-6 hover-lift">
                   <div className="text-center mb-4">
-                    <span className="text-5xl">{dash.icon}</span>
+                    <span className="text-5xl text-dorado inline-block">{dash.icon}</span>
                     <h3 className="text-xl font-cormorant text-dorado-claro mt-2">{dash.name}</h3>
                   </div>
                   <button

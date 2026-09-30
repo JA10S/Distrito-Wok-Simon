@@ -8,6 +8,8 @@ import OrderCreator from '../../components/waiter/OrderCreator';
 import OrderCard from '../../components/waiter/OrderCard';
 import OrderEditor from '../../components/waiter/OrderEditor';
 import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
+import DashboardHeader from '../../components/layout/DashboardHeader';
+import { FaChair, FaReceipt, FaPlusCircle } from 'react-icons/fa';
 import { findDuplicateOrder, ORDER_STATUS_LABELS } from '../../utils/orderUtils';
 
 function TableCard({ table, onClick, onClose, canClose, hasActiveOrder }) {
@@ -346,73 +348,21 @@ function WaiterDashboard() {
 
   return (
     <div className="min-h-screen bg-negro">
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-dorado-oscuro/30 py-4">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div>
-            <h1 className="font-cormorant text-2xl font-bold text-dorado-claro">
-              Panel del Camarero
-            </h1>
-            <p className="text-dorado-oscuro text-sm">
-              Bienvenido, {currentUser?.email}
-            </p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="bg-rojo hover:bg-rojo-oscuro text-white px-4 py-2 rounded"
-          >
-            Cerrar Sesión
-          </button>
-        </div>
-      </header>
-
-      {/* Navegación */}
-      <nav className="bg-gray-800 border-b border-dorado-oscuro/30">
-        <div className="container mx-auto px-4">
-          <div className="flex space-x-4">
-            {hasPermission('view_dashboard') && (
-              <button
-                onClick={() => navigate('/admin')}
-                className="py-3 px-4 font-medium text-dorado-oscuro hover:text-dorado"
-              >
-                ← Admin
-              </button>
-            )}
-            <button
-              onClick={() => setActiveTab('tables')}
-              className={`py-3 px-4 font-medium ${
-                activeTab === 'tables'
-                  ? 'text-dorado border-b-2 border-dorado'
-                  : 'text-dorado-oscuro hover:text-dorado'
-              }`}
-            >
-              Mesas ({tables.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`py-3 px-4 font-medium ${
-                activeTab === 'orders'
-                  ? 'text-dorado border-b-2 border-dorado'
-                  : 'text-dorado-oscuro hover:text-dorado'
-              }`}
-            >
-              Pedidos ({orders.length})
-            </button>
-            {hasPermission('create_order') && (
-              <button
-                onClick={() => setActiveTab('new-order')}
-                className={`py-3 px-4 font-medium ${
-                  activeTab === 'new-order'
-                    ? 'text-dorado border-b-2 border-dorado'
-                    : 'text-dorado-oscuro hover:text-dorado'
-                }`}
-              >
-                Nuevo Pedido
-              </button>
-            )}
-          </div>
-        </div>
-      </nav>
+      <DashboardHeader
+        title="Panel del Camarero"
+        user={currentUser?.email}
+        onLogout={handleLogout}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onBack={hasPermission('view_dashboard') ? () => navigate('/admin') : null}
+        tabs={[
+          { id: 'tables', label: 'Mesas', icon: <FaChair />, badge: tables.length },
+          { id: 'orders', label: 'Pedidos', icon: <FaReceipt />, badge: orders.length },
+          ...(hasPermission('create_order')
+            ? [{ id: 'new-order', label: 'Nuevo Pedido', icon: <FaPlusCircle /> }]
+            : [])
+        ]}
+      />
 
       {/* Contenido principal */}
       <main className="container mx-auto px-4 py-8">

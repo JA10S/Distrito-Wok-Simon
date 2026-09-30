@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useOrders } from '../../hooks/useOrders';
+import DashboardHeader from '../../components/layout/DashboardHeader';
+import { FaReceipt, FaHistory, FaCashRegister } from 'react-icons/fa';
 import { ORDER_TYPE_LABELS, PAYMENT_METHOD_LABELS } from '../../utils/orderUtils';
 
 function getOrderLabel(order) {
@@ -55,71 +57,19 @@ function CashierDashboard() {
 
   return (
     <div className="min-h-screen bg-negro">
-      {/* Header */}
-      <header className="bg-gray-900 border-b border-dorado-oscuro/30 py-4">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div>
-            <h1 className="font-cormorant text-2xl font-bold text-dorado-claro">
-              Panel del Cajero
-            </h1>
-            <p className="text-dorado-oscuro text-sm">
-              Bienvenido, {currentUser?.email}
-            </p>
-          </div>
-          <button
-            onClick={logout}
-            className="bg-rojo hover:bg-rojo-oscuro text-white px-4 py-2 rounded"
-          >
-            Cerrar Sesión
-          </button>
-        </div>
-      </header>
-
-      {/* Navegación */}
-      <nav className="bg-gray-800 border-b border-dorado-oscuro/30">
-        <div className="container mx-auto px-4">
-          <div className="flex space-x-4">
-            {hasPermission('view_dashboard') && (
-              <button
-                onClick={() => navigate('/admin')}
-                className="py-3 px-4 font-medium text-dorado-oscuro hover:text-dorado"
-              >
-                ← Admin
-              </button>
-            )}
-            <button
-              onClick={() => setActiveTab('orders')}
-              className={`py-3 px-4 font-medium ${
-                activeTab === 'orders'
-                  ? 'text-dorado border-b-2 border-dorado'
-                  : 'text-dorado-oscuro hover:text-dorado'
-              }`}
-            >
-              Pedidos para Cobrar ({readyOrders.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('history')}
-              className={`py-3 px-4 font-medium ${
-                activeTab === 'history'
-                  ? 'text-dorado border-b-2 border-dorado'
-                  : 'text-dorado-oscuro hover:text-dorado'
-              }`}
-            >
-              Historial
-            </button>
-            <button
-              onClick={() => setActiveTab('close')}
-              className={`py-3 px-4 font-medium ${
-                activeTab === 'close'
-                  ? 'text-dorado border-b-2 border-dorado'
-                  : 'text-dorado-oscuro hover:text-dorado'
-              }`}
-            >
-              Cuadre de Caja
-            </button>
-          </div>
-        </div>
-      </nav>
+      <DashboardHeader
+        title="Panel del Cajero"
+        user={currentUser?.email}
+        onLogout={logout}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onBack={hasPermission('view_dashboard') ? () => navigate('/admin') : null}
+        tabs={[
+          { id: 'orders', label: 'Pedidos para Cobrar', icon: <FaReceipt />, badge: readyOrders.length },
+          { id: 'history', label: 'Historial', icon: <FaHistory /> },
+          { id: 'close', label: 'Cuadre de Caja', icon: <FaCashRegister /> }
+        ]}
+      />
 
       {/* Contenido principal */}
       <main className="container mx-auto px-4 py-8">

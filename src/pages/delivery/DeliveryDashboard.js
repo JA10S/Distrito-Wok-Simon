@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDeliveries } from '../../hooks/useDeliveries';
+import DashboardHeader from '../../components/layout/DashboardHeader';
+import { FaBell, FaTruck, FaHistory } from 'react-icons/fa';
 
 function DeliveryDashboard() {
   const { currentUser, hasPermission, logout } = useAuth();
@@ -147,69 +149,19 @@ function DeliveryDashboard() {
 
   return (
     <div className="min-h-screen bg-negro">
-      <header className="bg-gray-900 border-b border-dorado-oscuro/30 py-4">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div>
-            <h1 className="font-cormorant text-2xl font-bold text-dorado-claro">
-              Panel del Domiciliario
-            </h1>
-            <p className="text-dorado-oscuro text-sm">
-              Bienvenido, {currentUser?.email}
-            </p>
-          </div>
-          <button
-            onClick={logout}
-            className="bg-rojo hover:bg-rojo-oscuro text-white px-4 py-2 rounded"
-          >
-            Cerrar Sesión
-          </button>
-        </div>
-      </header>
-
-      <nav className="bg-gray-800 border-b border-dorado-oscuro/30">
-        <div className="container mx-auto px-4">
-          <div className="flex space-x-4">
-            {hasPermission('view_dashboard') && (
-              <button
-                onClick={() => navigate('/admin')}
-                className="py-3 px-4 font-medium text-dorado-oscuro hover:text-dorado"
-              >
-                ← Admin
-              </button>
-            )}
-            <button
-              onClick={() => setActiveTab('available')}
-              className={`py-3 px-4 font-medium ${
-                activeTab === 'available'
-                  ? 'text-dorado border-b-2 border-dorado'
-                  : 'text-dorado-oscuro hover:text-dorado'
-              }`}
-            >
-              Pedidos Disponibles ({availableDeliveries.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('my deliveries')}
-              className={`py-3 px-4 font-medium ${
-                activeTab === 'my deliveries'
-                  ? 'text-dorado border-b-2 border-dorado'
-                  : 'text-dorado-oscuro hover:text-dorado'
-              }`}
-            >
-              Mis Entregas ({myDeliveries.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('history')}
-              className={`py-3 px-4 font-medium ${
-                activeTab === 'history'
-                  ? 'text-dorado border-b-2 border-dorado'
-                  : 'text-dorado-oscuro hover:text-dorado'
-              }`}
-            >
-              Historial ({historyDeliveries.length})
-            </button>
-          </div>
-        </div>
-      </nav>
+      <DashboardHeader
+        title="Panel del Domiciliario"
+        user={currentUser?.email}
+        onLogout={logout}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        onBack={hasPermission('view_dashboard') ? () => navigate('/admin') : null}
+        tabs={[
+          { id: 'available', label: 'Pedidos Disponibles', icon: <FaBell />, badge: availableDeliveries.length },
+          { id: 'my deliveries', label: 'Mis Entregas', icon: <FaTruck />, badge: myDeliveries.length },
+          { id: 'history', label: 'Historial', icon: <FaHistory />, badge: historyDeliveries.length }
+        ]}
+      />
 
       <main className="container mx-auto px-4 py-8">
         {activeTab === 'available' && (

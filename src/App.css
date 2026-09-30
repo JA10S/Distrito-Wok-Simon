@@ -2,8 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Importar fuentes de Google (opciones de personalización) */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;600&family=Poppins:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap');
+/* Las fuentes de Google se cargan en public/index.html (6 familias disponibles) */
 
 /* Tema personalizable (admin → Apariencia). Estas variables las sobreescribe ThemeContext desde Firestore */
 :root {
@@ -101,4 +100,89 @@ body {
 
 .table-reserved {
   @apply border-yellow-500 bg-yellow-900/30;
+}
+
+/* ============ Mejoras de diseño dinámico ============ */
+
+/* Elevación al pasar el cursor */
+.hover-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -12px rgb(var(--color-dorado) / 0.45);
+}
+
+/* Texto con degradado dorado (wordmark del logo) */
+.text-gold-gradient {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--color-dorado-claro)),
+    rgb(var(--color-dorado)) 45%,
+    rgb(var(--color-dorado-oscuro))
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Navs sin scrollbar visible */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Superficie translúcida con desenfoque */
+.glass {
+  background: rgb(var(--color-negro) / 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Fondo decorativo estilo malla japonesa (puntos tenues) */
+.pattern-bg {
+  background-image: radial-gradient(rgb(var(--color-dorado) / 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Resplandor suave del sello del logo */
+.glow {
+  animation: glow 4s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { filter: drop-shadow(0 0 2px rgb(var(--color-dorado) / 0.35)); }
+  50% { filter: drop-shadow(0 0 10px rgb(var(--color-dorado) / 0.7)); }
+}
+
+/* Entrada animada para tarjetas */
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Flotación suave (letreros, faroles) */
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }

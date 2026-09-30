@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useMenu } from '../../hooks/useMenu';
 import { createTakeawayOrder, watchOrder } from '../../services/orderService';
+import Logo from '../../components/common/Logo';
+import { GiRiceCooker, GiFrenchFries } from 'react-icons/gi';
+import { TbMeat, TbGlass } from 'react-icons/tb';
+import {
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaClock,
+  FaHeart
+} from 'react-icons/fa';
 import {
   parsePrice,
   calculateTotals,
@@ -108,9 +117,9 @@ function MenuPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-negro flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4 animate-bounce">🏮</div>
-          <p className="text-dorado font-cormorant text-xl">Cargando menú...</p>
+        <div className="text-center animate-fade-in">
+          <Logo size={80} className="mx-auto glow animate-float" />
+          <p className="text-dorado font-cormorant text-xl mt-4">Cargando menú...</p>
         </div>
       </div>
     );
@@ -130,32 +139,34 @@ function MenuPage() {
   return (
     <div className="min-h-screen bg-negro">
       {/* Header con diseño chino */}
-      <header className="relative bg-negro border-b border-dorado-oscuro/30 py-8 overflow-hidden">
-        {/* Faroles chinos decorativos */}
-        <div className="absolute top-4 left-4 text-4xl animate-bounce" style={{ animationDuration: '3s' }}>🏮</div>
-        <div className="absolute top-4 right-4 text-4xl animate-bounce" style={{ animationDuration: '3s', animationDelay: '0.5s' }}>🏮</div>
-        
+      <header className="relative bg-gradient-to-b from-gray-900 via-negro to-negro border-b border-dorado-oscuro/30 py-10 sm:py-14 overflow-hidden pattern-bg">
+        {/* Faroles chinos decorativos (ocultos en móvil) */}
+        <div className="absolute top-4 left-4 text-4xl animate-float hidden sm:block" aria-hidden="true">🏮</div>
+        <div className="absolute top-4 right-4 text-4xl animate-float hidden sm:block" style={{ animationDelay: '1.2s' }} aria-hidden="true">🏮</div>
+
         {/* Caracteres chinos decorativos */}
-        <div className="text-center mb-4">
-          <span className="text-dorado/60 text-sm tracking-[0.5em] font-light">
+        <div className="text-center mb-5">
+          <span className="text-dorado/60 text-xs sm:text-sm tracking-[0.5em] font-light">
             道 場 名 店 ・ 風 味 東 方
           </span>
         </div>
-        
+
         {/* Logo principal */}
-        <div className="container mx-auto px-4 text-center relative z-10">
-          <h1 className="font-cormorant text-5xl md:text-6xl font-bold">
+        <div className="container mx-auto px-4 text-center relative z-10 flex flex-col items-center">
+          <Logo size={90} className="glow sm:hidden" />
+          <Logo size={120} className="glow hidden sm:block" />
+          <h1 className="font-cormorant text-4xl sm:text-5xl md:text-7xl font-bold mt-4">
             <span className="text-white">DISTRITO </span>
-            <span className="text-dorado text-7xl md:text-8xl">WOK </span>
+            <span className="text-gold-gradient">WOK </span>
             <span className="text-white">SIMÓN</span>
           </h1>
-          <p className="text-dorado-oscuro mt-2 tracking-[0.3em] text-sm uppercase">
+          <p className="text-dorado-oscuro mt-2 tracking-[0.3em] text-xs sm:text-sm uppercase">
             ★ Sabor que enamora ★
           </p>
         </div>
 
         {/* Decoración inferior */}
-        <div className="flex justify-center mt-4 space-x-2">
+        <div className="flex justify-center mt-4 space-x-2" aria-hidden="true">
           <span className="text-dorado/40">✦</span>
           <span className="text-rojo/60">◈</span>
           <span className="text-dorado/40">✦</span>
@@ -163,18 +174,18 @@ function MenuPage() {
       </header>
 
       {/* Categorías */}
-      <div className="bg-gray-900 border-b border-dorado-oscuro/30 py-3 sticky top-0 z-10">
-        <div className="container mx-auto px-4 flex space-x-4 overflow-x-auto">
-          <a href="#arroces" className="px-4 py-2 bg-dorado/10 border border-dorado/30 rounded-full text-dorado text-sm whitespace-nowrap hover:bg-dorado hover:text-negro transition">
+      <div className="glass border-b border-dorado-oscuro/30 py-3 sticky top-0 z-10">
+        <div className="container mx-auto px-4 flex gap-2 sm:gap-3 overflow-x-auto no-scrollbar">
+          <a href="#arroces" className="px-3 sm:px-4 py-2 bg-dorado/10 border border-dorado/30 rounded-full text-dorado text-xs sm:text-sm whitespace-nowrap hover:bg-dorado hover:text-negro transition-colors">
             🍚 Arroces
           </a>
-          <a href="#corrientes" className="px-4 py-2 bg-dorado/10 border border-dorado/30 rounded-full text-dorado text-sm whitespace-nowrap hover:bg-dorado hover:text-negro transition">
+          <a href="#corrientes" className="px-3 sm:px-4 py-2 bg-dorado/10 border border-dorado/30 rounded-full text-dorado text-xs sm:text-sm whitespace-nowrap hover:bg-dorado hover:text-negro transition-colors">
             🍖 Corrientes
           </a>
-          <a href="#porciones" className="px-4 py-2 bg-dorado/10 border border-dorado/30 rounded-full text-dorado text-sm whitespace-nowrap hover:bg-dorado hover:text-negro transition">
+          <a href="#porciones" className="px-3 sm:px-4 py-2 bg-dorado/10 border border-dorado/30 rounded-full text-dorado text-xs sm:text-sm whitespace-nowrap hover:bg-dorado hover:text-negro transition-colors">
             🍽️ Porciones
           </a>
-          <a href="#bebidas" className="px-4 py-2 bg-dorado/10 border border-dorado/30 rounded-full text-dorado text-sm whitespace-nowrap hover:bg-dorado hover:text-negro transition">
+          <a href="#bebidas" className="px-3 sm:px-4 py-2 bg-dorado/10 border border-dorado/30 rounded-full text-dorado text-xs sm:text-sm whitespace-nowrap hover:bg-dorado hover:text-negro transition-colors">
             🥤 Bebidas
           </a>
         </div>
@@ -185,14 +196,16 @@ function MenuPage() {
         {/* Arroces */}
         <section id="arroces" className="mb-12">
           <div className="text-center mb-6">
-            <span className="text-dorado/40 text-2xl">福</span>
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-dorado/10 border border-dorado/30 text-dorado text-2xl mb-3 glow" aria-hidden="true">
+              <GiRiceCooker />
+            </span>
             <h2 className="font-cormorant text-3xl font-semibold text-dorado">
               🍚 Nuestros Arroces
             </h2>
             <p className="text-dorado-oscuro italic text-sm mt-1">
               precio · medio / entero
             </p>
-            <div className="flex justify-center mt-2 space-x-2">
+            <div className="flex justify-center mt-2 space-x-2" aria-hidden="true">
               <span className="text-dorado/30">—</span>
               <span className="text-rojo/50">◆</span>
               <span className="text-dorado/30">—</span>
@@ -201,7 +214,7 @@ function MenuPage() {
           
           <div className="grid gap-3">
             {menu.arroces.filter(item => item.available !== false).map((item) => (
-              <div key={item.id} className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition">
+              <div key={item.id} className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition hover-lift animate-fade-in-up">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <h3 className="font-cormorant text-lg font-bold text-dorado-claro">
@@ -231,7 +244,9 @@ function MenuPage() {
         {/* Corrientes */}
         <section id="corrientes" className="mb-12">
           <div className="text-center mb-6">
-            <span className="text-dorado/40 text-2xl">禄</span>
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-dorado/10 border border-dorado/30 text-dorado text-2xl mb-3 glow" aria-hidden="true">
+              <TbMeat />
+            </span>
             <h2 className="font-cormorant text-3xl font-semibold text-dorado">
               🍖 Corrientes
             </h2>
@@ -247,7 +262,7 @@ function MenuPage() {
           
           <div className="grid gap-3">
             {menu.corrientes.filter(item => item.available !== false).map((item) => (
-              <div key={item.id} className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition">
+              <div key={item.id} className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition hover-lift animate-fade-in-up">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <h3 className="font-cormorant text-lg font-bold text-dorado-claro">
@@ -277,7 +292,9 @@ function MenuPage() {
         {/* Porciones */}
         <section id="porciones" className="mb-12">
           <div className="text-center mb-6">
-            <span className="text-dorado/40 text-2xl">寿</span>
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-dorado/10 border border-dorado/30 text-dorado text-2xl mb-3 glow" aria-hidden="true">
+              <GiFrenchFries />
+            </span>
             <h2 className="font-cormorant text-3xl font-semibold text-dorado">
               🍽️ Porciones
             </h2>
@@ -293,7 +310,7 @@ function MenuPage() {
           
           <div className="grid gap-3">
             {menu.porciones.filter(item => item.available !== false).map((item) => (
-              <div key={item.id} className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition">
+              <div key={item.id} className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition hover-lift animate-fade-in-up">
                 <div className="flex justify-between items-center">
                   <h3 className="font-cormorant text-lg font-bold text-dorado-claro">
                     {item.name}
@@ -316,7 +333,9 @@ function MenuPage() {
         {/* Bebidas */}
         <section id="bebidas" className="mb-12">
           <div className="text-center mb-6">
-            <span className="text-dorado/40 text-2xl">喜</span>
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-dorado/10 border border-dorado/30 text-dorado text-2xl mb-3 glow" aria-hidden="true">
+              <TbGlass />
+            </span>
             <h2 className="font-cormorant text-3xl font-semibold text-dorado">
               🥤 Bebidas
             </h2>
@@ -329,7 +348,7 @@ function MenuPage() {
           
           <div className="grid gap-3">
             {menu.bebidas.filter(item => item.available !== false).map((item) => (
-              <div key={item.id} className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition">
+              <div key={item.id} className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition hover-lift animate-fade-in-up">
                 <div className="flex justify-between items-center">
                   <h3 className="font-cormorant text-lg font-bold text-dorado-claro">
                     {item.name}
@@ -354,10 +373,13 @@ function MenuPage() {
       {cart.length > 0 && !createdOrder && (
         <button
           onClick={() => setShowCart(true)}
-          className="fixed bottom-6 right-6 z-40 bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-3 px-5 rounded-full shadow-lg flex items-center space-x-2"
+          className="fixed bottom-6 right-6 z-40 bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-3 px-5 rounded-full shadow-[0_8px_24px_-6px_rgb(var(--color-dorado)/0.6)] flex items-center space-x-2 hover-lift animate-fade-in-up"
         >
           <span>🛒</span>
-          <span>{cart.reduce((sum, i) => sum + i.quantity, 0)} · ${totals.total.toLocaleString('es-CO')}</span>
+          <span className="bg-negro text-dorado rounded-full text-xs font-bold px-2 py-0.5">
+            {cart.reduce((sum, i) => sum + i.quantity, 0)}
+          </span>
+          <span>${totals.total.toLocaleString('es-CO')}</span>
         </button>
       )}
 
@@ -580,29 +602,51 @@ function MenuPage() {
         </div>
       )}
 
-      {/* Footer con diseño chino */}
-      <footer className="bg-negro border-t border-dorado-oscuro/30 py-8">
-        <div className="container mx-auto px-4 text-center">
-          {/* Mensaje de agradecimiento */}
-          <div className="mb-4">
-            <span className="text-dorado/40 text-3xl">🙏</span>
+      {/* Footer con información del restaurante */}
+      <footer className="bg-gray-900 border-t border-dorado-oscuro/30 py-10">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center sm:text-left">
+            {/* Logo */}
+            <div className="flex flex-col items-center sm:items-start gap-3">
+              <Logo size={56} showText textClass="text-lg" />
+              <p className="text-dorado-oscuro text-xs tracking-[0.3em] uppercase">
+                Comida oriental colombiana
+              </p>
+            </div>
+
+            {/* Contacto */}
+            <div className="space-y-2 text-sm">
+              <p className="text-dorado font-cormorant text-lg mb-3">Contáctanos</p>
+              <p className="text-dorado-claro flex items-center justify-center sm:justify-start gap-2">
+                <FaMapMarkerAlt className="text-dorado shrink-0" aria-hidden="true" />
+                Calle Principal #12-34, Simón
+              </p>
+              <p className="text-dorado-claro flex items-center justify-center sm:justify-start gap-2">
+                <FaPhoneAlt className="text-dorado shrink-0" aria-hidden="true" />
+                (601) 555-0123
+              </p>
+              <p className="text-dorado-claro flex items-center justify-center sm:justify-start gap-2">
+                <FaClock className="text-dorado shrink-0" aria-hidden="true" />
+                Lun a Dom · 11:00 a.m. – 10:00 p.m.
+              </p>
+            </div>
+
+            {/* Mensaje */}
+            <div className="text-center sm:text-right">
+              <p className="text-dorado font-cormorant text-xl mb-2">
+                ¡Gracias por su visita!
+              </p>
+              <p className="text-dorado-oscuro text-sm tracking-widest mb-3">
+                謝謝 · XIE XIE
+              </p>
+              <p className="text-dorado-oscuro text-xs flex items-center justify-center sm:justify-end gap-1">
+                Hecho con <FaHeart className="text-rojo" aria-hidden="true" /> en Simón
+              </p>
+            </div>
           </div>
-          <p className="text-dorado font-cormorant text-xl mb-2">
-            ¡Gracias por su visita!
-          </p>
-          <p className="text-dorado-oscuro text-sm tracking-widest">
-            謝謝 · XIE XIE
-          </p>
-          
+
           {/* Decoración */}
-          <div className="flex justify-center mt-4 space-x-2">
-            <span className="text-dorado/30">✦</span>
-            <span className="text-rojo/50">◈</span>
-            <span className="text-dorado/30">✦</span>
-          </div>
-          
-          {/* Faroles */}
-          <div className="flex justify-center mt-4 space-x-8">
+          <div className="flex justify-center mt-8 space-x-8 items-center" aria-hidden="true">
             <span className="text-2xl">🏮</span>
             <span className="text-dorado/60 text-sm">福 禄 寿</span>
             <span className="text-2xl">🏮</span>
