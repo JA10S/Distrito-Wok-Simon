@@ -64,10 +64,17 @@ function AdminDashboard() {
   const pendingOrders = orders.filter(o => o.status === 'pending').length;
 
   const dashboards = [
-    { name: 'Camarero', path: '/waiter', icon: <FaChair />, emoji: '🍽️', color: 'bg-green-600' },
-    { name: 'Cajero', path: '/cashier', icon: <FaCashRegister />, emoji: '💰', color: 'bg-blue-600' },
-    { name: 'Domiciliario', path: '/delivery', icon: <FaMotorcycle />, emoji: '🛵', color: 'bg-yellow-600' },
+    { name: 'Camarero', path: '/waiter', icon: <FaChair />, role: '34 197 94' },
+    { name: 'Cajero', path: '/cashier', icon: <FaCashRegister />, role: '59 130 246' },
+    { name: 'Domiciliario', path: '/delivery', icon: <FaMotorcycle />, role: '212 168 67' },
   ];
+
+  const statusPill = {
+    pending: 'bg-amber-500/10 text-amber-300 border border-amber-500/30',
+    preparing: 'bg-sky-500/10 text-sky-300 border border-sky-500/30',
+    ready: 'bg-dorado/10 text-dorado-claro border border-dorado/40',
+    cancelled: 'bg-red-500/10 text-red-300 border border-red-500/30',
+  };
 
   return (
     <div className="min-h-screen bg-negro">
@@ -99,9 +106,9 @@ function AdminDashboard() {
             {/* Estadísticas */}
             <SummaryStats
               stats={[
-                { label: 'Mesas Disponibles', value: availableTables, icon: <FaChair />, iconColor: 'text-green-500', valueColor: 'text-green-500' },
-                { label: 'Mesas Ocupadas', value: occupiedTables, icon: <FaChair />, iconColor: 'text-red-500', valueColor: 'text-red-500' },
-                { label: 'Pedidos Pendientes', value: pendingOrders, icon: <FaReceipt />, iconColor: 'text-yellow-500', valueColor: 'text-yellow-500' },
+                { label: 'Mesas Disponibles', value: availableTables, icon: <FaChair />, iconColor: 'text-emerald-400', valueColor: 'text-emerald-400' },
+                { label: 'Mesas Ocupadas', value: occupiedTables, icon: <FaChair />, iconColor: 'text-rose-400', valueColor: 'text-rose-400' },
+                { label: 'Pedidos Pendientes', value: pendingOrders, icon: <FaReceipt />, iconColor: 'text-amber-300', valueColor: 'text-amber-300' },
                 { label: 'Total Mesas', value: tables.length, icon: <FaThLarge />, iconColor: 'text-dorado', valueColor: 'text-dorado' }
               ]}
             />
@@ -113,10 +120,11 @@ function AdminDashboard() {
                 <button
                   key={dash.path}
                   onClick={() => navigate(dash.path)}
-                  className={`${dash.color} hover:opacity-90 text-white font-bold py-6 px-6 rounded-lg flex items-center justify-center space-x-3 hover-lift`}
+                  style={{ '--role': dash.role }}
+                  className="quick-card rounded-xl py-6 px-6 flex items-center justify-center space-x-3 font-semibold text-lg"
                 >
-                  <span className="text-3xl">{dash.icon}</span>
-                  <span className="text-xl">{dash.name}</span>
+                  <span className="text-3xl" aria-hidden="true">{dash.icon}</span>
+                  <span>{dash.name}</span>
                 </button>
               ))}
             </div>
@@ -130,27 +138,35 @@ function AdminDashboard() {
 
             {/* Últimos pedidos */}
             <h3 className="text-lg font-cormorant text-dorado mb-4">Últimos Pedidos</h3>
-            <div className="bg-gray-900 rounded-lg border border-dorado-oscuro/20">
+            <div className="bg-gray-900 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
               {orders.length === 0 ? (
-                <p className="text-dorado-oscuro text-center py-4">No hay pedidos registrados</p>
+                <p className="text-dorado-oscuro text-center py-6 font-inter">
+                  No hay pedidos registrados
+                </p>
               ) : (
                 <div className="divide-y divide-dorado-oscuro/20">
                   {orders.slice(0, 5).map((order) => (
-                    <div key={order.id} className="p-4 flex justify-between items-center">
-                      <div>
-                        <span className="text-dorado-claro font-bold">
+                    <div key={order.id} className="px-5 py-4 flex justify-between items-center gap-3">
+                      <div className="min-w-0">
+                        <span className="font-inter text-dorado-claro font-semibold tracking-tight">
                           Pedido #{order.id.slice(-6).toUpperCase()}
                         </span>
-                        <span className="text-dorado-oscuro text-sm ml-2">
+                        <span className="text-dorado-oscuro text-sm ml-3 font-inter">
                           Mesa {order.tableNumber || 'N/A'}
                         </span>
                       </div>
-                      <div className="text-right">
-                        <span className={`px-2 py-1 rounded text-xs ${
-                          order.status === 'pending' ? 'bg-yellow-600' :
-                          order.status === 'preparing' ? 'bg-blue-600' :
-                          'bg-green-600'
-                        }`}>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {order.paymentStatus === 'paid' && (
+                          <span className="font-inter rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 px-3 py-1 text-xs">
+                            paid
+                          </span>
+                        )}
+                        <span
+                          className={`font-inter capitalize rounded-full px-3 py-1 text-xs border ${
+                            statusPill[order.status] ||
+                            'bg-white/5 text-gray-300 border-white/10'
+                          }`}
+                        >
                           {order.status}
                         </span>
                       </div>
@@ -168,14 +184,15 @@ function AdminDashboard() {
             <h2 className="text-xl font-cormorant text-dorado mb-6">Dashboards por Rol</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {dashboards.map((dash) => (
-                <div key={dash.path} className="bg-gray-900 rounded-lg border border-dorado-oscuro/20 p-6 hover-lift">
+                <div key={dash.path} className="bg-gray-900 rounded-xl border border-dorado-oscuro/25 p-6 hover-lift">
                   <div className="text-center mb-4">
-                    <span className="text-5xl text-dorado inline-block">{dash.icon}</span>
+                    <span className="text-5xl inline-block" style={{ '--role': dash.role, color: 'rgb(var(--role))' }}>{dash.icon}</span>
                     <h3 className="text-xl font-cormorant text-dorado-claro mt-2">{dash.name}</h3>
                   </div>
                   <button
                     onClick={() => navigate(dash.path)}
-                    className={`w-full ${dash.color} hover:opacity-90 text-white font-bold py-3 px-4 rounded`}
+                    style={{ '--role': dash.role }}
+                    className="quick-card w-full rounded-lg py-3 px-4 font-semibold"
                   >
                     Abrir Panel
                   </button>

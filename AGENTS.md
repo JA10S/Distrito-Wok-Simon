@@ -63,7 +63,7 @@ tools/                              # Herramientas del proyecto
 
 ## 🎨 Diseño
 - **Colores:** Dorado (#D4A843), Negro (#0d0d0d), Rojo (#C40F0F)
-- **Fuentes:** Cormorant Garamond (títulos), Montserrat (cuerpo)
+- **Fuentes:** Cormorant Garamond (títulos), Montserrat (cuerpo), Inter (datos numéricos/UI de dashboards)
 - **Estilo:** Tailwind CSS
 
 ## 🔑 Credenciales
@@ -288,6 +288,15 @@ match /arroces/{itemId} {
   - `src/components/common/Logo.js`: `Logo` ahora renderiza el PNG (alto = prop `size`, `rounded-lg border-dorado/15`); `LogoMark` (sello SVG) se conserva exportado como icono auxiliar
   - Usos: `DashboardHeader` (44px), `MenuPage` header (80/90/120px) y footer (64px), login desktop (320px dentro de `<h1>`) y móvil (220px)
   - Favicon de `public/index.html`: ahora apunta al PNG (antes `logo.svg`)
+- [x] Rediseño premium del Panel de Administración (propuestas UI/UX, 2026-09-30)
+  - **Navbar** (`DashboardHeader`): fondo `bg-negro` puro + borde inferior dorado; botón "Cerrar Sesión" carmesí quemado (`#6e1414` → hover `#8a1d1d`, borde/carbón oscuro, no rojo brillante)
+  - **Pestañas**: activa con clase `.tab-active` (text-shadow dorado + línea inferior en degradado con glow via `::after`); inactivas `text-dorado-oscuro hover:text-dorado-claro`; nav `bg-negro/95 backdrop-blur`
+  - **Acceso Rápido**: botones `quick-card` (CSS con var `--role` = canales RGB) — fondo carbón `rgb(255 255 255 / 0.04)`, borde/icono/texto en color del rol (Camarero verde `34 197 94`, Cajero azul `59 130 246`, Domiciliario dorado `212 168 67`), hover: lift + glow del rol + borde encendido; respeta `prefers-reduced-motion`
+  - **Cards unificadas**: `SummaryStats` y contenedor de "Últimos Pedidos" usan exactamente `bg-gray-900 rounded-xl border border-dorado-oscuro/25`; números con `font-inter text-3xl font-semibold tabular-nums` y colores de estado suaves (emerald-400, rose-400, amber-300, dorado)
+  - **Últimos Pedidos**: filas `px-5 py-4`, montaje en Inter, estado como pill (`rounded-full` translúcido con borde del color: amber=pending, sky=preparing, dorado=ready, red=cancelled) + pill verde `paid` si `paymentStatus === 'paid'`
+  - **Tipografía**: Inter agregada a Google Fonts (index.html) + `fontFamily.inter` en `tailwind.config.js`; serif solo en títulos
+  - Mismo estilo de `quick-card` aplica en la pestaña Dashboards ("Abrir Panel")
+  - Tests: 51 totales (sin cambios)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)

@@ -16,6 +16,7 @@ module.exports = {
       fontFamily: {
         'cormorant': ['var(--font-heading)', 'serif'],
         'montserrat': ['var(--font-body)', 'sans-serif'],
+        'inter': ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
     },
   },

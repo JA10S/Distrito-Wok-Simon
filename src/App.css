@@ -145,6 +145,60 @@ body {
   -webkit-backdrop-filter: blur(8px);
 }
 
+/* ============ Dashboard admin: acceso rápido ============
+   Fondo carbón translúcido; el color del rol (--role: canales RGB)
+   vive solo en borde, icono y texto, con glow al hover. */
+.quick-card {
+  background: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(var(--role) / 0.4);
+  color: rgb(var(--role));
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.quick-card:hover {
+  transform: translateY(-4px);
+  background: rgb(var(--role) / 0.08);
+  border-color: rgb(var(--role) / 0.85);
+  box-shadow: 0 14px 34px -10px rgb(var(--role) / 0.55);
+}
+
+.quick-card:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+/* Pestaña activa: línea inferior brillante en dorado */
+.tab-active {
+  text-shadow: 0 0 12px rgb(var(--color-dorado) / 0.5);
+}
+
+.tab-active::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(var(--color-dorado-claro)),
+    transparent
+  );
+  box-shadow: 0 0 10px 1px rgb(var(--color-dorado) / 0.8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-card:hover,
+  .quick-card:active {
+    transform: none;
+  }
+}
+
 /* Fondo decorativo estilo malla japonesa (puntos tenues) */
 .pattern-bg {
   background-image: radial-gradient(rgb(var(--color-dorado) / 0.12) 1px, transparent 1px);
