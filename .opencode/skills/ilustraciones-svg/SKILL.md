@@ -13,9 +13,11 @@ description: Use cuando se deban crear o modificar ilustraciones SVG animadas o 
 ## Arquitectura de la ilustración
 - Componente en `src/components/common/`, PascalCase, props: `size` (ancho px) y `className`.
 - SVG con `viewBox`, `role="img"` + `aria-label` en español.
-- El componente NO lleva estilos inline de tema: las clases (`chef-sil`, `chef-arm`, `chef-flame-*`, `chef-spark`, `chef-food*`) se definen en `src/App.css` bajo el bloque "Ilustración animada".
-- Colores SIEMPRE por variables del tema: `rgb(var(--color-dorado))`, `--color-rojo`, `--color-negro`, etc. (definidas en `tailwind.config.js` + `:root` de App.css). Excepción: acentos decorativos puntuales (verduras `#7ec96f`, `#ffa04d`).
-- Estilo: silueta negra `#050505` con contorno dorado (línea de luz) — clase `.chef-sil`; miembros (brazos/piernas) con doble trazo: `.chef-limb-edge` (dorado, ancho+6) + `.chef-limb-core` (negro, ancho) usando el subcomponente `Limb`.
+- El componente NO lleva estilos inline de tema: las clases (`chef-solid-line`, `chef-arm`, `chef-flame-*`, `chef-spark`, `chef-food*`, `chef-utensil*`) se definen en `src/App.css` bajo el bloque "Ilustración animada".
+- **Estilo: silueta SÓLIDA** con `fill="currentColor"` (la página pone `text-dorado`) — SIN contornos/strokes internos (los contornos en formas superpuestas generan costuras visibles y ensucian la figura; se rechazó en revisión). Trazos con clase `.chef-solid-line` (`stroke: currentColor`) para piernas/brazos.
+- Escena MÍNIMA (revisión: "menos elementos, más limpio"): chef + wok + estufa/mesa atenuada (`opacity 0.5`) + fuego 3 capas + chispas + 3 trozos de comida. NO agregar props (faroles, botellas, ollas…).
+- Espátula oscura (`#050505`, clases `chef-utensil*`) para que se recorte legible sobre el fuego dorado.
+- Colores SIEMPRE por variables del tema: `rgb(var(--color-dorado))`, `--color-rojo`, etc. Excepción: acentos decorativos puntuales (verduras `#7ec96f`, `#ffa04d`).
 
 ## Reglas duras de animación SVG
 1. **Nunca** poner atributo `transform` en un elemento que tenga animación CSS (la animación lo pisa): envolver en `<g transform="...">` y animar el hijo.

@@ -200,56 +200,30 @@ body {
   to { opacity: 0.1; }
 }
 
-/* Faroles */
-.chef-animation .chef-lantern {
-  fill: rgb(var(--color-dorado) / 0.08);
-  stroke: rgb(var(--color-dorado) / 0.55);
-  stroke-width: 2;
-  animation: chef-lantern 3.6s ease-in-out infinite alternate;
+/* Miembros y contornos sólidos (silueta dorada uniforme) */
+.chef-animation .chef-solid-line {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-@keyframes chef-lantern {
-  from { opacity: 0.55; }
-  to { opacity: 1; }
-}
-
-/* Siluetas con contorno dorado (línea de luz) */
-.chef-animation .chef-sil {
+/* Espátula oscura (se recorta sobre el fuego) */
+.chef-animation .chef-utensil {
   fill: #050505;
-  stroke: rgb(var(--color-dorado));
-  stroke-width: 2;
-  stroke-linejoin: round;
-  stroke-opacity: 0.85;
+  stroke: none;
 }
 
-.chef-animation .chef-detail {
-  fill: none;
-  stroke: rgb(var(--color-dorado));
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-opacity: 0.8;
-}
-
-/* Miembros: núcleo negro + contorno dorado */
-.chef-animation .chef-limb-edge {
-  fill: none;
-  stroke: rgb(var(--color-dorado));
-  stroke-opacity: 0.85;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.chef-animation .chef-limb-core {
+.chef-animation .chef-utensil-line {
   fill: none;
   stroke: #050505;
   stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 /* Brazo con la espátula (removiendo) */
 .chef-animation .chef-arm {
   transform-box: fill-box;
-  transform-origin: 3% 12%;
+  transform-origin: 3% 10%;
   animation: chef-stir 1.5s ease-in-out infinite;
 }
 
@@ -352,7 +326,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .chef-animation .chef-glow,
-  .chef-animation .chef-lantern,
   .chef-animation .chef-arm,
   .chef-animation .chef-body,
   .chef-animation .chef-flame-back,
