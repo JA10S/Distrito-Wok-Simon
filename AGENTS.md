@@ -297,6 +297,14 @@ match /arroces/{itemId} {
   - **Tipografía**: Inter agregada a Google Fonts (index.html) + `fontFamily.inter` en `tailwind.config.js`; serif solo en títulos
   - Mismo estilo de `quick-card` aplica en la pestaña Dashboards ("Abrir Panel")
   - Tests: 51 totales (sin cambios)
+- [x] Camarero Fase 1 — corrección de bugs críticos (2026-09-30)
+  - **Edición en cocina bloqueada**: `handleTableClick`/`handleEditOrder` (WaiterDashboard) y `handleSave` (OrderEditor) exigen `status === 'pending'`; `useOrders.updateOrder` además valida el estado en servidor (getDoc previo)
+  - **Salida para pedidos `ready`**: botón "✕ Cancelar listo" en OrderCard (solo con `view_dashboard`), `handleCancelOrder` trata `ready` como cocina (admin + motivo obligatorio); `reactivateOrder` restaura `preparing`/`ready` según `cancelledFromStatus`
+  - **`parsePrice` unificado** en `orderUtils.js` (acepta `30K`, `30K / 40K`, `$4.500`, `4500`, número) — eliminadas las 2 copias locales de OrderCreator/OrderEditor; $4.500 ya no cobraba 4000
+  - **Escrituras validadas**: `updateTableStatus` se verifica en crear/cancelar/reactivar (alert si falla) y se muestra banner de error de `tablesError`/`ordersError` en pantalla; eliminada la rama `paid` muerta de `handleStatusChange`
+  - **Carrito seguro**: `OrderCreator.handleConfirm` es async y limpia el carrito solo si `onConfirmOrder` retorna `{success:true}`
+  - **Ciclo pago/delivery**: `processPayment` escribe `paymentStatus:'paid'` (antes `'completed'`, el pill del admin nunca aparecía) y sincroniza `deliveries.paymentStatus`; `markDelivered` escribe `deliveredAt` en la order vinculada
+  - Tests: 57 totales (6 nuevos: 5 parsePrice en orderUtils + 3 de WaiterDashboard — editor bloqueado en cocina, cancelar `ready` con admin/motivo, botón oculto sin `view_dashboard`)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)

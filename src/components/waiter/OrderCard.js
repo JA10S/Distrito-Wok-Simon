@@ -139,6 +139,14 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, canEdit = true, ca
                 ✕ Cancelar en cocina
               </button>
             )}
+            {order.status === 'ready' && canCancelKitchen && onCancel && (
+              <button
+                onClick={() => onCancel(order)}
+                className="w-full bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded text-sm"
+              >
+                ✕ Cancelar listo
+              </button>
+            )}
             {order.status === 'ready' && (
               <div className="text-xs text-dorado-oscuro text-center">
                 Esperando cobro en caja

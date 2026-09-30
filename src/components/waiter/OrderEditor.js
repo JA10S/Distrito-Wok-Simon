@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMenu } from '../../hooks/useMenu';
+import { parsePrice } from '../../utils/orderUtils';
 
 function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
   const { menu, loading } = useMenu();
@@ -45,17 +46,16 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
     }
   };
 
-  const parsePrice = (priceStr) => {
-    if (!priceStr) return 0;
-    const match = priceStr.match(/(\d+)/);
-    return match ? parseInt(match[1]) * 1000 : 0;
-  };
-
   const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const tax = Math.round(subtotal * 0.10);
   const total = subtotal + tax;
 
   const handleSave = () => {
+    if (order.status !== 'pending') {
+      alert('Solo se pueden editar pedidos pendientes (aún no han entrado en cocina)');
+      return;
+    }
+
     if (items.length === 0) {
       alert('El pedido debe tener al menos un item');
       return;
@@ -226,7 +226,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
         {/* Footer */}
         <div className="p-4 border-t border-dorado-oscuro/30 flex justify-between">
           <div>
-            {canCancel && order.status !== 'ready' && order.status !== 'paid' && order.status !== 'cancelled' && (
+            {canCancel && order.status !== 'paid' && order.status !== 'cancelled' && (
               <button
                 onClick={() => onCancel(order)}
                 className="bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded"

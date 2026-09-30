@@ -3,7 +3,8 @@ import { useMenu } from '../../hooks/useMenu';
 import {
   validateCustomerInfo,
   PAYMENT_METHOD_OPTIONS,
-  ORDER_TYPE_LABELS
+  ORDER_TYPE_LABELS,
+  parsePrice
 } from '../../utils/orderUtils';
 
 const CATEGORIES = [
@@ -58,17 +59,11 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
     }
   };
 
-  const parsePrice = (priceStr) => {
-    if (!priceStr) return 0;
-    const match = priceStr.match(/(\d+)/);
-    return match ? parseInt(match[1]) * 1000 : 0;
-  };
-
   const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const tax = Math.round(subtotal * 0.10);
   const total = subtotal + tax;
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (orderMode === 'table' && !selectedTable) {
       alert('Seleccione una mesa');
       return;
@@ -95,30 +90,34 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
       total
     };
 
-    if (orderMode === 'table') {
-      onConfirmOrder({
-        ...base,
-        type: 'table',
-        tableId: selectedTable.id,
-        tableNumber: selectedTable.number
-      });
-    } else {
-      onConfirmOrder({
-        ...base,
-        type: fulfillment,
-        tableId: null,
-        tableNumber: 0,
-        customer,
-        preferredPayment,
-        source: 'waiter'
-      });
+    const payload = orderMode === 'table'
+      ? {
+          ...base,
+          type: 'table',
+          tableId: selectedTable.id,
+          tableNumber: selectedTable.number
+        }
+      : {
+          ...base,
+          type: fulfillment,
+          tableId: null,
+          tableNumber: 0,
+          customer,
+          preferredPayment,
+          source: 'waiter'
+        };
+
+    // El carrito solo se limpia si la creación fue exitosa
+    const result = await onConfirmOrder(payload);
+    if (!result || !result.success) return;
+
+    setOrderItems([]);
+    setNotes('');
+    if (orderMode === 'takeaway') {
       setCustomer(EMPTY_CUSTOMER);
       setPreferredPayment('cash');
       setFulfillment('delivery');
     }
-
-    setOrderItems([]);
-    setNotes('');
   };
 
   const updateCustomer = (field, value) => {

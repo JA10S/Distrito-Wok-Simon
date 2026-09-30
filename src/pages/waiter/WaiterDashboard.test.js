@@ -108,6 +108,10 @@ import WaiterDashboard from './WaiterDashboard';
 
 const ALL_PERMISSIONS = ['create_order', 'update_order_status', 'close_table', 'view_dashboard'];
 
+afterEach(() => {
+  mockOrders[0].status = 'pending';
+});
+
 beforeEach(() => {
   jest.clearAllMocks();
   mockHasPermission.mockImplementation((p) => ALL_PERMISSIONS.includes(p));
@@ -283,4 +287,48 @@ test('muestra los resúmenes con permiso view_summaries', () => {
   expect(screen.getByText('Mesas ocupadas')).toBeInTheDocument();
   expect(screen.getByText('Pedidos activos')).toBeInTheDocument();
   expect(screen.getByText('Pedidos listos')).toBeInTheDocument();
+});
+
+test('no abre el editor de un pedido que ya está en cocina', () => {
+  mockOrders[0].status = 'preparing';
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText('Mesa 3'));
+
+  expect(window.alert).toHaveBeenCalledWith(
+    expect.stringContaining('ya está en cocina')
+  );
+  expect(screen.queryByText(/Editar Pedido/)).not.toBeInTheDocument();
+});
+
+test('permite cancelar un pedido listo con admin y motivo obligatorio', async () => {
+  mockOrders[0].status = 'ready';
+  window.prompt.mockReturnValue('Cliente se retiró sin pagar');
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText('Pedidos (1)'));
+  fireEvent.click(screen.getByText('✕ Cancelar listo'));
+
+  expect(window.confirm).toHaveBeenCalled();
+  expect(window.prompt).toHaveBeenCalled();
+  await waitFor(() =>
+    expect(mockCancelOrder).toHaveBeenCalledWith(
+      'order1',
+      expect.objectContaining({ reason: 'Cliente se retiró sin pagar' })
+    )
+  );
+});
+
+test('oculta el botón de cancelar listo sin permiso view_dashboard', () => {
+  mockOrders[0].status = 'ready';
+  mockHasPermission.mockImplementation((p) => p === 'update_order_status');
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText('Pedidos (1)'));
+
+  expect(screen.queryByText('✕ Cancelar listo')).not.toBeInTheDocument();
+  expect(mockCancelOrder).not.toHaveBeenCalled();
 });

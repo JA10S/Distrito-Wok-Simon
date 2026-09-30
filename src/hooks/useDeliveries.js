@@ -7,6 +7,7 @@ import {
   where,
   doc,
   addDoc,
+  getDoc,
   updateDoc,
   serverTimestamp
 } from 'firebase/firestore';
@@ -86,11 +87,27 @@ export function useDeliveries(status = null) {
   const markDelivered = async (deliveryId) => {
     try {
       const deliveryRef = doc(db, 'deliveries', deliveryId);
+      const snap = await getDoc(deliveryRef);
+      const data = snap.exists() ? snap.data() : null;
+
       await updateDoc(deliveryRef, {
         status: 'delivered',
         deliveredAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
+
+      // Reflejar la entrega en el pedido vinculado (sin tocar su status de flujo)
+      if (data && data.orderId) {
+        try {
+          await updateDoc(doc(db, 'orders', data.orderId), {
+            deliveredAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+        } catch (orderErr) {
+          console.error('Error syncing delivery to order:', orderErr);
+        }
+      }
+
       return { success: true };
     } catch (err) {
       console.error('Error marking delivered:', err);

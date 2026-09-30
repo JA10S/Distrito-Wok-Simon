@@ -88,8 +88,8 @@ function WaiterDashboard() {
   const [selectedTable, setSelectedTable] = useState(null);
   const [editingOrder, setEditingOrder] = useState(null);
   
-  const { tables, loading: tablesLoading, updateTableStatus } = useTables();
-  const { orders, loading: ordersLoading, createOrder, updateOrderStatus, updateOrder, cancelOrder, reactivateOrder } = useOrders(ACTIVE_ORDER_STATUSES);
+  const { tables, loading: tablesLoading, error: tablesError, updateTableStatus } = useTables();
+  const { orders, loading: ordersLoading, error: ordersError, createOrder, updateOrderStatus, updateOrder, cancelOrder, reactivateOrder } = useOrders(ACTIVE_ORDER_STATUSES);
   const { orders: cancelledOrders } = useOrders('cancelled');
 
   const handleLogout = async () => {
@@ -104,7 +104,7 @@ function WaiterDashboard() {
   const handleCreateOrder = async (orderData) => {
     if (!hasPermission('create_order')) {
       alert('No tiene permiso para crear pedidos');
-      return;
+      return { success: false };
     }
 
     const duplicate = findDuplicateOrder(orderData.items, cancelledOrders);
@@ -118,7 +118,7 @@ function WaiterDashboard() {
         `La mesa ${duplicate.order.tableNumber} canceló hace ${duplicate.minutesAgo} min un pedido ${matchLabel}${kitchenLabel}.\n\n` +
         `¿Crear el pedido de todos modos?`
       );
-      if (!proceed) return;
+      if (!proceed) return { success: false };
     }
 
     const result = await createOrder({
@@ -129,7 +129,10 @@ function WaiterDashboard() {
     
     if (result.success) {
       if (orderData.tableId) {
-        await updateTableStatus(orderData.tableId, 'occupied', result.id);
+        const tableResult = await updateTableStatus(orderData.tableId, 'occupied', result.id);
+        if (!tableResult.success) {
+          alert('Pedido creado, pero no se pudo marcar la mesa como ocupada: ' + tableResult.error);
+        }
       }
       alert('Pedido creado exitosamente');
       setSelectedTable(null);
@@ -137,6 +140,7 @@ function WaiterDashboard() {
     } else {
       alert('Error al crear pedido: ' + result.error);
     }
+    return result;
   };
 
   const handleStatusChange = async (orderId, newStatus) => {
@@ -149,21 +153,18 @@ function WaiterDashboard() {
     
     if (!result.success) {
       alert('Error al cambiar estado: ' + result.error);
-      return;
-    }
-
-    if (newStatus === 'paid') {
-      const order = orders.find(o => o.id === orderId);
-      const otherActive = orders.some(o => o.tableId === order?.tableId && o.id !== orderId);
-      if (order?.tableId && !otherActive) {
-        await updateTableStatus(order.tableId, 'available');
-      }
     }
   };
 
   const handleEditOrder = async (orderId, updates) => {
     if (!hasPermission('create_order')) {
       alert('No tiene permiso para modificar pedidos');
+      return;
+    }
+
+    const target = orders.find(o => o.id === orderId);
+    if (target && target.status !== 'pending') {
+      alert('Solo se pueden editar pedidos pendientes (aún no han entrado en cocina)');
       return;
     }
 
@@ -186,19 +187,16 @@ function WaiterDashboard() {
     const target = orders.find(o => o.id === orderId);
 
     if (target) {
-      if (target.status === 'ready') {
-        alert('No se puede cancelar un pedido listo para cobrar');
-        return;
-      }
       if (target.status === 'paid') {
         alert('No se puede cancelar un pedido ya pagado');
         return;
       }
-      if (target.status !== 'pending' && !hasPermission('view_dashboard')) {
-        alert('Solo un administrador puede cancelar pedidos que ya entraron en cocina');
+      const inKitchen = target.status !== 'pending';
+      if (inKitchen && !hasPermission('view_dashboard')) {
+        alert('Solo un administrador puede cancelar pedidos que ya entraron en cocina o están listos');
         return;
       }
-      if (target.status !== 'pending' && !reason) {
+      if (inKitchen && !reason) {
         alert('Debe indicar el motivo de la cancelación');
         return;
       }
@@ -213,7 +211,10 @@ function WaiterDashboard() {
     if (result.success) {
       const otherActive = orders.some(o => o.tableId === target?.tableId && o.id !== orderId);
       if (target?.tableId && !otherActive) {
-        await updateTableStatus(target.tableId, 'available');
+        const tableResult = await updateTableStatus(target.tableId, 'available');
+        if (!tableResult.success) {
+          alert('Pedido cancelado, pero no se pudo liberar la mesa: ' + tableResult.error);
+        }
       }
       alert('Pedido cancelado');
       setEditingOrder(null);
@@ -228,21 +229,20 @@ function WaiterDashboard() {
       return;
     }
 
-    if (order.status === 'ready') {
-      alert('No se puede cancelar un pedido listo para cobrar');
-      return;
-    }
-
     const inKitchen = order.status !== 'pending';
 
     if (inKitchen && !hasPermission('view_dashboard')) {
-      alert('Solo un administrador puede cancelar pedidos que ya entraron en cocina');
+      alert('Solo un administrador puede cancelar pedidos que ya entraron en cocina o están listos');
       return;
     }
 
     const proceed = window.confirm(
       `¿Cancelar el pedido de la mesa ${order.tableNumber}` +
-      (inKitchen ? '? (YA ESTÁ EN COCINA — el plato puede estar hecho)' : '?')
+      (order.status === 'ready'
+        ? '? (ESTÁ LISTO — el plato ya está hecho)'
+        : inKitchen
+        ? '? (YA ESTÁ EN COCINA — el plato puede estar hecho)'
+        : '?')
     );
     if (!proceed) return;
 
@@ -279,7 +279,10 @@ function WaiterDashboard() {
 
     const table = tables.find(t => t.id === order.tableId);
     if (table && (table.status === 'available' || (table.status === 'occupied' && !table.currentOrderId))) {
-      await updateTableStatus(order.tableId, 'occupied', order.id);
+      const tableResult = await updateTableStatus(order.tableId, 'occupied', order.id);
+      if (!tableResult.success) {
+        alert('Pedido reactivado, pero no se pudo ocupar la mesa: ' + tableResult.error);
+      }
     }
 
     alert('Pedido reactivado');
@@ -322,6 +325,10 @@ function WaiterDashboard() {
       if (order) {
         if (order.status === 'ready') {
           alert(`El pedido de la mesa ${table.number} está listo para cobrar`);
+          return;
+        }
+        if (order.status !== 'pending') {
+          alert(`El pedido de la mesa ${table.number} ya está en cocina y no se puede modificar`);
           return;
         }
         if (!hasPermission('create_order')) {
@@ -367,6 +374,13 @@ function WaiterDashboard() {
 
       {/* Contenido principal */}
       <main className="container mx-auto px-4 py-8">
+        {/* Errores de sincronización (Firestore/reglas) */}
+        {(tablesError || ordersError) && (
+          <div className="mb-6 bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg text-sm" role="alert">
+            ⚠️ Error al sincronizar datos: {tablesError || ordersError}
+          </div>
+        )}
+
         {/* Resúmenes (permiso view_summaries otorgado por el admin) */}
         {hasPermission('view_summaries') && (
           <SummaryStats

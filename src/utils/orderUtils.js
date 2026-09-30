@@ -28,10 +28,18 @@ export const PAYMENT_METHOD_OPTIONS = [
   { id: 'card', label: 'Tarjeta' }
 ];
 
-export function parsePrice(priceStr) {
-  if (!priceStr) return 0;
-  const match = String(priceStr).match(/(\d+)/);
-  return match ? parseInt(match[1], 10) * 1000 : 0;
+export function parsePrice(price) {
+  if (typeof price === 'number') return price;
+  if (!price) return 0;
+
+  // Formatos del menú: '30K', '30K / 40K' (primera porción), '$4.500', '4500', 4500
+  const first = String(price).split('/')[0].trim();
+  const kMatch = first.match(/^\$?\s*(\d+(?:[.,]\d+)?)\s*[kK]$/);
+  if (kMatch) {
+    return Math.round(parseFloat(kMatch[1].replace(',', '.')) * 1000);
+  }
+  const digits = first.replace(/[^\d]/g, '');
+  return digits ? parseInt(digits, 10) : 0;
 }
 
 export function calculateTotals(items) {

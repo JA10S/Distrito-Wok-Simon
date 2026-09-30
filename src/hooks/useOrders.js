@@ -91,7 +91,7 @@ export function useOrders(status = null) {
       const updateData = {
         status: 'paid',
         paymentMethod: paymentMethod,
-        paymentStatus: 'completed',
+        paymentStatus: 'paid',
         paidAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       };
@@ -102,6 +102,18 @@ export function useOrders(status = null) {
       }
 
       await updateDoc(orderRef, updateData);
+
+      // Sincronizar el pago con la entrega vinculada (domicilio)
+      if (orderData && orderData.deliveryId) {
+        try {
+          await updateDoc(doc(db, 'deliveries', orderData.deliveryId), {
+            paymentStatus: 'paid',
+            updatedAt: serverTimestamp()
+          });
+        } catch (deliveryErr) {
+          console.error('Error syncing payment to delivery:', deliveryErr);
+        }
+      }
 
       if (orderData && orderData.tableId) {
         const tableRef = doc(db, 'tables', orderData.tableId);
@@ -172,7 +184,16 @@ export function useOrders(status = null) {
   const updateOrder = async (orderId, updates) => {
     try {
       const orderRef = doc(db, 'orders', orderId);
-      
+      const snap = await getDoc(orderRef);
+      const data = snap.exists() ? snap.data() : null;
+
+      if (data && data.status !== 'pending') {
+        return {
+          success: false,
+          error: 'Solo se pueden editar pedidos pendientes (aún no han entrado en cocina)'
+        };
+      }
+
       const updateData = {
         ...updates,
         updatedAt: serverTimestamp()
@@ -242,8 +263,12 @@ export function useOrders(status = null) {
       if (!data) return { success: false, error: 'Pedido no encontrado' };
       if (data.status !== 'cancelled') return { success: false, error: 'Solo se pueden reactivar pedidos cancelados' };
 
+      const restoredStatus = ['preparing', 'ready'].includes(data.cancelledFromStatus)
+        ? data.cancelledFromStatus
+        : 'pending';
+
       await updateDoc(orderRef, {
-        status: data.cancelledFromStatus === 'preparing' ? 'preparing' : 'pending',
+        status: restoredStatus,
         cancelledAt: null,
         cancelledFromStatus: null,
         cancelledBy: null,

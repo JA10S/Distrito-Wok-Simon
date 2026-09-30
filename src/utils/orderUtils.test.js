@@ -104,6 +104,22 @@ describe('parsePrice', () => {
     expect(parsePrice(null)).toBe(0);
     expect(parsePrice('')).toBe(0);
   });
+
+  test('interpreta precios con signo dólar y puntos de mil', () => {
+    expect(parsePrice('$4.500')).toBe(4500);
+    expect(parsePrice('$35.000')).toBe(35000);
+    expect(parsePrice('4500')).toBe(4500);
+  });
+
+  test('acepta precios numéricos sin multiplicar', () => {
+    expect(parsePrice(4500)).toBe(4500);
+    expect(parsePrice(30000)).toBe(30000);
+  });
+
+  test('toma la primera porción de precios dobles', () => {
+    expect(parsePrice('30K / 40K')).toBe(30000);
+    expect(parsePrice('$4.500 / $6.500')).toBe(4500);
+  });
 });
 
 describe('calculateTotals', () => {
