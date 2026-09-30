@@ -64,7 +64,25 @@ restaurante/
 │   ├── ARCHITECTURE.md              # Arquitectura del sistema
 │   ├── DATABASE_STRUCTURE.md        # Estructura Firestore
 │   ├── INTEGRATION_GUIDE.md         # Guía de integración
+│   ├── PROJECT_STRUCTURE.md         # Esta guía (estructura para IA)
 │   └── MENU_RESTAURANTE.md          # Documentación del menú
+│
+├── 📁 .opencode/                    # CONFIGURACIÓN PARA IA (opencode)
+│   ├── 📁 agents/                   # Agentes (subagentes)
+│   │   └── diseno-visual.md          # Especialista en UI/estilo
+│   ├── 📁 skills/                   # Skills (conocimiento reutilizable)
+│   │   ├── firebase-db-modeler/     # Diseño/modelado Firestore
+│   │   │   └── SKILL.md
+│   │   └── ilustraciones-svg/       # Ilustraciones SVG animadas
+│   │       └── SKILL.md
+│   └── (node_modules/ — interno de opencode, ignorado por git)
+│
+├── 📁 tools/                        # HERRAMIENTAS DEL PROYECTO
+│   ├── harness.ps1                  # Project Harness (status/test/pdf/deploy…)
+│   ├── harness.bat                  # Wrapper .bat
+│   └── README.md                    # Uso del harness
+│
+├── 📄 opencode.json                 # Config opencode (skills paths, instructions)
 │
 ├── 📁 designs/                      # DISEÑOS HTML
 │   ├── menu-web-version.html        # Menú web completo

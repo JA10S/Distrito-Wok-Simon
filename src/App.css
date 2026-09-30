@@ -187,62 +187,179 @@ body {
   50% { transform: translateY(-8px); }
 }
 
-/* ============ Animación: chef cocinando en el wok (login) ============ */
+/* ============ Ilustración animada: chef con wok (login) ============ */
 
-/* Brazo que revuelve (giro alrededor del hombro) */
-.chef-animation .chef-stir-arm {
+/* Resplandores de fondo */
+.chef-animation .chef-glow {
+  fill: rgb(var(--color-dorado));
+  animation: chef-glow 5s ease-in-out infinite alternate;
+}
+
+@keyframes chef-glow {
+  from { opacity: 0.05; }
+  to { opacity: 0.1; }
+}
+
+/* Faroles */
+.chef-animation .chef-lantern {
+  fill: rgb(var(--color-dorado) / 0.08);
+  stroke: rgb(var(--color-dorado) / 0.55);
+  stroke-width: 2;
+  animation: chef-lantern 3.6s ease-in-out infinite alternate;
+}
+
+@keyframes chef-lantern {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+/* Siluetas con contorno dorado (línea de luz) */
+.chef-animation .chef-sil {
+  fill: #050505;
+  stroke: rgb(var(--color-dorado));
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-opacity: 0.85;
+}
+
+.chef-animation .chef-detail {
+  fill: none;
+  stroke: rgb(var(--color-dorado));
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-opacity: 0.8;
+}
+
+/* Miembros: núcleo negro + contorno dorado */
+.chef-animation .chef-limb-edge {
+  fill: none;
+  stroke: rgb(var(--color-dorado));
+  stroke-opacity: 0.85;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chef-animation .chef-limb-core {
+  fill: none;
+  stroke: #050505;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Brazo con la espátula (removiendo) */
+.chef-animation .chef-arm {
   transform-box: fill-box;
-  transform-origin: 0% 55%;
-  animation: chef-stir 1.2s ease-in-out infinite;
+  transform-origin: 3% 12%;
+  animation: chef-stir 1.5s ease-in-out infinite;
 }
 
 @keyframes chef-stir {
-  0%, 100% { transform: rotate(-15deg); }
-  50% { transform: rotate(14deg); }
+  0%, 100% { transform: rotate(-4.5deg); }
+  50% { transform: rotate(4.5deg); }
 }
 
 /* Balanceo sutil del cuerpo */
 .chef-animation .chef-body {
   transform-box: fill-box;
   transform-origin: 50% 100%;
-  animation: chef-sway 3.4s ease-in-out infinite;
+  animation: chef-sway 4.2s ease-in-out infinite;
 }
 
 @keyframes chef-sway {
-  0%, 100% { transform: rotate(-1.6deg); }
-  50% { transform: rotate(1.6deg); }
+  0%, 100% { transform: rotate(-0.8deg); }
+  50% { transform: rotate(0.8deg); }
 }
 
-/* Llamas parpadeando (mechones desde la base) */
-.chef-animation .chef-flame {
+/* Capas de llama */
+.chef-animation .chef-flame-back {
+  fill: rgb(var(--color-rojo));
+  opacity: 0.7;
   transform-box: fill-box;
   transform-origin: 50% 100%;
-  animation: chef-flame 0.45s ease-in-out infinite alternate;
+  animation:
+    chef-flame-a 3.2s ease-in-out infinite alternate,
+    chef-flicker 0.55s ease-in-out infinite alternate;
 }
 
-@keyframes chef-flame {
-  from { transform: scaleY(0.88) scaleX(1.06); }
-  to { transform: scaleY(1.16) scaleX(0.9); }
+@keyframes chef-flame-a {
+  from { transform: skewX(-4deg) scaleY(0.94) scaleX(1.04); }
+  to { transform: skewX(4deg) scaleY(1.08) scaleX(0.96); }
 }
 
-/* Vapor que sube y se desvanece */
-.chef-animation .chef-steam {
-  opacity: 0;
+@keyframes chef-flicker {
+  from { opacity: 0.55; }
+  to { opacity: 0.78; }
+}
+
+.chef-animation .chef-flame-mid {
+  fill: rgb(var(--color-dorado));
   transform-box: fill-box;
-  animation: chef-steam 2.6s ease-in-out infinite;
+  transform-origin: 50% 100%;
+  animation: chef-flame-b 2.4s ease-in-out infinite alternate;
 }
 
-@keyframes chef-steam {
-  0% { opacity: 0; transform: translateY(8px) scale(0.8); }
-  35% { opacity: 0.85; }
-  100% { opacity: 0; transform: translateY(-20px) scale(1.1); }
+@keyframes chef-flame-b {
+  from { transform: scaleY(1.06) scaleX(0.95) translateX(-4px); }
+  to { transform: scaleY(0.92) scaleX(1.06) translateX(5px); }
+}
+
+.chef-animation .chef-flame-core {
+  fill: rgb(var(--color-dorado-claro));
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: chef-flame-c 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes chef-flame-c {
+  from { transform: scaleY(0.88); }
+  to { transform: scaleY(1.14); }
+}
+
+/* Chispas que suben */
+.chef-animation .chef-spark {
+  fill: rgb(var(--color-dorado-claro));
+  transform-box: fill-box;
+  animation: chef-spark-rise 2s ease-out both;
+}
+
+@keyframes chef-spark-rise {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  12% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx, 0px), -150px) scale(0.2); }
+}
+
+/* Trozos de comida volando */
+.chef-animation .chef-food {
+  transform-box: fill-box;
+  animation: chef-food-fly 2.2s ease-out both;
+}
+
+@keyframes chef-food-fly {
+  0% { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(0.6); }
+  12% { opacity: 1; }
+  85% { opacity: 0.95; }
+  100% { opacity: 0; transform: translate(var(--dx, 10px), -130px) rotate(520deg) scale(1); }
+}
+
+.chef-animation .chef-food--gold { fill: rgb(var(--color-dorado-claro)); }
+.chef-animation .chef-food--green { fill: #7ec96f; }
+.chef-animation .chef-food--orange { fill: #ffa04d; }
+.chef-animation .chef-food--ring {
+  fill: none;
+  stroke: rgb(var(--color-dorado-claro));
+  stroke-width: 3;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chef-animation .chef-stir-arm,
+  .chef-animation .chef-glow,
+  .chef-animation .chef-lantern,
+  .chef-animation .chef-arm,
   .chef-animation .chef-body,
-  .chef-animation .chef-flame,
-  .chef-animation .chef-steam {
+  .chef-animation .chef-flame-back,
+  .chef-animation .chef-flame-mid,
+  .chef-animation .chef-flame-core,
+  .chef-animation .chef-spark,
+  .chef-animation .chef-food {
     animation: none;
   }
 }

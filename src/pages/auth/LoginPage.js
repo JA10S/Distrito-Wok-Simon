@@ -69,7 +69,7 @@ function LoginPage() {
               className="absolute inset-0 -m-4 rounded-full bg-dorado/10 blur-3xl"
               aria-hidden="true"
             />
-            <ChefAnimation size={330} className="relative glow text-dorado" />
+            <ChefAnimation size={420} className="relative glow text-dorado" />
           </div>
           <h1 className="font-cormorant text-5xl font-bold mt-6">
             <span className="text-white">Distrito </span>
@@ -94,7 +94,7 @@ function LoginPage() {
         {/* Formulario */}
         <div className="w-full max-w-md mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="lg:hidden text-center mb-6">
-            <ChefAnimation size={200} className="mx-auto glow text-dorado" />
+            <ChefAnimation size={240} className="mx-auto glow text-dorado" />
             <h1 className="font-cormorant text-3xl font-bold text-dorado-claro mt-3">
               Distrito Wok Simón
             </h1>

@@ -32,7 +32,34 @@ scripts/
 ├── generate-pdf-from-firestore.js  # Genera PDF desde Firestore
 ├── migrate-to-collections.js       # Migración inicial
 └── update-porciones.js             # Actualizar porciones
+
+tools/                              # Herramientas del proyecto
+├── harness.ps1                      # Project Harness (status/test/pdf/deploy…)
+├── harness.bat
+└── README.md
+
+.opencode/                          # Configuración para IA (opencode)
+├── agents/                         # Agentes: diseno-visual.md
+├── skills/                         # Skills: firebase-db-modeler/, ilustraciones-svg/
+└── (leer: sección 🤖 Estructura IA más abajo)
 ```
+
+## 🤖 Estructura IA (agentes, skills y tools)
+
+> Todo lo que la IA necesita para extender el proyecto está agrupado y documentado.
+
+| Tipo | Carpeta | Contenido |
+|------|---------|-----------|
+| **Agentes** | `.opencode/agents/<nombre>.md` | Subagentes con frontmatter (`description`, `mode`) y prompt en el cuerpo. Actual: `diseno-visual` (UI/estilo) |
+| **Skills** | `.opencode/skills/<nombre>/SKILL.md` | Conocimiento reutilizable con frontmatter `name` (igual a la carpeta) + `description`. Actual: `firebase-db-modeler`, `ilustraciones-svg` |
+| **Tools** | `tools/` | Scripts del proyecto: `harness.ps1` (+ `harness.bat`, `README.md`) |
+| **Config** | `opencode.json` | `skills.paths` (`.opencode/skills`) + `instructions: ["AGENTS.md"]` |
+
+**Reglas:**
+- Nuevos agentes → `.opencode/agents/<nombre>.md` (nunca inline en opencode.json salvo trivialidades).
+- Nueva skill → `.opencode/skills/<nombre>/SKILL.md` con `name` = carpeta, `description` en tercera persona con palabras clave de activación.
+- Tras cambiar `opencode.json`, agentes o skills: **reiniciar opencode** para que recargue la config.
+- Documentar cualquier creación aquí y en `docs/PROJECT_STRUCTURE.md` (árbol con `.opencode/` y `tools/`).
 
 ## 🎨 Diseño
 - **Colores:** Dorado (#D4A843), Negro (#0d0d0d), Rojo (#C40F0F)
@@ -237,9 +264,11 @@ match /arroces/{itemId} {
   - Unificación de estilo del contenido: `hover-lift` en tarjetas (mesas, pedidos, cobros, entregas) y empty states con icono (`FaInbox`/`FaHistory`/`FaBoxOpen`)
   - Tests: 51 totales (2 nuevos en `WaiterDashboard.test` verificando el gating de `view_summaries`)
 - [x] Animación de chef en el login (reemplaza al logo)
-  - `src/components/common/ChefAnimation.js`: SVG animado propio (sombra de chef con toque revolviendo un wok — brazo en movimiento, llamas parpadeantes rojo/dorado, vapor que sube, balanceo sutil del cuerpo)
-  - `src/App.css`: keyframes `chef-stir`, `chef-sway`, `chef-flame`, `chef-steam` (con `transform-box: fill-box`); respetan `prefers-reduced-motion`
-  - `LoginPage`: en desktop (330px con halo `bg-dorado/10 blur-3xl`) y móvil (200px); mantiene `.glow`; el import de `Logo` se quitó de la página de login (Logo sigue en menú/dashboards)
+  - `src/components/common/ChefAnimation.js`: ilustración SVG animada inspirada en imagen de referencia del usuario — silueta de chef en zancada (contorno dorado = línea de luz sobre negro) revolviendo un wok con espátula, **columna de fuego de 3 capas** (roja/dorada/núcleo claro con parpadeo), **chispas** subiendo y **trozos de comida** (verduras, aros) volando con rotación, faroles colgantes, mesa con olla/botellas/tazón de fideos, estufa, resplandores de fondo y reflejo en piso
+  - `src/App.css`: bloque "Ilustración animada" — `chef-glow`, `chef-lantern`, `chef-sil` (silueta+contorno dorado), `chef-limb-edge/core` (miembros con doble trazo), `chef-stir` (brazo con espátula), `chef-sway` (balanceo), `chef-flame-a/b/c` + `chef-flicker` (capas de llama), `chef-spark-rise` (chispas con `--dx`), `chef-food-fly` (comida volando); todo con `transform-box: fill-box` y `prefers-reduced-motion`
+  - Regla clave: el `transform` del SVG va en un `<g>` contenedor cuando el hijo tiene animación CSS (la animación pisa el atributo)
+  - `LoginPage`: desktop 420px (con halo `bg-dorado/10 blur-3xl`) y móvil 240px; mantiene `.glow`; import de `Logo` fuera del login (Logo sigue en menú/dashboards)
+  - Skill asociada: `.opencode/skills/ilustraciones-svg/SKILL.md`; agente: `.opencode/agents/diseno-visual.md`
   - Tests: 51 totales sin cambios (sin dependencias del logo en login)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
