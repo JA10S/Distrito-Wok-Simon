@@ -1,4 +1,12 @@
-import { findDuplicateOrder, isRecent, minutesAgo, DUPLICATE_WINDOW_MS } from './orderUtils';
+import {
+  findDuplicateOrder,
+  isRecent,
+  minutesAgo,
+  DUPLICATE_WINDOW_MS,
+  parsePrice,
+  calculateTotals,
+  validateCustomerInfo
+} from './orderUtils';
 
 const now = Date.now();
 const recentCancelledAt = { toDate: () => new Date(now - 8 * 60000) };
@@ -83,5 +91,63 @@ describe('utilidades de tiempo', () => {
 
   test('la ventana de duplicados es de 30 minutos', () => {
     expect(DUPLICATE_WINDOW_MS).toBe(30 * 60 * 1000);
+  });
+});
+
+describe('parsePrice', () => {
+  test('convierte precios con K a pesos', () => {
+    expect(parsePrice('30K / 40K')).toBe(30000);
+    expect(parsePrice('12K')).toBe(12000);
+  });
+
+  test('retorna 0 sin precio', () => {
+    expect(parsePrice(null)).toBe(0);
+    expect(parsePrice('')).toBe(0);
+  });
+});
+
+describe('calculateTotals', () => {
+  test('calcula subtotal, IVA 10% y total', () => {
+    const items = [
+      { price: 30000, quantity: 2 },
+      { price: 4000, quantity: 1 }
+    ];
+    const totals = calculateTotals(items);
+
+    expect(totals.subtotal).toBe(64000);
+    expect(totals.tax).toBe(6400);
+    expect(totals.total).toBe(70400);
+  });
+
+  test('sin items retorna ceros', () => {
+    expect(calculateTotals([])).toEqual({ subtotal: 0, tax: 0, total: 0 });
+  });
+});
+
+describe('validateCustomerInfo', () => {
+  const valid = { name: 'Juan Pérez', phone: '3001234567', address: 'Calle 45 #12-34' };
+
+  test('pedido en mesa no requiere datos', () => {
+    expect(validateCustomerInfo('table', {})).toBeNull();
+  });
+
+  test('pedido válido para domicilio', () => {
+    expect(validateCustomerInfo('delivery', valid)).toBeNull();
+  });
+
+  test('pedido válido para recoger (sin dirección)', () => {
+    expect(validateCustomerInfo('pickup', { name: 'Ana', phone: '3001234567' })).toBeNull();
+  });
+
+  test('requiere nombre', () => {
+    expect(validateCustomerInfo('delivery', { ...valid, name: '  ' })).toMatch(/nombre/i);
+  });
+
+  test('requiere teléfono válido', () => {
+    expect(validateCustomerInfo('delivery', { ...valid, phone: '123' })).toMatch(/teléfono/i);
+  });
+
+  test('domicilio requiere dirección', () => {
+    expect(validateCustomerInfo('delivery', { ...valid, address: '' })).toMatch(/dirección/i);
   });
 });

@@ -197,6 +197,17 @@ match /arroces/{itemId} {
   - Panel "Cancelados recientes" con botón **♻️ Reactivar** (vuelve a `pending`/`preparing` y re-ocupa la mesa)
   - Panel de cancelados también en AdminDashboard (avisar a cocina)
   - Tests: `src/pages/waiter/WaiterDashboard.test.js` (12 casos) + `src/utils/orderUtils.test.js` (8 casos)
+- [x] Pedidos "para llevar" (domicilio o recoger en local) — camarero y cliente web
+  - Modelo: `type: 'table'|'delivery'|'pickup'`, `tableId: null`/`tableNumber: 0` en no-mesa, `customer {name, phone, address, reference, notes}`, `preferredPayment: 'cash'|'nequi'|'card'`, `source: 'client'|'waiter'`
+  - `src/utils/orderUtils.js`: `ORDER_TYPE_LABELS`, `PAYMENT_METHOD_LABELS/OPTIONS`, `parsePrice`, `calculateTotals` (IVA 10%), `validateCustomerInfo` (nombre, teléfono ≥7 dígitos, dirección solo en `delivery`)
+  - `src/services/orderService.js`: `createTakeawayOrder` (addDoc para invitados) + `watchOrder` (onSnapshot de seguimiento)
+  - `OrderCreator`: pestañas "🍽️ En mesa" / "🥡 Para llevar" con formulario (nombre, teléfono, dirección, referencia, pago preferido, notas)
+  - `WaiterDashboard`: `updateTableStatus` solo se ejecuta si el pedido tiene `tableId`; `OrderCard` muestra tipo + datos del cliente
+  - `useOrders.updateOrderStatus`: al pasar a `ready` con `type='delivery'` crea doc en `deliveries` y guarda `deliveryId` (puente cocina → domiciliario); `cancelOrder`/`reactivateOrder` sincronizan la entrega vinculada
+  - `MenuPage`: carrito flotante, checkout (domicilio/recoger, pago preferido), modal de confirmación con **estado en vivo** vía `watchOrder`
+  - `CashierDashboard`: etiqueta de tipo de pedido + teléfono/dirección/pago preferido
+  - `firestore.rules`: `orders` con `get: if true` (seguimiento público), `list` autenticado, `create` para invitados solo con payload `delivery|pickup` validado
+  - Tests: 37 totales (`MenuPage.test` 4 casos, `orderUtils.test` 14 casos)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)

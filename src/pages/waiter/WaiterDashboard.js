@@ -125,7 +125,9 @@ function WaiterDashboard() {
     });
     
     if (result.success) {
-      await updateTableStatus(orderData.tableId, 'occupied', result.id);
+      if (orderData.tableId) {
+        await updateTableStatus(orderData.tableId, 'occupied', result.id);
+      }
       alert('Pedido creado exitosamente');
       setSelectedTable(null);
       setActiveTab('orders');

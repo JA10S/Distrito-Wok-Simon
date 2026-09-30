@@ -128,6 +128,9 @@ export function useOrders(status = null) {
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
       const orderRef = doc(db, 'orders', orderId);
+      const snap = await getDoc(orderRef);
+      const data = snap.exists() ? snap.data() : null;
+
       const updateData = {
         status: newStatus,
         updatedAt: serverTimestamp()
@@ -137,6 +140,25 @@ export function useOrders(status = null) {
         updateData.preparingAt = serverTimestamp();
       } else if (newStatus === 'ready') {
         updateData.readyAt = serverTimestamp();
+
+        if (data && data.type === 'delivery' && !data.deliveryId) {
+          const deliveryRef = await addDoc(collection(db, 'deliveries'), {
+            orderId,
+            customer: data.customer?.name || '',
+            phone: data.customer?.phone || '',
+            address: data.customer?.address || '',
+            reference: data.customer?.reference || '',
+            notes: data.customer?.notes || data.notes || '',
+            items: data.items || [],
+            total: data.total || 0,
+            preferredPayment: data.preferredPayment || 'cash',
+            paymentStatus: data.paymentStatus || 'pending',
+            status: 'ready',
+            createdAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+          updateData.deliveryId = deliveryRef.id;
+        }
       }
 
       await updateDoc(orderRef, updateData);
@@ -191,6 +213,19 @@ export function useOrders(status = null) {
         cancelledReason: meta.reason || null,
         updatedAt: serverTimestamp()
       });
+
+      if (data.deliveryId) {
+        try {
+          await updateDoc(doc(db, 'deliveries', data.deliveryId), {
+            status: 'cancelled',
+            cancelledAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+          });
+        } catch (deliveryErr) {
+          console.error('Error cancelling linked delivery:', deliveryErr);
+        }
+      }
+
       return { success: true };
     } catch (err) {
       console.error('Error cancelling order:', err);
@@ -217,6 +252,18 @@ export function useOrders(status = null) {
         reactivatedAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
+
+      if (data.deliveryId) {
+        try {
+          await updateDoc(doc(db, 'deliveries', data.deliveryId), {
+            status: 'ready',
+            updatedAt: serverTimestamp()
+          });
+        } catch (deliveryErr) {
+          console.error('Error reactivating linked delivery:', deliveryErr);
+        }
+      }
+
       return { success: true };
     } catch (err) {
       console.error('Error reactivating order:', err);

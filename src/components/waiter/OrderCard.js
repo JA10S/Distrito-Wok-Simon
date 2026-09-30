@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTimer } from '../../hooks/useTimer';
+import { ORDER_TYPE_LABELS, PAYMENT_METHOD_LABELS } from '../../utils/orderUtils';
 
 function OrderCard({ order, onStatusChange, onEdit, onCancel, canEdit = true, canUpdateStatus = true, canCancel = true, canCancelKitchen = false }) {
   const preparationTimer = useTimer(order.preparingAt || order.createdAt);
@@ -27,9 +28,25 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, canEdit = true, ca
               Pedido #{order.id.slice(-6).toUpperCase()}
             </div>
             <div className="text-dorado-oscuro text-sm">
-              Mesa {order.tableNumber}
+              {order.type && order.type !== 'table'
+                ? ORDER_TYPE_LABELS[order.type] || order.type
+                : `Mesa ${order.tableNumber}`}
             </div>
           </div>
+
+          {order.type && order.type !== 'table' && order.customer && (
+            <div className="text-dorado-oscuro text-sm mt-1">
+              {order.customer.name} · {order.customer.phone}
+              {order.type === 'delivery' && order.customer.address && (
+                <span className="block">📍 {order.customer.address}</span>
+              )}
+              {order.preferredPayment && (
+                <span className="block">
+                  Pago preferido: {PAYMENT_METHOD_LABELS[order.preferredPayment] || order.preferredPayment}
+                </span>
+              )}
+            </div>
+          )}
           
           <div className="mt-2 space-y-1">
             {order.items?.map((item, i) => (

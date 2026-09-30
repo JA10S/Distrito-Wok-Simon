@@ -5,8 +5,54 @@ export const ORDER_STATUS_LABELS = {
   preparing: 'Preparando',
   ready: 'Listo',
   paid: 'Pagado',
-  cancelled: 'Cancelado'
+  cancelled: 'Cancelado',
+  delivering: 'En camino',
+  delivered: 'Entregado'
 };
+
+export const ORDER_TYPE_LABELS = {
+  table: '🍽️ En mesa',
+  delivery: '🛵 Domicilio',
+  pickup: '🥡 Para llevar'
+};
+
+export const PAYMENT_METHOD_LABELS = {
+  cash: 'Efectivo',
+  nequi: 'Nequi',
+  card: 'Tarjeta'
+};
+
+export const PAYMENT_METHOD_OPTIONS = [
+  { id: 'cash', label: 'Efectivo' },
+  { id: 'nequi', label: 'Nequi' },
+  { id: 'card', label: 'Tarjeta' }
+];
+
+export function parsePrice(priceStr) {
+  if (!priceStr) return 0;
+  const match = String(priceStr).match(/(\d+)/);
+  return match ? parseInt(match[1], 10) * 1000 : 0;
+}
+
+export function calculateTotals(items) {
+  const subtotal = (items || []).reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const tax = Math.round(subtotal * 0.10);
+  return { subtotal, tax, total: subtotal + tax };
+}
+
+export function validateCustomerInfo(orderType, customer) {
+  if (orderType === 'table') return null;
+
+  const data = customer || {};
+  if (!data.name || !data.name.trim()) return 'Ingrese el nombre del cliente';
+  if (!data.phone || String(data.phone).replace(/\D/g, '').length < 7) {
+    return 'Ingrese un teléfono válido (mínimo 7 dígitos)';
+  }
+  if (orderType === 'delivery' && (!data.address || !data.address.trim())) {
+    return 'Ingrese la dirección de entrega';
+  }
+  return null;
+}
 
 export function timestampMs(value) {
   if (!value) return 0;

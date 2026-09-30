@@ -2,6 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useOrders } from '../../hooks/useOrders';
+import { ORDER_TYPE_LABELS, PAYMENT_METHOD_LABELS } from '../../utils/orderUtils';
+
+function getOrderLabel(order) {
+  if (order.type && order.type !== 'table') {
+    const label = ORDER_TYPE_LABELS[order.type] || order.type;
+    return order.customer?.name ? `${label} · ${order.customer.name}` : label;
+  }
+  return `Mesa ${order.tableNumber || 'N/A'}`;
+}
 
 function CashierDashboard() {
   const { currentUser, hasPermission, logout } = useAuth();
@@ -142,8 +151,19 @@ function CashierDashboard() {
                           Pedido #{order.id.slice(-6).toUpperCase()}
                         </h3>
                         <p className="text-dorado-oscuro text-sm">
-                          Mesa {order.tableNumber || 'N/A'}
+                          {getOrderLabel(order)}
                         </p>
+                        {order.type && order.type !== 'table' && order.customer && (
+                          <p className="text-dorado-oscuro text-xs">
+                            {order.customer.phone}
+                            {order.type === 'delivery' && order.customer.address && (
+                              <> · 📍 {order.customer.address}</>
+                            )}
+                            {order.preferredPayment && (
+                              <> · Pago: {PAYMENT_METHOD_LABELS[order.preferredPayment] || order.preferredPayment}</>
+                            )}
+                          </p>
+                        )}
                       </div>
                       <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm">
                         Listo para cobrar
@@ -237,7 +257,7 @@ function CashierDashboard() {
                           Pedido #{order.id.slice(-6).toUpperCase()}
                         </span>
                         <span className="text-dorado-oscuro text-sm ml-2">
-                          Mesa {order.tableNumber || 'N/A'}
+                          {getOrderLabel(order)}
                         </span>
                       </div>
                       <div className="text-right">
