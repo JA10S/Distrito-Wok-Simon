@@ -263,13 +263,13 @@ match /arroces/{itemId} {
   - Sin el permiso no se muestra nada (comportamiento por defecto de todos los roles)
   - Unificación de estilo del contenido: `hover-lift` en tarjetas (mesas, pedidos, cobros, entregas) y empty states con icono (`FaInbox`/`FaHistory`/`FaBoxOpen`)
   - Tests: 51 totales (2 nuevos en `WaiterDashboard.test` verificando el gating de `view_summaries`)
-- [x] Animación de chef en el login (reemplaza al logo) — **versión limpia tras revisión**
-  - `src/components/common/ChefAnimation.js`: ilustración SVG animada **minimalista** (decisión del usuario: "menos elementos, escena simple") — silueta SÓLIDA dorada (`currentColor`, sin contornos internos: los strokes en formas superpuestas generaban costuras feas) de chef en zancada revolviendo un wok con **espátula oscura** (se recorta sobre el fuego), **columna de fuego de 3 capas** (roja/dorada/núcleo claro con parpadeo), 5 chispas, 3 trozos de comida volando, mesa/estufa atenuada al 50% y 1 resplandor de fondo. Sin faroles ni props de mesa (versión anterior con escena cargada fue rechazada)
-  - `src/App.css`: bloque "Ilustración animada" — `chef-glow`, `chef-solid-line`, `chef-utensil/utensil-line`, `chef-stir` (brazo), `chef-sway` (balanceo), `chef-flame-a/b/c` + `chef-flicker`, `chef-spark-rise` (`--dx`), `chef-food-fly`; todo con `transform-box: fill-box` y `prefers-reduced-motion`
-  - Regla clave: el `transform` del SVG va en un `<g>` contenedor cuando el hijo tiene animación CSS (la animación pisa el atributo)
-  - `LoginPage`: desktop 360px (halo `bg-dorado/10 blur-3xl`) y móvil 210px; mantiene `.glow`; import de `Logo` fuera del login (Logo sigue en menú/dashboards)
-  - Skill asociada: `.opencode/skills/ilustraciones-svg/SKILL.md` (incluye lección de estilo sólido/escena mínima); agente: `.opencode/agents/diseno-visual.md`
-  - Tests: 51 totales sin cambios (sin dependencias del logo en login)
+- [x] Imagen de referencia en el login + efectos animados (decisión del usuario: usar su imagen en lugar del SVG)
+  - `public/assets/images/login-chef.jpg` (704KB, imagen del chef con wok en llamas — aportada por el usuario; también dejó `Logo_actualizado.png` sin usar aún)
+  - `LoginPage`: desktop 430px / móvil 270px con `mix-blend-mode: lighten` (funde bordes con el fondo negro), **máscara de viñeta** (`mask-image: radial-gradient` en `.login-chef`) que deshace los bordes rectos, **zoom lento** (16s, `login-chef-zoom`) y **resplandor dorado pulsante** sobre el fuego (`.login-chef::after` con `mix-blend-mode: screen`, `login-chef-flicker`); `prefers-reduced-motion` respetado
+  - **Fallback**: si la imagen no carga (`onError`), se muestra el SVG animado `ChefAnimation` (versión limpia: silueta sólida dorada, 3 capas de fuego, 5 chispas, 3 trozos de comida, mesa atenuada 50%)
+  - `src/App.css`: bloque "Imagen de referencia en el login" + bloque "Ilustración animada" (clases `chef-*`)
+  - Skill asociada: `.opencode/skills/ilustraciones-svg/SKILL.md`; agente: `.opencode/agents/diseno-visual.md`
+  - Tests: 51 totales sin cambios
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)

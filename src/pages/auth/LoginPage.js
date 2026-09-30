@@ -18,6 +18,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [chefImgOk, setChefImgOk] = useState(true);
 
   const { login, userRoles, currentUser } = useAuth();
   const navigate = useNavigate();
@@ -66,10 +67,24 @@ function LoginPage() {
         <div className="hidden lg:flex flex-col items-center text-center animate-fade-in-up">
           <div className="relative w-fit">
             <div
-              className="absolute inset-0 -m-4 rounded-full bg-dorado/10 blur-3xl"
+              className="absolute inset-0 -m-6 rounded-full bg-dorado/10 blur-3xl"
               aria-hidden="true"
             />
-            <ChefAnimation size={360} className="relative glow text-dorado" />
+            {chefImgOk ? (
+              <div
+                className="login-chef relative overflow-hidden rounded-2xl"
+                style={{ width: 430, maxWidth: '100%' }}
+              >
+                <img
+                  src="/assets/images/login-chef.jpg"
+                  alt="Chef cocinando en un wok con llamas"
+                  className="login-chef-img block w-full"
+                  onError={() => setChefImgOk(false)}
+                />
+              </div>
+            ) : (
+              <ChefAnimation size={360} className="relative glow text-dorado" />
+            )}
           </div>
           <h1 className="font-cormorant text-5xl font-bold mt-6">
             <span className="text-white">Distrito </span>
@@ -94,7 +109,21 @@ function LoginPage() {
         {/* Formulario */}
         <div className="w-full max-w-md mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="lg:hidden text-center mb-6">
-            <ChefAnimation size={210} className="mx-auto glow text-dorado" />
+            {chefImgOk ? (
+              <div
+                className="login-chef relative overflow-hidden rounded-2xl mx-auto"
+                style={{ width: 270, maxWidth: '100%' }}
+              >
+                <img
+                  src="/assets/images/login-chef.jpg"
+                  alt="Chef cocinando en un wok con llamas"
+                  className="login-chef-img block w-full"
+                  onError={() => setChefImgOk(false)}
+                />
+              </div>
+            ) : (
+              <ChefAnimation size={210} className="mx-auto glow text-dorado" />
+            )}
             <h1 className="font-cormorant text-3xl font-bold text-dorado-claro mt-3">
               Distrito Wok Simón
             </h1>
