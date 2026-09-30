@@ -208,6 +208,15 @@ match /arroces/{itemId} {
   - `CashierDashboard`: etiqueta de tipo de pedido + teléfono/dirección/pago preferido
   - `firestore.rules`: `orders` con `get: if true` (seguimiento público), `list` autenticado, `create` para invitados solo con payload `delivery|pickup` validado
   - Tests: 37 totales (`MenuPage.test` 4 casos, `orderUtils.test` 14 casos)
+- [x] Personalización de apariencia por el administrador (fuentes y colores)
+  - Admin → pestaña **🎨 Apariencia**: selectores de color (dorado, dorado claro/oscuro, rojo, rojo oscuro, fondo) + tipografías de títulos y cuerpo con vista previa en vivo
+  - `tailwind.config.js`: colores ahora son `rgb(var(--color-*) / <alpha-value>)`; `font-cormorant`/`font-montserrat` usan `var(--font-heading)`/`var(--font-body)` (los modificadores de opacidad `/20` siguen funcionando)
+  - `src/App.css`: `:root` con variables por defecto (mismos hex de siempre) + Google Fonts ampliado (Cormorant Garamond, Playfair Display, Lora, Montserrat, Poppins, Lato)
+  - `src/utils/themeUtils.js`: `DEFAULT_THEME`, `COLOR_FIELDS`, `HEADING_FONTS`, `BODY_FONTS`, `hexToRgbChannels`, `sanitizeTheme` (valida hex y fuentes), `applyTheme` (escribe las CSS vars)
+  - `src/contexts/ThemeContext.js`: `ThemeProvider` escucha `settings/theme` con `onSnapshot` (aplica a todas las páginas en tiempo real, incluido menú público) + `saveTheme`/`resetTheme`
+  - Sin documento en Firestore → se usan los valores por defecto; cambios sin guardar se descartan al salir de la pestaña
+  - `firestore.rules` sin cambios: `settings` ya era lectura pública y escritura autenticada
+  - Tests: 49 totales (`themeUtils.test` 7 casos, `ThemeManager.test` 4 casos)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)

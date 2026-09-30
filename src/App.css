@@ -2,23 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Importar fuentes de Google */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap');
+/* Importar fuentes de Google (opciones de personalización) */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;600&family=Poppins:wght@300;400;500;600&family=Lato:wght@300;400;700&display=swap');
+
+/* Tema personalizable (admin → Apariencia). Estas variables las sobreescribe ThemeContext desde Firestore */
+:root {
+  --color-dorado: 212 168 67;        /* #D4A843 */
+  --color-dorado-claro: 246 222 154; /* #F6DE9A */
+  --color-dorado-oscuro: 139 105 20; /* #8B6914 */
+  --color-rojo: 196 15 15;           /* #C40F0F */
+  --color-rojo-oscuro: 139 0 0;      /* #8B0000 */
+  --color-negro: 13 13 13;           /* #0d0d0d */
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-body: 'Montserrat', sans-serif;
+}
 
 /* Estilos base */
 body {
-  font-family: 'Montserrat', sans-serif;
-  background-color: #0d0d0d;
-  color: #F6DE9A;
+  font-family: var(--font-body);
+  background-color: rgb(var(--color-negro));
+  color: rgb(var(--color-dorado-claro));
 }
 
 /* Estilos personalizados */
 .font-cormorant {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: var(--font-heading);
 }
 
 .font-montserrat {
-  font-family: 'Montserrat', sans-serif;
+  font-family: var(--font-body);
 }
 
 /* Scrollbar personalizado */
@@ -27,16 +39,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0d0d0d;
+  background: rgb(var(--color-negro));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #8B6914;
+  background: rgb(var(--color-dorado-oscuro));
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #D4A843;
+  background: rgb(var(--color-dorado));
 }
 
 /* Animaciones */

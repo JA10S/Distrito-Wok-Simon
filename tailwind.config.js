@@ -6,16 +6,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'dorado': '#D4A843',
-        'dorado-claro': '#F6DE9A',
-        'dorado-oscuro': '#8B6914',
-        'rojo': '#C40F0F',
-        'rojo-oscuro': '#8B0000',
-        'negro': '#0d0d0d',
+        'dorado': 'rgb(var(--color-dorado) / <alpha-value>)',
+        'dorado-claro': 'rgb(var(--color-dorado-claro) / <alpha-value>)',
+        'dorado-oscuro': 'rgb(var(--color-dorado-oscuro) / <alpha-value>)',
+        'rojo': 'rgb(var(--color-rojo) / <alpha-value>)',
+        'rojo-oscuro': 'rgb(var(--color-rojo-oscuro) / <alpha-value>)',
+        'negro': 'rgb(var(--color-negro) / <alpha-value>)',
       },
       fontFamily: {
-        'cormorant': ['Cormorant Garamond', 'serif'],
-        'montserrat': ['Montserrat', 'sans-serif'],
+        'cormorant': ['var(--font-heading)', 'serif'],
+        'montserrat': ['var(--font-body)', 'sans-serif'],
       },
     },
   },

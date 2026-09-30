@@ -6,6 +6,7 @@ import { useOrders } from '../../hooks/useOrders';
 import MenuManager from '../../components/admin/MenuManager';
 import RolesManager from '../../components/admin/RolesManager';
 import UsersManager from '../../components/admin/UsersManager';
+import ThemeManager from '../../components/admin/ThemeManager';
 import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
 
 function AdminDashboard() {
@@ -85,6 +86,7 @@ function AdminDashboard() {
               { id: 'menu', label: 'Menú' },
               { id: 'roles', label: 'Roles' },
               { id: 'users', label: 'Usuarios' },
+              { id: 'theme', label: '🎨 Apariencia' },
               { id: 'reports', label: 'Reportes' }
             ].map((tab) => (
               <button
@@ -218,6 +220,9 @@ function AdminDashboard() {
 
         {/* USUARIOS */}
         {activeTab === 'users' && <UsersManager />}
+
+        {/* APARIENCIA */}
+        {activeTab === 'theme' && <ThemeManager />}
 
         {/* REPORTES */}
         {activeTab === 'reports' && (
