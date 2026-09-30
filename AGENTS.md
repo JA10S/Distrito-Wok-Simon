@@ -270,6 +270,12 @@ match /arroces/{itemId} {
   - `src/App.css`: bloque "Imagen de referencia en el login" + bloque "Ilustración animada" (clases `chef-*`)
   - Skill asociada: `.opencode/skills/ilustraciones-svg/SKILL.md`; agente: `.opencode/agents/diseno-visual.md`
   - Tests: 51 totales sin cambios
+- [x] Login rediseñado (feedback de diseño del usuario)
+  - **Glassmorphism**: tarjeta del formulario `bg-black/60 backdrop-blur-md border-dorado/25 rounded-2xl` (reemplaza `bg-gray-900` azulado)
+  - **Inputs mate oscuros**: `bg-black/50`, texto blanco, iconos dorado/70, placeholder dorado apagado, `rounded-lg`; CSS `.login-input:-webkit-autofill` fuerza fondo oscuro (evita el blanco del autocompletado del navegador)
+  - **Tipografía unificada**: labels, subtítulo ★ y lista de características en `font-cormorant` (serif gourmet); el texto de los inputs queda en Montserrat (combinación serif+sans limpia)
+  - **Botón metálico**: clase `.btn-gold` con degradado `dorado-claro → dorado → dorado-oscuro` (background-size 170%, hover mueve el gradiente), sombra dorada, `rounded-xl`, hover lift sutil
+  - **Layout 50/50 fluido**: `max-w-6xl gap-12` — izquierdo: imagen a 540px (antes 430) + marca `text-5xl/6xl` + features; derecho: solo el formulario (aire)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)

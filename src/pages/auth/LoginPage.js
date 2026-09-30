@@ -62,10 +62,10 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen bg-negro pattern-bg flex items-center justify-center px-4 py-10">
-      <div className="max-w-5xl w-full grid lg:grid-cols-2 gap-10 items-center">
-        {/* Panel de marca (solo desktop) */}
+      <div className="max-w-6xl w-full grid lg:grid-cols-2 gap-12 items-center">
+        {/* Lado izquierdo: arte + marca + características */}
         <div className="hidden lg:flex flex-col items-center text-center animate-fade-in-up">
-          <div className="relative w-fit">
+          <div className="relative w-full flex justify-center">
             <div
               className="absolute inset-0 -m-6 rounded-full bg-dorado/10 blur-3xl"
               aria-hidden="true"
@@ -73,7 +73,7 @@ function LoginPage() {
             {chefImgOk ? (
               <div
                 className="login-chef relative overflow-hidden rounded-2xl"
-                style={{ width: 430, maxWidth: '100%' }}
+                style={{ width: '100%', maxWidth: 540 }}
               >
                 <img
                   src="/assets/images/login-chef.jpg"
@@ -83,20 +83,20 @@ function LoginPage() {
                 />
               </div>
             ) : (
-              <ChefAnimation size={360} className="relative glow text-dorado" />
+              <ChefAnimation size={440} className="relative glow text-dorado" />
             )}
           </div>
-          <h1 className="font-cormorant text-5xl font-bold mt-6">
+          <h1 className="font-cormorant text-5xl xl:text-6xl font-bold mt-8">
             <span className="text-white">Distrito </span>
             <span className="text-gold-gradient">Wok Simón</span>
           </h1>
-          <p className="text-dorado-oscuro tracking-[0.3em] text-sm uppercase mt-2">
+          <p className="font-cormorant italic text-xl text-dorado mt-2 tracking-[0.18em]">
             ★ Sabor que enamora ★
           </p>
 
           <ul className="mt-8 space-y-3 text-left">
             {features.map((feature) => (
-              <li key={feature.text} className="flex items-center gap-3 text-dorado-claro">
+              <li key={feature.text} className="flex items-center gap-3 font-cormorant text-lg text-dorado-claro">
                 <span className="w-9 h-9 rounded-full bg-dorado/10 border border-dorado/30 flex items-center justify-center text-dorado shrink-0">
                   {feature.icon}
                 </span>
@@ -129,7 +129,8 @@ function LoginPage() {
             </h1>
           </div>
 
-          <div className="bg-gray-900 rounded-xl p-6 sm:p-8 shadow-2xl border border-dorado-oscuro/30 hover-lift">
+          {/* Formulario (lado derecho: limpio y con aire) */}
+          <div className="bg-black/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-2xl border border-dorado/25 hover-lift">
             <div className="flex items-center justify-center gap-3 mb-6">
               <span className="h-px w-8 bg-dorado-oscuro/50" />
               <h2 className="text-2xl font-cormorant text-dorado text-center">
@@ -147,20 +148,20 @@ function LoginPage() {
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label className="block text-dorado-claro text-sm mb-2" htmlFor="login-email">
+                <label className="block font-cormorant text-lg font-medium tracking-wide text-dorado-claro mb-2" htmlFor="login-email">
                   Correo Electrónico
                 </label>
                 <div className="relative">
                   <FaEnvelope
                     aria-hidden="true"
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-dorado-oscuro"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-dorado/70"
                   />
                   <input
                     id="login-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-negro border border-dorado-oscuro rounded pl-10 pr-4 py-3 text-dorado-claro focus:outline-none focus:border-dorado focus:ring-1 focus:ring-dorado/50 transition"
+                    className="login-input w-full bg-black/50 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-dorado-oscuro/60 focus:outline-none focus:border-dorado focus:ring-1 focus:ring-dorado/50 transition"
                     placeholder="usuario@restaurante.com"
                     required
                   />
@@ -168,20 +169,20 @@ function LoginPage() {
               </div>
 
               <div className="mb-6">
-                <label className="block text-dorado-claro text-sm mb-2" htmlFor="login-password">
+                <label className="block font-cormorant text-lg font-medium tracking-wide text-dorado-claro mb-2" htmlFor="login-password">
                   Contraseña
                 </label>
                 <div className="relative">
                   <FaLock
                     aria-hidden="true"
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-dorado-oscuro"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-dorado/70"
                   />
                   <input
                     id="login-password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-negro border border-dorado-oscuro rounded pl-10 pr-4 py-3 text-dorado-claro focus:outline-none focus:border-dorado focus:ring-1 focus:ring-dorado/50 transition"
+                    className="login-input w-full bg-black/50 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-dorado-oscuro/60 focus:outline-none focus:border-dorado focus:ring-1 focus:ring-dorado/50 transition"
                     placeholder="••••••••"
                     required
                   />
@@ -191,7 +192,7 @@ function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-3 px-4 rounded transition duration-200 disabled:opacity-50 flex items-center justify-center gap-2 hover-lift"
+                className="btn-gold w-full text-negro font-semibold tracking-wide py-3 px-4 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
