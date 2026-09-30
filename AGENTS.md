@@ -236,6 +236,11 @@ match /arroces/{itemId} {
   - Sin el permiso no se muestra nada (comportamiento por defecto de todos los roles)
   - Unificación de estilo del contenido: `hover-lift` en tarjetas (mesas, pedidos, cobros, entregas) y empty states con icono (`FaInbox`/`FaHistory`/`FaBoxOpen`)
   - Tests: 51 totales (2 nuevos en `WaiterDashboard.test` verificando el gating de `view_summaries`)
+- [x] Animación de chef en el login (reemplaza al logo)
+  - `src/components/common/ChefAnimation.js`: SVG animado propio (sombra de chef con toque revolviendo un wok — brazo en movimiento, llamas parpadeantes rojo/dorado, vapor que sube, balanceo sutil del cuerpo)
+  - `src/App.css`: keyframes `chef-stir`, `chef-sway`, `chef-flame`, `chef-steam` (con `transform-box: fill-box`); respetan `prefers-reduced-motion`
+  - `LoginPage`: en desktop (330px con halo `bg-dorado/10 blur-3xl`) y móvil (200px); mantiene `.glow`; el import de `Logo` se quitó de la página de login (Logo sigue en menú/dashboards)
+  - Tests: 51 totales sin cambios (sin dependencias del logo en login)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)

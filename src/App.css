@@ -186,3 +186,63 @@ body {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
+
+/* ============ Animación: chef cocinando en el wok (login) ============ */
+
+/* Brazo que revuelve (giro alrededor del hombro) */
+.chef-animation .chef-stir-arm {
+  transform-box: fill-box;
+  transform-origin: 0% 55%;
+  animation: chef-stir 1.2s ease-in-out infinite;
+}
+
+@keyframes chef-stir {
+  0%, 100% { transform: rotate(-15deg); }
+  50% { transform: rotate(14deg); }
+}
+
+/* Balanceo sutil del cuerpo */
+.chef-animation .chef-body {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: chef-sway 3.4s ease-in-out infinite;
+}
+
+@keyframes chef-sway {
+  0%, 100% { transform: rotate(-1.6deg); }
+  50% { transform: rotate(1.6deg); }
+}
+
+/* Llamas parpadeando (mechones desde la base) */
+.chef-animation .chef-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: chef-flame 0.45s ease-in-out infinite alternate;
+}
+
+@keyframes chef-flame {
+  from { transform: scaleY(0.88) scaleX(1.06); }
+  to { transform: scaleY(1.16) scaleX(0.9); }
+}
+
+/* Vapor que sube y se desvanece */
+.chef-animation .chef-steam {
+  opacity: 0;
+  transform-box: fill-box;
+  animation: chef-steam 2.6s ease-in-out infinite;
+}
+
+@keyframes chef-steam {
+  0% { opacity: 0; transform: translateY(8px) scale(0.8); }
+  35% { opacity: 0.85; }
+  100% { opacity: 0; transform: translateY(-20px) scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chef-animation .chef-stir-arm,
+  .chef-animation .chef-body,
+  .chef-animation .chef-flame,
+  .chef-animation .chef-steam {
+    animation: none;
+  }
+}

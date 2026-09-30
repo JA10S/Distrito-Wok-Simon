@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import Logo from '../../components/common/Logo';
+import ChefAnimation from '../../components/common/ChefAnimation';
 import {
   FaEnvelope,
   FaLock,
@@ -64,7 +64,13 @@ function LoginPage() {
       <div className="max-w-5xl w-full grid lg:grid-cols-2 gap-10 items-center">
         {/* Panel de marca (solo desktop) */}
         <div className="hidden lg:flex flex-col items-center text-center animate-fade-in-up">
-          <Logo size={130} className="glow text-dorado" />
+          <div className="relative w-fit">
+            <div
+              className="absolute inset-0 -m-4 rounded-full bg-dorado/10 blur-3xl"
+              aria-hidden="true"
+            />
+            <ChefAnimation size={330} className="relative glow text-dorado" />
+          </div>
           <h1 className="font-cormorant text-5xl font-bold mt-6">
             <span className="text-white">Distrito </span>
             <span className="text-gold-gradient">Wok Simón</span>
@@ -88,7 +94,7 @@ function LoginPage() {
         {/* Formulario */}
         <div className="w-full max-w-md mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           <div className="lg:hidden text-center mb-6">
-            <Logo size={80} className="mx-auto glow" />
+            <ChefAnimation size={200} className="mx-auto glow text-dorado" />
             <h1 className="font-cormorant text-3xl font-bold text-dorado-claro mt-3">
               Distrito Wok Simón
             </h1>
