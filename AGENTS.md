@@ -176,16 +176,30 @@ match /arroces/{itemId} {
 - [x] Botón "Volver al Panel" para admin en dashboards
 - [x] Sistema de permisos por funcionalidad
 - [x] Documento de lecciones aprendidas (AGENTS.md)
+- [x] Flujo completo de pedidos en WaiterDashboard (permisos, mesas, cobro)
 
 ### 📋 Pendiente:
 - [ ] Integrar pagos Bold
 - [ ] Configurar WhatsApp Business API
 - [x] Conectar CashierDashboard a Firestore
 - [x] Conectar DeliveryDashboard a Firestore (hook useDeliveries, colección deliveries)
-- [ ] Crear flujo completo de pedidos en WaiterDashboard
+- [x] Crear flujo completo de pedidos en WaiterDashboard
+  - `useOrders` filtra pedidos activos (`pending|preparing|ready`), ordena por `createdAt` y guarda `paymentStatus`/`cashierId`
+  - `processPayment` (cajero) libera la mesa automáticamente si `tables.currentOrderId` coincide
+  - `createOrder` guarda `waiterId`/`waiterName`; `tables.currentOrderId` se registra al ocupar
+  - Permisos verificados en UI: `create_order`, `update_order_status`, `close_table`
+  - Mesa ocupada → clic abre el pedido activo (agregar items = continuar pedido)
+  - Botón "Cerrar mesa" para mesas ocupadas sin pedido activo
+  - Cancelar directo desde la tarjeta, solo para pedidos `pending` (aún no entrados en cocina)
+  - Cancelación en cocina (`preparing`): solo admin (`view_dashboard`) con motivo obligatorio; `ready` no se cancela
+  - `cancelOrder` guarda `cancelledFromStatus`, `cancelledBy/Name`, `cancelledReason`
+  - Aviso de duplicado al crear pedido: compara items con cancelados de los últimos 30 min (`src/utils/orderUtils.js`)
+  - Panel "Cancelados recientes" con botón **♻️ Reactivar** (vuelve a `pending`/`preparing` y re-ocupa la mesa)
+  - Panel de cancelados también en AdminDashboard (avisar a cocina)
+  - Tests: `src/pages/waiter/WaiterDashboard.test.js` (12 casos) + `src/utils/orderUtils.test.js` (8 casos)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
-- [ ] Ampliar cobertura de tests
+- [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)
 
 ### ✅ Bugs Resueltos (2026-08-22):
 1. ~~**pushNotification.js**: Import de `messaging` no existe en firebase.js~~ → firebase.js ahora exporta `messaging`
