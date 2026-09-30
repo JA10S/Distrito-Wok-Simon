@@ -9,7 +9,8 @@ import OrderCard from '../../components/waiter/OrderCard';
 import OrderEditor from '../../components/waiter/OrderEditor';
 import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
 import DashboardHeader from '../../components/layout/DashboardHeader';
-import { FaChair, FaReceipt, FaPlusCircle } from 'react-icons/fa';
+import SummaryStats from '../../components/common/SummaryStats';
+import { FaChair, FaReceipt, FaPlusCircle, FaCheckCircle, FaInbox } from 'react-icons/fa';
 import { findDuplicateOrder, ORDER_STATUS_LABELS } from '../../utils/orderUtils';
 
 function TableCard({ table, onClick, onClose, canClose, hasActiveOrder }) {
@@ -26,7 +27,7 @@ function TableCard({ table, onClick, onClose, canClose, hasActiveOrder }) {
   return (
     <div
       onClick={onClick}
-      className={`rounded-lg p-4 border-2 cursor-pointer transition ${
+      className={`rounded-lg p-4 border-2 cursor-pointer transition hover-lift ${
         table.status === 'available'
           ? 'border-green-500 bg-green-900/30 hover:bg-green-900/50'
           : table.status === 'occupied'
@@ -366,6 +367,18 @@ function WaiterDashboard() {
 
       {/* Contenido principal */}
       <main className="container mx-auto px-4 py-8">
+        {/* Resúmenes (permiso view_summaries otorgado por el admin) */}
+        {hasPermission('view_summaries') && (
+          <SummaryStats
+            stats={[
+              { label: 'Mesas disponibles', value: tables.filter(t => t.status === 'available').length, icon: <FaChair />, iconColor: 'text-green-500', valueColor: 'text-green-500' },
+              { label: 'Mesas ocupadas', value: tables.filter(t => t.status === 'occupied').length, icon: <FaChair />, iconColor: 'text-red-500', valueColor: 'text-red-500' },
+              { label: 'Pedidos activos', value: orders.length, icon: <FaReceipt />, iconColor: 'text-yellow-500', valueColor: 'text-yellow-500' },
+              { label: 'Pedidos listos', value: orders.filter(o => o.status === 'ready').length, icon: <FaCheckCircle />, iconColor: 'text-green-500', valueColor: 'text-green-500' }
+            ]}
+          />
+        )}
+
         {/* Vista de Mesas */}
         {activeTab === 'tables' && (
           <div>
@@ -396,8 +409,9 @@ function WaiterDashboard() {
 
             <h2 className="text-xl font-cormorant text-dorado mb-6">Pedidos Activos</h2>
             {orders.length === 0 ? (
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
-                <p className="text-dorado-oscuro text-center">
+              <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
+                <FaInbox className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
+                <p className="text-dorado-oscuro">
                   No hay pedidos activos en este momento
                 </p>
               </div>

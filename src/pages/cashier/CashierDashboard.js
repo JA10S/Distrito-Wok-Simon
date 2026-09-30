@@ -3,8 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useOrders } from '../../hooks/useOrders';
 import DashboardHeader from '../../components/layout/DashboardHeader';
-import { FaReceipt, FaHistory, FaCashRegister } from 'react-icons/fa';
-import { ORDER_TYPE_LABELS, PAYMENT_METHOD_LABELS } from '../../utils/orderUtils';
+import SummaryStats from '../../components/common/SummaryStats';
+import {
+  FaReceipt,
+  FaHistory,
+  FaCashRegister,
+  FaMoneyBillWave,
+  FaCheckCircle,
+  FaInbox
+} from 'react-icons/fa';
+import {
+  ORDER_TYPE_LABELS,
+  PAYMENT_METHOD_LABELS,
+  timestampMs
+} from '../../utils/orderUtils';
 
 function getOrderLabel(order) {
   if (order.type && order.type !== 'table') {
@@ -55,6 +67,13 @@ function CashierDashboard() {
   const boldSales = paidOrders.filter(o => o.paymentMethod === 'bold' || o.paymentMethod === 'nequi').reduce((sum, o) => sum + (o.total || 0), 0);
   const cardSales = paidOrders.filter(o => o.paymentMethod === 'card').reduce((sum, o) => sum + (o.total || 0), 0);
 
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const paidToday = paidOrders.filter(
+    (o) => (timestampMs(o.createdAt) || 0) >= startOfDay.getTime()
+  );
+  const collectedToday = paidToday.reduce((sum, o) => sum + (o.total || 0), 0);
+
   return (
     <div className="min-h-screen bg-negro">
       <DashboardHeader
@@ -73,6 +92,18 @@ function CashierDashboard() {
 
       {/* Contenido principal */}
       <main className="container mx-auto px-4 py-8">
+        {/* Resúmenes (permiso view_summaries otorgado por el admin) */}
+        {hasPermission('view_summaries') && (
+          <SummaryStats
+            stats={[
+              { label: 'Por cobrar', value: readyOrders.length, icon: <FaReceipt />, iconColor: 'text-yellow-500', valueColor: 'text-yellow-500' },
+              { label: 'Cobrado hoy', value: `$${collectedToday.toLocaleString('es-CO')}`, icon: <FaMoneyBillWave />, iconColor: 'text-green-500', valueColor: 'text-green-500' },
+              { label: 'Pagados hoy', value: paidToday.length, icon: <FaCheckCircle />, iconColor: 'text-green-500', valueColor: 'text-green-500' },
+              { label: 'Total pagados', value: paidOrders.length, icon: <FaHistory />, iconColor: 'text-dorado', valueColor: 'text-dorado' }
+            ]}
+          />
+        )}
+
         {activeTab === 'orders' && (
           <div>
             <h2 className="text-xl font-cormorant text-dorado mb-6">Pedidos para Cobrar</h2>
@@ -83,8 +114,9 @@ function CashierDashboard() {
                 <p className="text-dorado">Cargando pedidos...</p>
               </div>
             ) : readyOrders.length === 0 ? (
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
-                <p className="text-dorado-oscuro text-center">
+              <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
+                <FaInbox className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
+                <p className="text-dorado-oscuro">
                   No hay pedidos pendientes de pago
                 </p>
               </div>
@@ -93,7 +125,7 @@ function CashierDashboard() {
                 {readyOrders.map((order) => (
                   <div
                     key={order.id}
-                    className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20"
+                    className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift"
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div>
@@ -192,8 +224,9 @@ function CashierDashboard() {
             <h2 className="text-xl font-cormorant text-dorado mb-6">Historial de Ventas</h2>
             
             {paidOrders.length === 0 ? (
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
-                <p className="text-dorado-oscuro text-center">
+              <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
+                <FaHistory className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
+                <p className="text-dorado-oscuro">
                   No hay ventas registradas hoy
                 </p>
               </div>

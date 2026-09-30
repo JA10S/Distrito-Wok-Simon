@@ -264,3 +264,23 @@ test('no crea el pedido si el usuario rechaza el aviso de duplicado', () => {
   );
   expect(mockCreateOrder).not.toHaveBeenCalled();
 });
+
+test('oculta los resúmenes sin permiso view_summaries', () => {
+  render(<WaiterDashboard />);
+
+  expect(screen.queryByText('Mesas disponibles')).not.toBeInTheDocument();
+  expect(screen.queryByText('Pedidos activos')).not.toBeInTheDocument();
+});
+
+test('muestra los resúmenes con permiso view_summaries', () => {
+  mockHasPermission.mockImplementation(
+    (p) => ALL_PERMISSIONS.includes(p) || p === 'view_summaries'
+  );
+
+  render(<WaiterDashboard />);
+
+  expect(screen.getByText('Mesas disponibles')).toBeInTheDocument();
+  expect(screen.getByText('Mesas ocupadas')).toBeInTheDocument();
+  expect(screen.getByText('Pedidos activos')).toBeInTheDocument();
+  expect(screen.getByText('Pedidos listos')).toBeInTheDocument();
+});

@@ -227,6 +227,15 @@ match /arroces/{itemId} {
   - **AdminDashboard**: stats cards con iconos + animación de entrada, tabs con iconos, dashboards por rol con `hover-lift`
   - Google Fonts unificados en `public/index.html` (6 familias del tema); `App.css` ya no tiene `@import`
   - Tests: 49 totales sin cambios (textos clave conservados)
+- [x] Resúmenes (estadísticas) en todos los dashboards — permiso administrable
+  - Nuevo permiso **`view_summaries`** en `RolesManager.ALL_PERMISSIONS` ("Ver Resúmenes (Estadísticas)") — el admin lo activa/desactiva por rol desde la pestaña Roles
+  - Componente compartido `src/components/common/SummaryStats.js` (grid 2/4 columnas, icono + valor, `hover-lift` + animación de entrada escalonada); AdminDashboard ahora lo reutiliza
+  - **Camarero**: mesas disponibles/ocupadas, pedidos activos/listos — gated por `hasPermission('view_summaries')`
+  - **Cajero**: por cobrar, cobrado hoy (`timestampMs` sobre `createdAt`), pagados hoy, total pagados
+  - **Domiciliario**: disponibles, mis entregas activas, entregadas, total pedidos
+  - Sin el permiso no se muestra nada (comportamiento por defecto de todos los roles)
+  - Unificación de estilo del contenido: `hover-lift` en tarjetas (mesas, pedidos, cobros, entregas) y empty states con icono (`FaInbox`/`FaHistory`/`FaBoxOpen`)
+  - Tests: 51 totales (2 nuevos en `WaiterDashboard.test` verificando el gating de `view_summaries`)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)
@@ -399,6 +408,7 @@ roles/{roleId}
 | `manage_users` | Gestionar usuarios |
 | `manage_permissions` | Gestionar permisos |
 | `view_reports` | Ver reportes |
+| `view_summaries` | Ver Resúmenes (Estadísticas) en el dashboard |
 
 ### Usuarios de Prueba
 | Email | Rol | UID |

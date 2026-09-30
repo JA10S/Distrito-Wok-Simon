@@ -8,6 +8,7 @@ import RolesManager from '../../components/admin/RolesManager';
 import UsersManager from '../../components/admin/UsersManager';
 import ThemeManager from '../../components/admin/ThemeManager';
 import DashboardHeader from '../../components/layout/DashboardHeader';
+import SummaryStats from '../../components/common/SummaryStats';
 import {
   FaThLarge,
   FaTachometerAlt,
@@ -96,36 +97,14 @@ function AdminDashboard() {
             <h2 className="text-xl font-cormorant text-dorado mb-6">Resumen del Sistema</h2>
             
             {/* Estadísticas */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift animate-fade-in-up">
-                <div className="flex items-center justify-between text-dorado-oscuro text-sm">
-                  <span>Mesas Disponibles</span>
-                  <FaChair className="text-green-500" aria-hidden="true" />
-                </div>
-                <div className="text-2xl font-bold text-green-500">{availableTables}</div>
-              </div>
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift animate-fade-in-up" style={{ animationDelay: '0.05s' }}>
-                <div className="flex items-center justify-between text-dorado-oscuro text-sm">
-                  <span>Mesas Ocupadas</span>
-                  <FaChair className="text-red-500" aria-hidden="true" />
-                </div>
-                <div className="text-2xl font-bold text-red-500">{occupiedTables}</div>
-              </div>
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                <div className="flex items-center justify-between text-dorado-oscuro text-sm">
-                  <span>Pedidos Pendientes</span>
-                  <FaReceipt className="text-yellow-500" aria-hidden="true" />
-                </div>
-                <div className="text-2xl font-bold text-yellow-500">{pendingOrders}</div>
-              </div>
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
-                <div className="flex items-center justify-between text-dorado-oscuro text-sm">
-                  <span>Total Mesas</span>
-                  <FaThLarge className="text-dorado" aria-hidden="true" />
-                </div>
-                <div className="text-2xl font-bold text-dorado">{tables.length}</div>
-              </div>
-            </div>
+            <SummaryStats
+              stats={[
+                { label: 'Mesas Disponibles', value: availableTables, icon: <FaChair />, iconColor: 'text-green-500', valueColor: 'text-green-500' },
+                { label: 'Mesas Ocupadas', value: occupiedTables, icon: <FaChair />, iconColor: 'text-red-500', valueColor: 'text-red-500' },
+                { label: 'Pedidos Pendientes', value: pendingOrders, icon: <FaReceipt />, iconColor: 'text-yellow-500', valueColor: 'text-yellow-500' },
+                { label: 'Total Mesas', value: tables.length, icon: <FaThLarge />, iconColor: 'text-dorado', valueColor: 'text-dorado' }
+              ]}
+            />
 
             {/* Acceso rápido a dashboards */}
             <h3 className="text-lg font-cormorant text-dorado mb-4">Acceso Rápido</h3>

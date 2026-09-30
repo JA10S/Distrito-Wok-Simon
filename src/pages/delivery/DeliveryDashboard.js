@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDeliveries } from '../../hooks/useDeliveries';
 import DashboardHeader from '../../components/layout/DashboardHeader';
-import { FaBell, FaTruck, FaHistory } from 'react-icons/fa';
+import SummaryStats from '../../components/common/SummaryStats';
+import { FaBell, FaTruck, FaHistory, FaCheckCircle, FaBoxOpen } from 'react-icons/fa';
 
 function DeliveryDashboard() {
   const { currentUser, hasPermission, logout } = useAuth();
@@ -67,7 +68,7 @@ function DeliveryDashboard() {
   };
 
   const DeliveryCard = ({ delivery, action }) => (
-    <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
+    <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="font-cormorant text-xl font-bold text-dorado-claro">
@@ -120,8 +121,9 @@ function DeliveryDashboard() {
   );
 
   const EmptyState = ({ message }) => (
-    <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
-      <p className="text-dorado-oscuro text-center">{message}</p>
+    <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
+      <FaBoxOpen className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
+      <p className="text-dorado-oscuro">{message}</p>
     </div>
   );
 
@@ -164,6 +166,18 @@ function DeliveryDashboard() {
       />
 
       <main className="container mx-auto px-4 py-8">
+        {/* Resúmenes (permiso view_summaries otorgado por el admin) */}
+        {hasPermission('view_summaries') && (
+          <SummaryStats
+            stats={[
+              { label: 'Disponibles', value: availableDeliveries.length, icon: <FaBell />, iconColor: 'text-yellow-500', valueColor: 'text-yellow-500' },
+              { label: 'Mis entregas activas', value: myDeliveries.length, icon: <FaTruck />, iconColor: 'text-blue-400', valueColor: 'text-blue-400' },
+              { label: 'Entregadas', value: historyDeliveries.length, icon: <FaCheckCircle />, iconColor: 'text-green-500', valueColor: 'text-green-500' },
+              { label: 'Total pedidos', value: deliveries.length, icon: <FaBoxOpen />, iconColor: 'text-dorado', valueColor: 'text-dorado' }
+            ]}
+          />
+        )}
+
         {activeTab === 'available' && (
           <div>
             <h2 className="text-xl font-cormorant text-dorado mb-6">Pedidos Disponibles</h2>

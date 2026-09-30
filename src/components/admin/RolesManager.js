@@ -16,7 +16,8 @@ const ALL_PERMISSIONS = {
   manage_menu: 'Gestionar Menú',
   manage_users: 'Gestionar Usuarios',
   manage_permissions: 'Gestionar Permisos',
-  view_reports: 'Ver Reportes'
+  view_reports: 'Ver Reportes',
+  view_summaries: 'Ver Resúmenes (Estadísticas)'
 };
 
 const ROLE_ICONS = {
