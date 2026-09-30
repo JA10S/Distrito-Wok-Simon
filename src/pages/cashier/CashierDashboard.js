@@ -20,7 +20,7 @@ function CashierDashboard() {
       return;
     }
 
-    const result = await processPayment(orderId, method);
+    const result = await processPayment(orderId, method, currentUser);
     if (result.success) {
       alert('Pago procesado exitosamente');
       setPaymentMethods({ ...paymentMethods, [orderId]: '' });

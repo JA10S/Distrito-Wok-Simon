@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMenu } from '../../hooks/useMenu';
 
-function OrderEditor({ order, onUpdate, onCancel, onClose }) {
+function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
   const { menu, loading } = useMenu();
   const [items, setItems] = useState(order.items || []);
   const [notes, setNotes] = useState(order.notes || '');
@@ -225,17 +225,16 @@ function OrderEditor({ order, onUpdate, onCancel, onClose }) {
 
         {/* Footer */}
         <div className="p-4 border-t border-dorado-oscuro/30 flex justify-between">
-          <button
-            onClick={() => {
-              if (window.confirm('¿Cancelar este pedido?')) {
-                onCancel(order.id);
-                onClose();
-              }
-            }}
-            className="bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded"
-          >
-            Cancelar Pedido
-          </button>
+          <div>
+            {canCancel && order.status !== 'ready' && order.status !== 'paid' && order.status !== 'cancelled' && (
+              <button
+                onClick={() => onCancel(order)}
+                className="bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded"
+              >
+                Cancelar Pedido
+              </button>
+            )}
+          </div>
           
           <div className="space-x-2">
             <button

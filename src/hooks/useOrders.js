@@ -7,6 +7,7 @@ import {
   where,
   doc,
   addDoc,
+  getDoc,
   updateDoc,
   serverTimestamp
 } from 'firebase/firestore';
@@ -14,10 +15,21 @@ import { app } from '../services/firebase';
 
 const db = getFirestore(app);
 
+export const ACTIVE_ORDER_STATUSES = ['pending', 'preparing', 'ready'];
+
+const toMillis = (value) => {
+  if (!value) return 0;
+  if (typeof value.toMillis === 'function') return value.toMillis();
+  if (value instanceof Date) return value.getTime();
+  return 0;
+};
+
 export function useOrders(status = null) {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const statusKey = Array.isArray(status) ? status.join(',') : status;
 
   useEffect(() => {
     setLoading(true);
@@ -25,8 +37,10 @@ export function useOrders(status = null) {
     const ordersRef = collection(db, 'orders');
     let q;
     
-    if (status) {
-      q = query(ordersRef, where('status', '==', status));
+    if (statusKey && statusKey.includes(',')) {
+      q = query(ordersRef, where('status', 'in', statusKey.split(',')));
+    } else if (statusKey) {
+      q = query(ordersRef, where('status', '==', statusKey));
     } else {
       q = ordersRef;
     }
@@ -38,6 +52,7 @@ export function useOrders(status = null) {
         snapshot.forEach((doc) => {
           ordersData.push({ id: doc.id, ...doc.data() });
         });
+        ordersData.sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
         setOrders(ordersData);
         setLoading(false);
       },
@@ -49,13 +64,14 @@ export function useOrders(status = null) {
     );
 
     return () => unsubscribe();
-  }, [status]);
+  }, [statusKey]);
 
   const createOrder = async (orderData) => {
     try {
       const docRef = await addDoc(collection(db, 'orders'), {
         ...orderData,
         status: 'pending',
+        paymentStatus: 'pending',
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
@@ -66,15 +82,42 @@ export function useOrders(status = null) {
     }
   };
 
-  const processPayment = async (orderId, paymentMethod) => {
+  const processPayment = async (orderId, paymentMethod, cashier = null) => {
     try {
       const orderRef = doc(db, 'orders', orderId);
-      await updateDoc(orderRef, {
+      const orderSnap = await getDoc(orderRef);
+      const orderData = orderSnap.exists() ? orderSnap.data() : null;
+
+      const updateData = {
         status: 'paid',
         paymentMethod: paymentMethod,
+        paymentStatus: 'completed',
         paidAt: serverTimestamp(),
         updatedAt: serverTimestamp()
-      });
+      };
+
+      if (cashier) {
+        updateData.cashierId = cashier.uid || null;
+        updateData.cashierName = cashier.displayName || cashier.email || '';
+      }
+
+      await updateDoc(orderRef, updateData);
+
+      if (orderData && orderData.tableId) {
+        const tableRef = doc(db, 'tables', orderData.tableId);
+        const tableSnap = await getDoc(tableRef);
+        const tableData = tableSnap.exists() ? tableSnap.data() : null;
+
+        if (tableData && (!tableData.currentOrderId || tableData.currentOrderId === orderId)) {
+          await updateDoc(tableRef, {
+            status: 'available',
+            occupiedAt: null,
+            currentOrderId: null,
+            updatedAt: serverTimestamp()
+          });
+        }
+      }
+
       return { success: true };
     } catch (err) {
       console.error('Error processing payment:', err);
@@ -104,20 +147,6 @@ export function useOrders(status = null) {
     }
   };
 
-  const updateTableStatus = async (tableId, status) => {
-    try {
-      const tableRef = doc(db, 'tables', tableId);
-      await updateDoc(tableRef, {
-        status: status,
-        updatedAt: serverTimestamp()
-      });
-      return { success: true };
-    } catch (err) {
-      console.error('Error updating table:', err);
-      return { success: false, error: err.message };
-    }
-  };
-
   const updateOrder = async (orderId, updates) => {
     try {
       const orderRef = doc(db, 'orders', orderId);
@@ -143,17 +172,54 @@ export function useOrders(status = null) {
     }
   };
 
-  const cancelOrder = async (orderId) => {
+  const cancelOrder = async (orderId, meta = {}) => {
     try {
       const orderRef = doc(db, 'orders', orderId);
+      const snap = await getDoc(orderRef);
+      const data = snap.exists() ? snap.data() : null;
+
+      if (!data) return { success: false, error: 'Pedido no encontrado' };
+      if (data.status === 'cancelled') return { success: false, error: 'El pedido ya está cancelado' };
+      if (data.status === 'paid') return { success: false, error: 'El pedido ya fue pagado' };
+
       await updateDoc(orderRef, {
         status: 'cancelled',
+        cancelledFromStatus: data.status || null,
         cancelledAt: serverTimestamp(),
+        cancelledBy: meta.userId || null,
+        cancelledByName: meta.name || '',
+        cancelledReason: meta.reason || null,
         updatedAt: serverTimestamp()
       });
       return { success: true };
     } catch (err) {
       console.error('Error cancelling order:', err);
+      return { success: false, error: err.message };
+    }
+  };
+
+  const reactivateOrder = async (orderId) => {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      const snap = await getDoc(orderRef);
+      const data = snap.exists() ? snap.data() : null;
+
+      if (!data) return { success: false, error: 'Pedido no encontrado' };
+      if (data.status !== 'cancelled') return { success: false, error: 'Solo se pueden reactivar pedidos cancelados' };
+
+      await updateDoc(orderRef, {
+        status: data.cancelledFromStatus === 'preparing' ? 'preparing' : 'pending',
+        cancelledAt: null,
+        cancelledFromStatus: null,
+        cancelledBy: null,
+        cancelledByName: null,
+        cancelledReason: null,
+        reactivatedAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      return { success: true };
+    } catch (err) {
+      console.error('Error reactivating order:', err);
       return { success: false, error: err.message };
     }
   };
@@ -165,8 +231,8 @@ export function useOrders(status = null) {
     createOrder, 
     processPayment, 
     updateOrderStatus,
-    updateTableStatus,
     updateOrder,
-    cancelOrder
+    cancelOrder,
+    reactivateOrder
   };
 }

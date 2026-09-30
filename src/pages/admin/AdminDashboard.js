@@ -6,14 +6,33 @@ import { useOrders } from '../../hooks/useOrders';
 import MenuManager from '../../components/admin/MenuManager';
 import RolesManager from '../../components/admin/RolesManager';
 import UsersManager from '../../components/admin/UsersManager';
+import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
 
 function AdminDashboard() {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   
-  const { tables } = useTables();
+  const { tables, updateTableStatus } = useTables();
   const { orders } = useOrders();
+  const { orders: cancelledOrders, reactivateOrder } = useOrders('cancelled');
+
+  const handleReactivate = async (order) => {
+    if (!window.confirm(`¿Reactivar el pedido de la mesa ${order.tableNumber}?`)) return;
+
+    const result = await reactivateOrder(order.id);
+    if (!result.success) {
+      alert('Error al reactivar pedido: ' + result.error);
+      return;
+    }
+
+    const table = tables.find(t => t.id === order.tableId);
+    if (table && (table.status === 'available' || (table.status === 'occupied' && !table.currentOrderId))) {
+      await updateTableStatus(order.tableId, 'occupied', order.id);
+    }
+
+    alert('Pedido reactivado');
+  };
 
   const handleLogout = async () => {
     try {
@@ -126,6 +145,13 @@ function AdminDashboard() {
                 </button>
               ))}
             </div>
+
+            {/* Cancelados recientes (cocina) */}
+            <RecentCancelledOrders
+              orders={cancelledOrders}
+              onReactivate={handleReactivate}
+              title="Cancelados recientes — avisar a cocina"
+            />
 
             {/* Últimos pedidos */}
             <h3 className="text-lg font-cormorant text-dorado mb-4">Últimos Pedidos</h3>

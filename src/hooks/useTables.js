@@ -34,7 +34,7 @@ export function useTables() {
     return () => unsubscribe();
   }, []);
 
-  const updateTableStatus = async (tableId, status) => {
+  const updateTableStatus = async (tableId, status, currentOrderId = null) => {
     try {
       const tableRef = doc(db, 'tables', tableId);
       const updateData = {
@@ -44,8 +44,10 @@ export function useTables() {
 
       if (status === 'occupied') {
         updateData.occupiedAt = serverTimestamp();
+        updateData.currentOrderId = currentOrderId;
       } else if (status === 'available') {
         updateData.occupiedAt = null;
+        updateData.currentOrderId = null;
       }
 
       await updateDoc(tableRef, updateData);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTimer } from '../../hooks/useTimer';
 
-function OrderCard({ order, onStatusChange, onEdit }) {
+function OrderCard({ order, onStatusChange, onEdit, onCancel, canEdit = true, canUpdateStatus = true, canCancel = true, canCancelKitchen = false }) {
   const preparationTimer = useTimer(order.preparingAt || order.createdAt);
   const orderTimer = useTimer(order.createdAt);
 
@@ -82,29 +82,50 @@ function OrderCard({ order, onStatusChange, onEdit }) {
           </div>
           
           <div className="space-y-2">
-            {order.status === 'pending' && (
-              <>
-                <button
-                  onClick={() => onEdit(order)}
-                  className="w-full bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded text-sm"
-                >
-                  ✏️ Editar
-                </button>
-                <button
-                  onClick={() => onStatusChange(order.id, 'preparing')}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
-                >
-                  Preparando
-                </button>
-              </>
+            {order.status === 'pending' && canEdit && (
+              <button
+                onClick={() => onEdit(order)}
+                className="w-full bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded text-sm"
+              >
+                ✏️ Editar
+              </button>
             )}
-            {order.status === 'preparing' && (
+            {order.status === 'pending' && canUpdateStatus && (
+              <button
+                onClick={() => onStatusChange(order.id, 'preparing')}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
+              >
+                Preparando
+              </button>
+            )}
+            {order.status === 'preparing' && canUpdateStatus && (
               <button
                 onClick={() => onStatusChange(order.id, 'ready')}
                 className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
               >
                 Listo
               </button>
+            )}
+            {order.status === 'pending' && canCancel && onCancel && (
+              <button
+                onClick={() => onCancel(order)}
+                className="w-full bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded text-sm"
+              >
+                ✕ Cancelar
+              </button>
+            )}
+            {order.status === 'preparing' && canCancelKitchen && onCancel && (
+              <button
+                onClick={() => onCancel(order)}
+                className="w-full bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded text-sm"
+              >
+                ✕ Cancelar en cocina
+              </button>
+            )}
+            {order.status === 'ready' && (
+              <div className="text-xs text-dorado-oscuro text-center">
+                Esperando cobro en caja
+              </div>
             )}
           </div>
         </div>
