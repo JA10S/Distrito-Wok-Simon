@@ -10,6 +10,7 @@ const mockUpdateOrderStatus = jest.fn();
 const mockUpdateOrder = jest.fn();
 const mockCancelOrder = jest.fn();
 const mockReactivateOrder = jest.fn();
+const mockProcessPayment = jest.fn();
 
 const mockTables = [
   { id: 't1', number: 1, capacity: 4, status: 'available', occupiedAt: null },
@@ -83,6 +84,7 @@ jest.mock('../../hooks/useOrders', () => ({
     updateOrder: mockUpdateOrder,
     cancelOrder: mockCancelOrder,
     reactivateOrder: mockReactivateOrder,
+    processPayment: mockProcessPayment,
   }),
 }));
 
@@ -121,6 +123,7 @@ beforeEach(() => {
   mockUpdateOrder.mockImplementation(() => Promise.resolve({ success: true }));
   mockCancelOrder.mockImplementation(() => Promise.resolve({ success: true }));
   mockReactivateOrder.mockImplementation(() => Promise.resolve({ success: true }));
+  mockProcessPayment.mockImplementation(() => Promise.resolve({ success: true }));
   window.confirm = jest.fn(() => true);
   window.prompt = jest.fn(() => null);
   window.alert = jest.fn();
@@ -242,7 +245,7 @@ test('avisa de pedido duplicado y lo crea si el usuario confirma', async () => {
   render(<WaiterDashboard />);
 
   fireEvent.click(screen.getByText('Mesa 1'));
-  fireEvent.click(screen.getAllByText('+')[0]);
+  fireEvent.click(screen.getByRole('button', { name: /Pequeña/ }));
   fireEvent.click(screen.getByText('Crear Pedido'));
 
   expect(window.confirm).toHaveBeenCalledWith(
@@ -260,7 +263,7 @@ test('no crea el pedido si el usuario rechaza el aviso de duplicado', () => {
   render(<WaiterDashboard />);
 
   fireEvent.click(screen.getByText('Mesa 1'));
-  fireEvent.click(screen.getAllByText('+')[0]);
+  fireEvent.click(screen.getByRole('button', { name: /Pequeña/ }));
   fireEvent.click(screen.getByText('Crear Pedido'));
 
   expect(window.confirm).toHaveBeenCalledWith(
@@ -287,6 +290,68 @@ test('muestra los resúmenes con permiso view_summaries', () => {
   expect(screen.getByText('Mesas ocupadas')).toBeInTheDocument();
   expect(screen.getByText('Pedidos activos')).toBeInTheDocument();
   expect(screen.getByText('Pedidos listos')).toBeInTheDocument();
+});
+
+test('permite cobrar un pedido listo con charge_orders', async () => {
+  mockHasPermission.mockImplementation(
+    (p) => ALL_PERMISSIONS.includes(p) || p === 'charge_orders'
+  );
+  mockOrders[0].status = 'ready';
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText('Pedidos (1)'));
+  fireEvent.click(screen.getByText('💵 Cobrar'));
+
+  expect(screen.getByText('Cobrar Pedido')).toBeInTheDocument();
+  fireEvent.click(screen.getByText('Efectivo'));
+
+  await waitFor(() =>
+    expect(mockProcessPayment).toHaveBeenCalledWith(
+      'order1',
+      'cash',
+      expect.objectContaining({ uid: 'u1' })
+    )
+  );
+});
+
+test('oculta el botón de cobrar sin permiso charge_orders', () => {
+  mockOrders[0].status = 'ready';
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText('Pedidos (1)'));
+
+  expect(screen.queryByText('💵 Cobrar')).not.toBeInTheDocument();
+});
+
+test('filtra los pedidos por tipo', () => {
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText('Pedidos (1)'));
+
+  expect(screen.getByText(/Todos \(1\)/)).toBeInTheDocument();
+  expect(screen.getByText(/Mesa \(1\)/)).toBeInTheDocument();
+  expect(screen.getByText(/Domicilio \(0\)/)).toBeInTheDocument();
+
+  fireEvent.click(screen.getByText(/Domicilio \(0\)/));
+  expect(screen.getByText('No hay pedidos de este tipo')).toBeInTheDocument();
+});
+
+test('no muestra la pestaña Historial sin permiso view_history', () => {
+  render(<WaiterDashboard />);
+
+  expect(screen.queryByText('Historial')).not.toBeInTheDocument();
+});
+
+test('muestra la pestaña Historial con permiso view_history', () => {
+  mockHasPermission.mockImplementation(
+    (p) => ALL_PERMISSIONS.includes(p) || p === 'view_history'
+  );
+
+  render(<WaiterDashboard />);
+
+  expect(screen.getByText(/Historial/)).toBeInTheDocument();
 });
 
 test('no abre el editor de un pedido que ya está en cocina', () => {

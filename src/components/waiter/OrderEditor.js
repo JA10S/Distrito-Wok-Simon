@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useMenu } from '../../hooks/useMenu';
-import { parsePrice } from '../../utils/orderUtils';
+import { parsePriceOptions, resolveItemVariant, getOrderLabel } from '../../utils/orderUtils';
 
 function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
   const { menu, loading } = useMenu();
@@ -13,22 +13,18 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
     setNotes(order.notes || '');
   }, [order]);
 
-  const addItem = (item) => {
-    const existingItem = items.find(i => i.id === item.id);
+  const addItem = (item, variant = null) => {
+    const resolved = resolveItemVariant(item, variant);
+    const existingItem = items.find(i => i.id === resolved.id);
     
     if (existingItem) {
       setItems(items.map(i => 
-        i.id === item.id 
+        i.id === resolved.id 
           ? { ...i, quantity: i.quantity + 1 }
           : i
       ));
     } else {
-      setItems([...items, {
-        id: item.id,
-        name: item.name,
-        price: parsePrice(item.price),
-        quantity: 1
-      }]);
+      setItems([...items, { ...resolved, quantity: 1 }]);
     }
   };
 
@@ -85,7 +81,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
             <h2 className="text-xl font-cormorant font-bold text-dorado-claro">
               Editar Pedido #{order.id.slice(-6).toUpperCase()}
             </h2>
-            <p className="text-dorado-oscuro text-sm">Mesa {order.tableNumber}</p>
+            <p className="text-dorado-oscuro text-sm">{getOrderLabel(order)}</p>
           </div>
           <button
             onClick={onClose}
@@ -129,23 +125,45 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
               <div className="bg-gray-800 rounded-lg border border-dorado-oscuro/20 max-h-64 overflow-y-auto">
                 {(menu[activeCategory] || [])
                   .filter(item => item.available !== false)
-                  .map(item => (
+                  .map(item => {
+                    const sizeOptions = parsePriceOptions(item.price);
+                    return (
                     <div
                       key={item.id}
-                      className="p-3 flex justify-between items-center hover:bg-gray-700 border-b border-dorado-oscuro/10 last:border-b-0"
+                      className="p-3 flex justify-between items-center gap-3 hover:bg-gray-700 border-b border-dorado-oscuro/10 last:border-b-0"
                     >
                       <div className="flex-1">
                         <div className="text-dorado-claro text-sm font-medium">{item.name}</div>
-                        <div className="text-dorado text-xs">{item.price}</div>
+                        <div className="text-dorado text-xs">
+                          {sizeOptions ? `$${sizeOptions[0].price.toLocaleString()} / $${sizeOptions[1].price.toLocaleString()}` : item.price}
+                        </div>
                       </div>
-                      <button
-                        onClick={() => addItem(item)}
-                        className="bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-1 px-3 rounded text-sm"
-                      >
-                        +
-                      </button>
+                      <div className="flex items-center gap-2 shrink-0">
+                        {sizeOptions ? (
+                          sizeOptions.map(opt => (
+                            <button
+                              key={opt.size}
+                              onClick={() => addItem(item, opt)}
+                              className="bg-gray-700 hover:bg-dorado hover:text-negro border border-dorado/50 text-dorado-claro py-1 px-2 rounded text-xs text-center leading-tight transition"
+                              aria-label={`${opt.label} ${item.name}`}
+                            >
+                              {opt.label}
+                              <span className="block font-normal opacity-80">${opt.price.toLocaleString()}</span>
+                            </button>
+                          ))
+                        ) : (
+                          <button
+                            onClick={() => addItem(item)}
+                            className="bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-1 px-3 rounded text-sm"
+                            aria-label={`Agregar ${item.name}`}
+                          >
+                            +
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  ))}
+                    );
+                  })}
               </div>
             </div>
 

@@ -10,8 +10,21 @@ import OrderEditor from '../../components/waiter/OrderEditor';
 import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import SummaryStats from '../../components/common/SummaryStats';
-import { FaChair, FaReceipt, FaPlusCircle, FaCheckCircle, FaInbox } from 'react-icons/fa';
-import { findDuplicateOrder, ORDER_STATUS_LABELS } from '../../utils/orderUtils';
+import { FaChair, FaReceipt, FaPlusCircle, FaCheckCircle, FaInbox, FaHistory } from 'react-icons/fa';
+import {
+  findDuplicateOrder,
+  getOrderLabel,
+  ORDER_STATUS_LABELS,
+  PAYMENT_METHOD_OPTIONS,
+  PAYMENT_METHOD_LABELS
+} from '../../utils/orderUtils';
+
+const TYPE_FILTERS = [
+  { id: 'all', label: 'Todos' },
+  { id: 'table', label: 'Mesa' },
+  { id: 'delivery', label: 'Domicilio' },
+  { id: 'pickup', label: 'Recoger' }
+];
 
 function TableCard({ table, onClick, onClose, canClose, hasActiveOrder }) {
   const timer = useTimer(table.occupiedAt);
@@ -87,10 +100,38 @@ function WaiterDashboard() {
   const [activeTab, setActiveTab] = useState('tables');
   const [selectedTable, setSelectedTable] = useState(null);
   const [editingOrder, setEditingOrder] = useState(null);
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [chargingOrder, setChargingOrder] = useState(null);
   
   const { tables, loading: tablesLoading, error: tablesError, updateTableStatus } = useTables();
-  const { orders, loading: ordersLoading, error: ordersError, createOrder, updateOrderStatus, updateOrder, cancelOrder, reactivateOrder } = useOrders(ACTIVE_ORDER_STATUSES);
+  const { orders, loading: ordersLoading, error: ordersError, createOrder, updateOrderStatus, updateOrder, cancelOrder, reactivateOrder, processPayment } = useOrders(ACTIVE_ORDER_STATUSES);
   const { orders: cancelledOrders } = useOrders('cancelled');
+  const { orders: paidOrders } = useOrders('paid');
+
+  const handleCharge = (order) => {
+    if (!hasPermission('charge_orders')) {
+      alert('No tiene permiso para cobrar pedidos');
+      return;
+    }
+    if (order.status !== 'ready') {
+      alert('Solo se pueden cobrar pedidos listos');
+      return;
+    }
+    setChargingOrder(order);
+  };
+
+  const handleProcessPayment = async (method) => {
+    const order = chargingOrder;
+    setChargingOrder(null);
+    if (!order) return;
+
+    const result = await processPayment(order.id, method, currentUser);
+    if (result.success) {
+      alert('Pago procesado exitosamente');
+    } else {
+      alert('Error al procesar pago: ' + result.error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -115,7 +156,7 @@ function WaiterDashboard() {
         : '';
       const proceed = window.confirm(
         `⚠️ Posible pedido duplicado\n\n` +
-        `La mesa ${duplicate.order.tableNumber} canceló hace ${duplicate.minutesAgo} min un pedido ${matchLabel}${kitchenLabel}.\n\n` +
+        `${getOrderLabel(duplicate.order)} canceló hace ${duplicate.minutesAgo} min un pedido ${matchLabel}${kitchenLabel}.\n\n` +
         `¿Crear el pedido de todos modos?`
       );
       if (!proceed) return { success: false };
@@ -237,7 +278,7 @@ function WaiterDashboard() {
     }
 
     const proceed = window.confirm(
-      `¿Cancelar el pedido de la mesa ${order.tableNumber}` +
+      `¿Cancelar el pedido de ${getOrderLabel(order)}` +
       (order.status === 'ready'
         ? '? (ESTÁ LISTO — el plato ya está hecho)'
         : inKitchen
@@ -269,7 +310,7 @@ function WaiterDashboard() {
       return;
     }
 
-    if (!window.confirm(`¿Reactivar el pedido de la mesa ${order.tableNumber}?`)) return;
+    if (!window.confirm(`¿Reactivar el pedido de ${getOrderLabel(order)}?`)) return;
 
     const result = await reactivateOrder(order.id);
     if (!result.success) {
@@ -343,6 +384,10 @@ function WaiterDashboard() {
     }
   };
 
+  const filteredOrders = typeFilter === 'all'
+    ? orders
+    : orders.filter(o => (o.type || 'table') === typeFilter);
+
   if (tablesLoading || ordersLoading) {
     return (
       <div className="min-h-screen bg-negro flex items-center justify-center">
@@ -366,6 +411,9 @@ function WaiterDashboard() {
         tabs={[
           { id: 'tables', label: 'Mesas', icon: <FaChair />, badge: tables.length },
           { id: 'orders', label: 'Pedidos', icon: <FaReceipt />, badge: orders.length },
+          ...(hasPermission('view_history')
+            ? [{ id: 'history', label: 'Historial', icon: <FaHistory /> }]
+            : []),
           ...(hasPermission('create_order')
             ? [{ id: 'new-order', label: 'Nuevo Pedido', icon: <FaPlusCircle /> }]
             : [])
@@ -421,29 +469,99 @@ function WaiterDashboard() {
               canReactivate={hasPermission('update_order_status')}
             />
 
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Pedidos Activos</h2>
-            {orders.length === 0 ? (
+            <h2 className="text-xl font-cormorant text-dorado mb-4">Pedidos Activos</h2>
+
+            {/* Filtro por tipo de pedido */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {TYPE_FILTERS.map((filter) => {
+                const count = filter.id === 'all'
+                  ? orders.length
+                  : orders.filter(o => (o.type || 'table') === filter.id).length;
+                return (
+                  <button
+                    key={filter.id}
+                    onClick={() => setTypeFilter(filter.id)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+                      typeFilter === filter.id
+                        ? 'bg-dorado text-negro'
+                        : 'bg-gray-800 text-dorado-oscuro hover:text-dorado-claro border border-dorado-oscuro/30'
+                    }`}
+                  >
+                    {filter.label} ({count})
+                  </button>
+                );
+              })}
+            </div>
+
+            {filteredOrders.length === 0 ? (
               <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
                 <FaInbox className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
                 <p className="text-dorado-oscuro">
-                  No hay pedidos activos en este momento
+                  {orders.length === 0
+                    ? 'No hay pedidos activos en este momento'
+                    : 'No hay pedidos de este tipo'}
                 </p>
               </div>
             ) : (
               <div className="grid gap-4">
-                {orders.map((order) => (
+                {filteredOrders.map((order) => (
                   <OrderCard
                     key={order.id}
                     order={order}
                     onStatusChange={handleStatusChange}
                     onEdit={setEditingOrder}
                     onCancel={handleCancelOrderRequest}
+                    onCharge={handleCharge}
                     canEdit={hasPermission('create_order')}
                     canUpdateStatus={hasPermission('update_order_status')}
                     canCancel={hasPermission('update_order_status')}
                     canCancelKitchen={hasPermission('view_dashboard')}
+                    canCharge={hasPermission('charge_orders')}
                   />
                 ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Historial de pedidos pagados */}
+        {activeTab === 'history' && (
+          <div>
+            <h2 className="text-xl font-cormorant text-dorado mb-6">Historial de Pedidos</h2>
+            {paidOrders.length === 0 ? (
+              <div className="bg-gray-900 rounded-xl p-6 border border-dorado-oscuro/25 text-center">
+                <FaHistory className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
+                <p className="text-dorado-oscuro">No hay pedidos pagados todavía</p>
+              </div>
+            ) : (
+              <div className="bg-gray-900 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
+                <div className="divide-y divide-dorado-oscuro/20">
+                  {paidOrders.slice(0, 50).map((order) => (
+                    <div key={order.id} className="px-5 py-4 flex justify-between items-center gap-3">
+                      <div className="min-w-0">
+                        <span className="font-inter text-dorado-claro font-semibold tracking-tight">
+                          Pedido #{order.id.slice(-6).toUpperCase()}
+                        </span>
+                        <span className="text-dorado-oscuro text-sm ml-3 font-inter">
+                          {getOrderLabel(order)}
+                        </span>
+                        {order.waiterName && (
+                          <span className="text-dorado-oscuro/70 text-xs ml-3">👤 {order.waiterName}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0">
+                        <span className="text-dorado-oscuro text-sm font-inter">
+                          {order.paymentMethod
+                            ? PAYMENT_METHOD_LABELS[order.paymentMethod] || order.paymentMethod
+                            : '—'}
+                        </span>
+                        <span className="font-inter text-dorado font-semibold">
+                          ${(order.total || 0).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -483,6 +601,45 @@ function WaiterDashboard() {
             (editingOrder.status === 'pending' || hasPermission('view_dashboard'))
           }
         />
+      )}
+
+      {/* Modal de cobro (en mesa / recoger) */}
+      {chargingOrder && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-xl border border-dorado/30 p-6 max-w-sm w-full">
+            <h3 className="text-xl font-cormorant text-dorado-claro mb-1">Cobrar Pedido</h3>
+            <p className="text-dorado-oscuro text-sm mb-4">
+              Pedido #{chargingOrder.id.slice(-6).toUpperCase()} · {getOrderLabel(chargingOrder)}
+            </p>
+
+            <div className="text-center mb-5">
+              <div className="font-inter text-3xl font-semibold text-dorado">
+                ${(chargingOrder.total || 0).toLocaleString()}
+              </div>
+              <div className="text-xs text-dorado-oscuro">IVA 10% incluido</div>
+            </div>
+
+            <div className="space-y-2 mb-4">
+              {PAYMENT_METHOD_OPTIONS.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => handleProcessPayment(option.id)}
+                  className="quick-card w-full rounded-lg py-3 font-semibold"
+                  style={{ '--role': '212 168 67' }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setChargingOrder(null)}
+              className="w-full text-dorado-oscuro hover:text-dorado py-2 text-sm transition-colors"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

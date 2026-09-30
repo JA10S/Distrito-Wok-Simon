@@ -305,6 +305,13 @@ match /arroces/{itemId} {
   - **Carrito seguro**: `OrderCreator.handleConfirm` es async y limpia el carrito solo si `onConfirmOrder` retorna `{success:true}`
   - **Ciclo pago/delivery**: `processPayment` escribe `paymentStatus:'paid'` (antes `'completed'`, el pill del admin nunca aparecía) y sincroniza `deliveries.paymentStatus`; `markDelivered` escribe `deliveredAt` en la order vinculada
   - Tests: 57 totales (6 nuevos: 5 parsePrice en orderUtils + 3 de WaiterDashboard — editor bloqueado en cocina, cancelar `ready` con admin/motivo, botón oculto sin `view_dashboard`)
+- [x] Camarero Fase 2 — funcionalidades nuevas (2026-09-30)
+  - **Cobro en mesa por el camarero**: permiso `charge_orders` + botón "💵 Cobrar" en OrderCard (solo `ready` y `type !== 'delivery'`) → modal con Efectivo/Nequi/Tarjeta que llama `processPayment` (libera mesa y sincroniza pago con la delivery vinculada)
+  - **Filtros por tipo** en pestaña Pedidos: chips Todos/Mesa/Domicilio/Recoger con conteos (`typeFilter`, items sin `type` se tratan como `table`)
+  - **`getOrderLabel`** movido de CashierDashboard a `orderUtils.js` — fin de los "Mesa 0"/undefined: se usa en mensajes de duplicados, cancelar, reactivar, cabecera del editor e historial
+  - **Selector de tamaño** para precios dobles (`30K / 40K`): `parsePriceOptions` + `resolveItemVariant` en orderUtils; botones "Pequeña $30.000 / Grande $40.000" en OrderCreator y OrderEditor; items guardados con id `base--small|--large` y `size`; `findDuplicateOrder` normaliza esos sufijos al comparar
+  - **Historial del camarero**: pestaña `history` con permiso `view_history` — últimos 50 pedidos `paid` (número, label, camarero, método, total) usando `useOrders('paid')`
+  - Tests: 62 totales (5 nuevos: cobrar con `charge_orders`, cobro oculto sin permiso, filtro por tipo, historial con/sin permiso)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)

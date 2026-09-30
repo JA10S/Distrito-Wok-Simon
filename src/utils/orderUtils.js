@@ -48,6 +48,45 @@ export function calculateTotals(items) {
   return { subtotal, tax, total: subtotal + tax };
 }
 
+export function getOrderLabel(order) {
+  if (order.type && order.type !== 'table') {
+    const label = ORDER_TYPE_LABELS[order.type] || order.type;
+    return order.customer?.name ? `${label} · ${order.customer.name}` : label;
+  }
+  return `Mesa ${order.tableNumber || 'N/A'}`;
+}
+
+// '30K / 40K' → [{small, Pequeña, 30000}, {large, Grande, 40000}]; null si no hay doble porción
+export function parsePriceOptions(price) {
+  if (!price || typeof price === 'number') return null;
+  const str = String(price);
+  if (!str.includes('/')) return null;
+
+  const [smallStr, largeStr] = str.split('/');
+  const smallPrice = parsePrice(smallStr);
+  const largePrice = parsePrice(largeStr);
+  if (!smallPrice || !largePrice || smallPrice === largePrice) return null;
+
+  return [
+    { size: 'small', label: 'Pequeña', price: smallPrice },
+    { size: 'large', label: 'Grande', price: largePrice }
+  ];
+}
+
+// Normaliza un item del menú (+ variante de tamaño) a { id, name, price, size? }
+export function resolveItemVariant(item, variant = null) {
+  const info = variant || (parsePriceOptions(item.price) || [])[0];
+  if (!info) {
+    return { id: item.id, name: item.name, price: parsePrice(item.price) };
+  }
+  return {
+    id: `${item.id}--${info.size}`,
+    name: `${item.name} (${info.label})`,
+    price: info.price,
+    size: info.size
+  };
+}
+
 export function validateCustomerInfo(orderType, customer) {
   if (orderType === 'table') return null;
 
@@ -82,8 +121,13 @@ export function minutesAgo(timestamp, now = Date.now()) {
   return Math.max(0, Math.round((now - ms) / 60000));
 }
 
+// Ignora el sufijo de tamaño (--small/--large) para comparar contra el item base del menú
 function itemIdSet(items) {
-  return new Set((items || []).map((item) => item.id).filter(Boolean));
+  return new Set(
+    (items || [])
+      .map((item) => String(item.id || '').replace(/--(small|large)$/, ''))
+      .filter(Boolean)
+  );
 }
 
 export function findDuplicateOrder(newItems, cancelledOrders, now = Date.now()) {

@@ -4,7 +4,8 @@ import {
   validateCustomerInfo,
   PAYMENT_METHOD_OPTIONS,
   ORDER_TYPE_LABELS,
-  parsePrice
+  parsePriceOptions,
+  resolveItemVariant
 } from '../../utils/orderUtils';
 
 const CATEGORIES = [
@@ -26,22 +27,18 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
   const [customer, setCustomer] = useState(EMPTY_CUSTOMER);
   const [preferredPayment, setPreferredPayment] = useState('cash');
 
-  const addItem = (item) => {
-    const existingItem = orderItems.find(i => i.id === item.id);
+  const addItem = (item, variant = null) => {
+    const resolved = resolveItemVariant(item, variant);
+    const existingItem = orderItems.find(i => i.id === resolved.id);
     
     if (existingItem) {
       setOrderItems(orderItems.map(i => 
-        i.id === item.id 
+        i.id === resolved.id 
           ? { ...i, quantity: i.quantity + 1 }
           : i
       ));
     } else {
-      setOrderItems([...orderItems, {
-        id: item.id,
-        name: item.name,
-        price: parsePrice(item.price),
-        quantity: 1
-      }]);
+      setOrderItems([...orderItems, { ...resolved, quantity: 1 }]);
     }
   };
 
@@ -333,26 +330,50 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
           <div className="divide-y divide-dorado-oscuro/20 max-h-96 overflow-y-auto">
             {(menu[activeCategory] || [])
               .filter(item => item.available !== false)
-              .map(item => (
+              .map(item => {
+                const sizeOptions = parsePriceOptions(item.price);
+                return (
                 <div
                   key={item.id}
-                  className="p-4 flex justify-between items-center hover:bg-gray-800/50"
+                  className="p-4 flex justify-between items-center gap-3 hover:bg-gray-800/50"
                 >
                   <div className="flex-1">
                     <div className="text-dorado-claro font-medium">{item.name}</div>
                     {item.description && (
                       <div className="text-dorado-oscuro text-sm">{item.description}</div>
                     )}
-                    <div className="text-dorado font-bold mt-1">{item.price}</div>
+                    <div className="text-dorado font-bold mt-1">
+                      {sizeOptions ? `$${sizeOptions[0].price.toLocaleString()} / $${sizeOptions[1].price.toLocaleString()}` : item.price}
+                    </div>
                   </div>
-                  <button
-                    onClick={() => addItem(item)}
-                    className="bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded"
-                  >
-                    +
-                  </button>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {sizeOptions ? (
+                      sizeOptions.map(opt => (
+                        <button
+                          key={opt.size}
+                          onClick={() => addItem(item, opt)}
+                          className="bg-gray-800 hover:bg-dorado hover:text-negro border border-dorado/50 text-dorado-claro font-bold py-2 px-3 rounded text-sm text-center leading-tight transition"
+                          aria-label={`${opt.label} ${item.name}`}
+                        >
+                          {opt.label}
+                          <span className="block text-xs font-normal opacity-80">
+                            ${opt.price.toLocaleString()}
+                          </span>
+                        </button>
+                      ))
+                    ) : (
+                      <button
+                        onClick={() => addItem(item)}
+                        className="bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded"
+                        aria-label={`Agregar ${item.name}`}
+                      >
+                        +
+                      </button>
+                    )}
+                  </div>
                 </div>
-              ))}
+                );
+              })}
           </div>
         </div>
       </div>

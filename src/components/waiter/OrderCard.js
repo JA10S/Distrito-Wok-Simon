@@ -2,7 +2,7 @@ import React from 'react';
 import { useTimer } from '../../hooks/useTimer';
 import { ORDER_TYPE_LABELS, PAYMENT_METHOD_LABELS } from '../../utils/orderUtils';
 
-function OrderCard({ order, onStatusChange, onEdit, onCancel, canEdit = true, canUpdateStatus = true, canCancel = true, canCancelKitchen = false }) {
+function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, canEdit = true, canUpdateStatus = true, canCancel = true, canCancelKitchen = false, canCharge = false }) {
   const preparationTimer = useTimer(order.preparingAt || order.createdAt);
   const orderTimer = useTimer(order.createdAt);
 
@@ -147,9 +147,19 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, canEdit = true, ca
                 ✕ Cancelar listo
               </button>
             )}
+            {order.status === 'ready' && canCharge && order.type !== 'delivery' && onCharge && (
+              <button
+                onClick={() => onCharge(order)}
+                className="w-full bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded text-sm"
+              >
+                💵 Cobrar
+              </button>
+            )}
             {order.status === 'ready' && (
               <div className="text-xs text-dorado-oscuro text-center">
-                Esperando cobro en caja
+                {order.type === 'delivery'
+                  ? 'Saliendo a domicilio — pago al recibir'
+                  : 'Esperando cobro en caja'}
               </div>
             )}
           </div>

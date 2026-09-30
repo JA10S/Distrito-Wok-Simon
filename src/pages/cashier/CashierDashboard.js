@@ -13,18 +13,10 @@ import {
   FaInbox
 } from 'react-icons/fa';
 import {
-  ORDER_TYPE_LABELS,
+  getOrderLabel,
   PAYMENT_METHOD_LABELS,
   timestampMs
 } from '../../utils/orderUtils';
-
-function getOrderLabel(order) {
-  if (order.type && order.type !== 'table') {
-    const label = ORDER_TYPE_LABELS[order.type] || order.type;
-    return order.customer?.name ? `${label} · ${order.customer.name}` : label;
-  }
-  return `Mesa ${order.tableNumber || 'N/A'}`;
-}
 
 function CashierDashboard() {
   const { currentUser, hasPermission, logout } = useAuth();
