@@ -77,11 +77,14 @@ function LoginPage() {
 
           {/* Contenido de marca (aparece con fade-in de 0.8s) */}
           <div className="relative h-full flex flex-col items-center justify-center text-center px-8">
-            <h1 className="login-brand-text font-cormorant text-6xl font-bold">
-              <span className="text-white">Distrito </span>
-              <span className="text-gold-gradient">Wok Simón</span>
+            <h1>
+              <img
+                src="/assets/images/Logo_actualizado.png"
+                alt="Distrito Wok Simón - Restaurante Chino"
+                className="w-[320px] max-w-[85%] rounded-xl border border-dorado/20 shadow-[0_8px_32px_rgba(0,0,0,0.55)]"
+              />
             </h1>
-            <p className="login-brand-text font-cormorant italic text-dorado tracking-[0.3em] mt-4 text-lg">
+            <p className="login-brand-text font-cormorant italic text-dorado tracking-[0.3em] mt-6 text-lg">
               * SABOR QUE ENAMORA *
             </p>
           </div>
@@ -102,10 +105,14 @@ function LoginPage() {
                 onError={() => setChefImgOk(false)}
               />
             </div>
-            <h1 className="login-brand-text font-cormorant text-3xl font-bold text-dorado-claro mt-4">
-              Distrito Wok Simón
+            <h1 className="mt-4">
+              <img
+                src="/assets/images/Logo_actualizado.png"
+                alt="Distrito Wok Simón - Restaurante Chino"
+                className="w-[220px] max-w-full mx-auto rounded-lg border border-dorado/20 shadow-lg"
+              />
             </h1>
-            <p className="login-brand-text font-cormorant italic text-dorado tracking-[0.25em] text-sm mt-1">
+            <p className="login-brand-text font-cormorant italic text-dorado tracking-[0.25em] text-sm mt-3">
               * SABOR QUE ENAMORA *
             </p>
           </div>

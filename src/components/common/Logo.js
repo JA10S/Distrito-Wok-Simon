@@ -31,23 +31,15 @@ export function LogoMark({ size = 40, className = '' }) {
   );
 }
 
-function Logo({ size = 40, showText = false, className = '', textClass = '' }) {
-  if (!showText) {
-    return <LogoMark size={size} className={`text-dorado ${className}`} />;
-  }
-
+function Logo({ size = 40, className = '' }) {
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <LogoMark size={size} className="text-dorado shrink-0" />
-      <div className="leading-none text-left min-w-0">
-        <div className={`tracking-[0.4em] text-dorado-oscuro ${textClass} uppercase`}>
-          Distrito
-        </div>
-        <div className={`font-cormorant font-bold text-gold-gradient ${textClass}`}>
-          Wok Simón
-        </div>
-      </div>
-    </div>
+    <img
+      src="/assets/images/Logo_actualizado.png"
+      alt="Distrito Wok Simón - Restaurante Chino"
+      style={{ height: size, width: 'auto' }}
+      loading="lazy"
+      className={`rounded-lg border border-dorado/15 shadow-lg ${className}`}
+    />
   );
 }
 

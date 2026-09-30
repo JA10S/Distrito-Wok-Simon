@@ -608,7 +608,7 @@ function MenuPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center sm:text-left">
             {/* Logo */}
             <div className="flex flex-col items-center sm:items-start gap-3">
-              <Logo size={56} showText textClass="text-lg" />
+              <Logo size={64} />
               <p className="text-dorado-oscuro text-xs tracking-[0.3em] uppercase">
                 Comida oriental colombiana
               </p>

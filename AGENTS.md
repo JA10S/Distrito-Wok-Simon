@@ -283,6 +283,11 @@ match /arroces/{itemId} {
   - **Microinteracciones inputs**: `.login-input:focus` → borde dorado + doble `box-shadow` (ring + glow) con transición 0.3s
   - **Botón `.btn-gold`**: hover `translateY(-2px) scale(1.02)` + `brightness(1.06)` + sombra más viva; active `scale(0.98)`
   - Tests: 51 totales (sin cambios)
+- [x] Nuevo logo oficial aplicado (2026-09-30)
+  - Fuente: `public/assets/images/Logo_actualizado.png` (300×191, fondo marino, wordmark dorado "Distrito Wok Simón - Restaurante Chino")
+  - `src/components/common/Logo.js`: `Logo` ahora renderiza el PNG (alto = prop `size`, `rounded-lg border-dorado/15`); `LogoMark` (sello SVG) se conserva exportado como icono auxiliar
+  - Usos: `DashboardHeader` (44px), `MenuPage` header (80/90/120px) y footer (64px), login desktop (320px dentro de `<h1>`) y móvil (220px)
+  - Favicon de `public/index.html`: ahora apunta al PNG (antes `logo.svg`)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)
