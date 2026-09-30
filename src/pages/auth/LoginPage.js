@@ -2,16 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import ChefAnimation from '../../components/common/ChefAnimation';
-import {
-  FaEnvelope,
-  FaLock,
-  FaSignInAlt,
-  FaSpinner,
-  FaUtensils,
-  FaTruck,
-  FaChartLine,
-  FaShieldAlt
-} from 'react-icons/fa';
+import { FaEnvelope, FaLock, FaSignInAlt, FaSpinner } from 'react-icons/fa';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -53,83 +44,72 @@ function LoginPage() {
     }
   }
 
-  const features = [
-    { icon: <FaUtensils />, text: 'Gestión de menú en tiempo real' },
-    { icon: <FaTruck />, text: 'Pedidos en mesa, domicilio y recoger' },
-    { icon: <FaChartLine />, text: 'Reportes y cuadre de caja' },
-    { icon: <FaShieldAlt />, text: 'Roles y permisos por usuario' }
-  ];
+  const BrandArt = () =>
+    chefImgOk ? (
+      <div className="login-chef absolute inset-0">
+        <img
+          src="/assets/images/login-chef.jpg"
+          alt=""
+          aria-hidden="true"
+          className="login-chef-img block w-full h-full object-cover"
+          style={{ objectPosition: '40% center' }}
+          onError={() => setChefImgOk(false)}
+        />
+      </div>
+    ) : (
+      <ChefAnimation
+        size={480}
+        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 glow text-dorado"
+      />
+    );
 
   return (
-    <div className="min-h-screen bg-negro pattern-bg flex items-center justify-center px-4 py-10">
+    <main className="min-h-screen bg-negro pattern-bg flex items-center justify-center px-4 py-10">
       <div className="max-w-6xl w-full grid lg:grid-cols-2 gap-12 items-center">
-        {/* Lado izquierdo: arte + marca + características */}
-        <div className="hidden lg:flex flex-col items-center text-center animate-fade-in-up">
-          <div className="relative w-full flex justify-center">
-            <div
-              className="absolute inset-0 -m-6 rounded-full bg-dorado/10 blur-3xl"
-              aria-hidden="true"
-            />
-            {chefImgOk ? (
-              <div
-                className="login-chef relative overflow-hidden rounded-2xl"
-                style={{ width: '100%', maxWidth: 540 }}
-              >
-                <img
-                  src="/assets/images/login-chef.jpg"
-                  alt="Chef cocinando en un wok con llamas"
-                  className="login-chef-img block w-full"
-                  onError={() => setChefImgOk(false)}
-                />
-              </div>
-            ) : (
-              <ChefAnimation size={440} className="relative glow text-dorado" />
-            )}
+        {/* Lado izquierdo: marca sobre la ilustración de fondo (solo desktop) */}
+        <section
+          className="login-brand relative hidden lg:block rounded-3xl overflow-hidden border border-dorado/15 h-[460px]"
+          aria-label="Distrito Wok Simón"
+        >
+          <BrandArt />
+          {/* Velo oscuro para legibilidad del texto */}
+          <div className="absolute inset-0 bg-negro/45" aria-hidden="true" />
+
+          {/* Contenido de marca (aparece con fade-in de 0.8s) */}
+          <div className="relative h-full flex flex-col items-center justify-center text-center px-8">
+            <h1 className="login-brand-text font-cormorant text-6xl font-bold">
+              <span className="text-white">Distrito </span>
+              <span className="text-gold-gradient">Wok Simón</span>
+            </h1>
+            <p className="login-brand-text font-cormorant italic text-dorado tracking-[0.3em] mt-4 text-lg">
+              * SABOR QUE ENAMORA *
+            </p>
           </div>
-          <h1 className="font-cormorant text-5xl xl:text-6xl font-bold mt-8">
-            <span className="text-white">Distrito </span>
-            <span className="text-gold-gradient">Wok Simón</span>
-          </h1>
-          <p className="font-cormorant italic text-xl text-dorado mt-2 tracking-[0.18em]">
-            ★ Sabor que enamora ★
-          </p>
+        </section>
 
-          <ul className="mt-8 space-y-3 text-left">
-            {features.map((feature) => (
-              <li key={feature.text} className="flex items-center gap-3 font-cormorant text-lg text-dorado-claro">
-                <span className="w-9 h-9 rounded-full bg-dorado/10 border border-dorado/30 flex items-center justify-center text-dorado shrink-0">
-                  {feature.icon}
-                </span>
-                {feature.text}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Formulario */}
-        <div className="w-full max-w-md mx-auto lg:mx-0 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+        {/* Lado derecho: solo el formulario (entra con slide-up, delay 0.2s) */}
+        <div className="login-form w-full max-w-md mx-auto lg:mx-0">
+          {/* Marca compacta (móvil, apilado) */}
           <div className="lg:hidden text-center mb-6">
-            {chefImgOk ? (
-              <div
-                className="login-chef relative overflow-hidden rounded-2xl mx-auto"
-                style={{ width: 270, maxWidth: '100%' }}
-              >
-                <img
-                  src="/assets/images/login-chef.jpg"
-                  alt="Chef cocinando en un wok con llamas"
-                  className="login-chef-img block w-full"
-                  onError={() => setChefImgOk(false)}
-                />
-              </div>
-            ) : (
-              <ChefAnimation size={210} className="mx-auto glow text-dorado" />
-            )}
-            <h1 className="font-cormorant text-3xl font-bold text-dorado-claro mt-3">
+            <div
+              className="login-chef relative overflow-hidden rounded-2xl mx-auto"
+              style={{ width: 270, maxWidth: '100%' }}
+            >
+              <img
+                src="/assets/images/login-chef.jpg"
+                alt="Chef cocinando en un wok con llamas"
+                className="login-chef-img block w-full"
+                onError={() => setChefImgOk(false)}
+              />
+            </div>
+            <h1 className="login-brand-text font-cormorant text-3xl font-bold text-dorado-claro mt-4">
               Distrito Wok Simón
             </h1>
+            <p className="login-brand-text font-cormorant italic text-dorado tracking-[0.25em] text-sm mt-1">
+              * SABOR QUE ENAMORA *
+            </p>
           </div>
 
-          {/* Formulario (lado derecho: limpio y con aire) */}
           <div className="bg-black/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-2xl border border-dorado/25 hover-lift">
             <div className="flex items-center justify-center gap-3 mb-6">
               <span className="h-px w-8 bg-dorado-oscuro/50" />
@@ -161,7 +141,7 @@ function LoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="login-input w-full bg-black/50 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-dorado-oscuro/60 focus:outline-none focus:border-dorado focus:ring-1 focus:ring-dorado/50 transition"
+                    className="login-input w-full bg-black/50 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-dorado-oscuro/60"
                     placeholder="usuario@restaurante.com"
                     required
                   />
@@ -182,17 +162,18 @@ function LoginPage() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="login-input w-full bg-black/50 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-dorado-oscuro/60 focus:outline-none focus:border-dorado focus:ring-1 focus:ring-dorado/50 transition"
+                    className="login-input w-full bg-black/50 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-dorado-oscuro/60"
                     placeholder="••••••••"
                     required
                   />
                 </div>
               </div>
 
+              {/* Hover: eleva + escala 1.02 · Active: escala 0.98 (ver .btn-gold en App.css) */}
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-gold w-full text-negro font-semibold tracking-wide py-3 px-4 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
+                className="btn-gold w-full text-negro font-bold tracking-wide py-3 px-4 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -216,7 +197,7 @@ function LoginPage() {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 

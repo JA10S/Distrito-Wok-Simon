@@ -227,7 +227,9 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .login-chef-img,
-  .login-chef::after {
+  .login-chef::after,
+  .login-brand,
+  .login-form {
     animation: none;
   }
 }
@@ -246,18 +248,22 @@ body {
   transition:
     background-position 0.35s ease,
     transform 0.25s ease,
+    filter 0.25s ease,
     box-shadow 0.25s ease,
     opacity 0.2s ease;
 }
 
+/* Hover: se eleva (translateY -2px) + escala 1.02, brillo dorado más vivo */
 .btn-gold:hover:not(:disabled) {
   background-position: 100% 50%;
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px -8px rgb(var(--color-dorado) / 0.7);
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.06);
+  box-shadow: 0 14px 30px -8px rgb(var(--color-dorado) / 0.75);
 }
 
+/* Active: encoge un 2% de forma fluida */
 .btn-gold:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 
 /* Inputs del login: el autocompletado del navegador no los pone blancos */
@@ -268,6 +274,57 @@ body {
   -webkit-text-fill-color: #ffffff;
   caret-color: #ffffff;
   transition: background-color 9999s ease-out;
+}
+
+/* Animación de carga: contenido de marca (izquierda) con fade-in suave 0 → 1 en 0.8s */
+.login-brand {
+  animation: login-fade 0.8s ease-out both;
+}
+
+@keyframes login-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Animación de carga: formulario (derecha) con retardo de 0.2s,
+   desliza desde translateY(20px) hasta su lugar en 1s */
+.login-form {
+  animation: login-slide-up 1s ease-out 0.2s both;
+}
+
+@keyframes login-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Texto de marca legible sobre la ilustración */
+.login-brand-text {
+  text-shadow: 0 2px 16px rgb(0 0 0 / 0.85);
+}
+
+/* Microinteracción de inputs: focus con transición a dorado + resplandor (0.3s) */
+.login-input {
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: rgb(var(--color-dorado));
+  box-shadow:
+    0 0 0 3px rgb(var(--color-dorado) / 0.15),
+    0 0 18px -4px rgb(var(--color-dorado) / 0.4);
 }
 
 

@@ -276,6 +276,13 @@ match /arroces/{itemId} {
   - **Tipografía unificada**: labels, subtítulo ★ y lista de características en `font-cormorant` (serif gourmet); el texto de los inputs queda en Montserrat (combinación serif+sans limpia)
   - **Botón metálico**: clase `.btn-gold` con degradado `dorado-claro → dorado → dorado-oscuro` (background-size 170%, hover mueve el gradiente), sombra dorada, `rounded-xl`, hover lift sutil
   - **Layout 50/50 fluido**: `max-w-6xl gap-12` — izquierdo: imagen a 540px (antes 430) + marca `text-5xl/6xl` + features; derecho: solo el formulario (aire)
+- [x] Login premium final (brief del usuario, 2026-09-30)
+  - **Split-screen**: izquierda = sección de marca con la ilustración como FONDO (`BrandArt`, `object-cover object-[40%_center]`, velo `bg-negro/45` + `login-brand-text` con text-shadow); logo `font-cormorant text-6xl` + eslogan `* SABOR QUE ENAMORA *`; **sin lista de características** (quitada para mantenerlo minimalista)
+  - **Semántica**: `main` + `section aria-label` (marca) + `form`; mobile apilado conserva marca compacta + eslogan
+  - **Animaciones de carga** (App.css): `.login-brand` fade 0→1 en 0.8s; `.login-form` slide-up `translateY(20px→0)` en 1s con delay 0.2s (ambas con `both`, respetan `prefers-reduced-motion`)
+  - **Microinteracciones inputs**: `.login-input:focus` → borde dorado + doble `box-shadow` (ring + glow) con transición 0.3s
+  - **Botón `.btn-gold`**: hover `translateY(-2px) scale(1.02)` + `brightness(1.06)` + sombra más viva; active `scale(0.98)`
+  - Tests: 51 totales (sin cambios)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)
