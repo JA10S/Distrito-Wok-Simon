@@ -110,6 +110,38 @@ export function timestampMs(value) {
   return 0;
 }
 
+export function isToday(timestamp, now = Date.now()) {
+  const ms = timestampMs(timestamp);
+  if (!ms) return false;
+  const date = new Date(ms);
+  const reference = new Date(now);
+  return (
+    date.getFullYear() === reference.getFullYear() &&
+    date.getMonth() === reference.getMonth() &&
+    date.getDate() === reference.getDate()
+  );
+}
+
+// Platos más pedidos: agrupa por item base (ignora tamaño) de pedidos pagados
+export function getTopItems(orders, limit = 5) {
+  const counts = new Map();
+
+  (orders || []).forEach((order) => {
+    (order.items || []).forEach((item) => {
+      const baseId = String(item.id || '').replace(/--(small|large)$/, '');
+      if (!baseId) return;
+      const baseName = String(item.name || '').replace(/\s*\((Pequeña|Grande)\)$/, '');
+      const entry = counts.get(baseId) || { id: baseId, name: baseName, count: 0 };
+      entry.count += item.quantity || 0;
+      counts.set(baseId, entry);
+    });
+  });
+
+  return Array.from(counts.values())
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, limit);
+}
+
 export function isRecent(timestamp, now = Date.now(), windowMs = DUPLICATE_WINDOW_MS) {
   const ms = timestampMs(timestamp);
   return ms > 0 && now - ms <= windowMs;

@@ -17,7 +17,10 @@ const ALL_PERMISSIONS = {
   manage_users: 'Gestionar Usuarios',
   manage_permissions: 'Gestionar Permisos',
   view_reports: 'Ver Reportes',
-  view_summaries: 'Ver Resúmenes (Estadísticas)'
+  view_summaries: 'Ver Resúmenes (Estadísticas)',
+  attend_calls: 'Atender Llamados de Clientes',
+  transfer_order: 'Trasladar Pedidos a otra Mesa',
+  close_shift: 'Cerrar Turno'
 };
 
 const ROLE_ICONS = {

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useMenu } from '../../hooks/useMenu';
 import { createTakeawayOrder, watchOrder } from '../../services/orderService';
+import { createCall } from '../../services/callService';
 import { useTheme } from '../../contexts/ThemeContext';
 import Logo from '../../components/common/Logo';
 import ModeToggle from '../../components/common/ModeToggle';
 import SiteHeader from '../../components/client/SiteHeader';
 import MenuDrawer from '../../components/client/MenuDrawer';
+import CallWaiterButton from '../../components/client/CallWaiterButton';
 import { GiRiceCooker, GiFrenchFries } from 'react-icons/gi';
 import { TbMeat, TbGlass } from 'react-icons/tb';
 import {
@@ -273,6 +275,9 @@ function MenuPage() {
           <span>${totals.total.toLocaleString('es-CO')}</span>
         </button>
       )}
+
+      {/* Llamado de atención al camarero */}
+      <CallWaiterButton onSubmit={createCall} />
 
       {/* Modal: carrito y datos de entrega */}
       {showCart && !createdOrder && (

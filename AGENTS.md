@@ -31,7 +31,8 @@ src/
 scripts/
 ├── generate-pdf-from-firestore.js  # Genera PDF desde Firestore
 ├── migrate-to-collections.js       # Migración inicial
-└── update-porciones.js             # Actualizar porciones
+├── update-porciones.js             # Actualizar porciones
+└── add-new-permissions.js          # Agrega permisos nuevos a roles (merge seguro)
 
 tools/                              # Herramientas del proyecto
 ├── harness.ps1                      # Project Harness (status/test/pdf/deploy…)
@@ -329,7 +330,15 @@ match /arroces/{itemId} {
   - **Migración de superficies** (18 archivos): `bg-gray-900`→`bg-surface-2`, `bg-gray-800/700`→`bg-surface-3`, `bg-negro`→`bg-surface`, `hover:bg-gray-600`→`hover:bg-ink/10`, `text-white` sobre superficie→`text-ink`; **excepciones fijas**: `bg-negro` en la marca del login y badge del carrito, checkboxes `bg-surface-3`, botones de color y `text-white` sobre rojo/verde se conservan
   - **Bug raíz corregido**: `src/services/firebase.js` inicializaba Analytics/Messaging sin comprobar soporte → `getMessaging` lanzaba un rechazo asíncrono (`messaging/unsupported-browser`) que rompía cualquier suite que importara `ThemeContext`; ahora hay guarda (`serviceWorker` + `indexedDB`)
   - ⚠️ **Lección**: nunca usar arrays anidados en literales de PowerShell (`@(@('a','b'))` se aplasta y `.Replace($pair[0],$pair[1])` recibe un carácter, corrompiendo archivos) — usar la tool `edit` o scripts Node para reemplazos masivos; tras editar, verificar con `git diff --numstat` + grep de marcadores de corrupción
-  - Tests: 114 totales (20 nuevos: 8 en `themeUtils.test`, 4 en `ThemeManager.test`, 4 en `DashboardHeader.test`, 4 en `MenuPage.layout.test`)
+   - Tests: 114 totales (20 nuevos: 8 en `themeUtils.test`, 4 en `ThemeManager.test`, 4 en `DashboardHeader.test`, 4 en `MenuPage.layout.test`)
+- [x] Camarero Fase 3 — 4 funcionalidades nuevas (2026-10-03)
+  - **1. Buscador + "Más pedidos hoy"** en `OrderCreator`: input de búsqueda que filtra **todas las categorías** (ignora `activeCategory`, sin acentos, oculta pills y muestra contador de resultados + estado vacío) y chips `🔥 Más pedidos hoy` que agregan el plato con 1 clic; `topItems` se calcula en `WaiterDashboard` con `getTopItems(pedidos pagados de hoy, 5)` → `src/utils/orderUtils.js` (`getTopItems` agrupa por id base ignorando `--small/--large`, `isToday` valida el día)
+  - **2. Trasladar pedido a otra mesa**: botón `🔀 Trasladar` en `OrderCard` (permiso `transfer_order`, solo pedidos en mesa con estado `pending|preparing|ready`) → modal con las mesas disponibles (excluye la actual) → `useOrders.transferOrder(orderId, table)` actualiza `tableId`/`tableNumber`/`transferredAt` y luego el dashboard libera la mesa anterior (si no tiene otro pedido activo) y ocupa la destino (`updateTableStatus`); se confirma con `window.confirm` y el modal **queda abierto** si el usuario rechaza
+  - **3. Llamado de atención desde el menú web**: botón flotante `🔔 Llamar al mesero` (`src/components/client/CallWaiterButton.js`, pure UI con prop `onSubmit`) → modal con número de mesa (obligatorio) + motivo opcional → `src/services/callService.js#createCall` crea doc en **`calls`** (`{tableNumber, message, status:'pending', source:'client', createdAt}`); en el camarero, pestaña `Llamados` (permiso `attend_calls`, badge = pendientes) con `src/hooks/useCalls.js` (onSnapshot de `calls`, `resolveCall` marca `done`) y botón `✅ Atendido`
+  - **4. Cerrar turno del camarero**: pestaña `Mi turno` (permiso `close_shift`) con resumen del día propio (`paidOrders` con `waiterId == uid` y `isToday`): pedidos atendidos, total cobrado, desglose por método, primer/último pedido; botón `🕒 Cerrar turno` → `src/hooks/useShift.js` guarda `shifts/{uid}_{YYYY-MM-DD}` con `{waiterId, date, closedAt, summary}` (setDoc merge) y muestra banner `✅ Turno cerrado a las HH:MM` (tras cerrar se muestran los valores guardados, no los vivos)
+  - **`firestore.rules`**: `calls` (create público validado: `status=='pending'`, `source=='client'`, `tableNumber` 1–999, `message` ≤300; read/update/delete solo autenticados) y `shifts` (lectura/escritura autenticada) — requiere `firebase deploy --only firestore:rules`
+  - **Permisos nuevos**: `attend_calls`, `transfer_order`, `close_shift` en `RolesManager.ALL_PERMISSIONS` (admin y camarero); script de merge seguro: `node scripts/add-new-permissions.js` (usa `arrayUnion`, no sobreescribe) o desde Admin → Roles
+  - Tests: 142 totales (21 nuevos: 9 en `orderUtils.test` — `isToday`/`getTopItems`, 4 en `OrderCreator.test` — buscador/estados/top items, 8 en `WaiterDashboard.test` — traslado (3) + llamados (3) + turno (2), 2 en `MenuPage.test` — modal de llamado)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: hooks — useOrders/useTables/useMenu, AdminDashboard, componentes admin y OrderCard)
@@ -503,6 +512,9 @@ roles/{roleId}
 | `manage_permissions` | Gestionar permisos |
 | `view_reports` | Ver reportes |
 | `view_summaries` | Ver Resúmenes (Estadísticas) en el dashboard |
+| `attend_calls` | Atender llamados de clientes (pestaña Llamados) |
+| `transfer_order` | Trasladar pedidos a otra mesa |
+| `close_shift` | Cerrar turno (pestaña Mi turno) |
 
 ### Usuarios de Prueba
 | Email | Rol | UID |

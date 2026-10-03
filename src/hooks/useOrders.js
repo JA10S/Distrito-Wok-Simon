@@ -296,6 +296,35 @@ export function useOrders(status = null) {
     }
   };
 
+  // Mueve un pedido activo a otra mesa (solo pedidos en mesa)
+  const transferOrder = async (orderId, table) => {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      const snap = await getDoc(orderRef);
+      const data = snap.exists() ? snap.data() : null;
+
+      if (!data) return { success: false, error: 'Pedido no encontrado' };
+      if (data.type && data.type !== 'table') {
+        return { success: false, error: 'Solo se pueden trasladar pedidos en mesa' };
+      }
+      if (!['pending', 'preparing', 'ready'].includes(data.status)) {
+        return { success: false, error: 'Solo se pueden trasladar pedidos activos' };
+      }
+
+      await updateDoc(orderRef, {
+        tableId: table.id,
+        tableNumber: table.number,
+        transferredAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+
+      return { success: true, previousTableId: data.tableId || null };
+    } catch (err) {
+      console.error('Error transferring order:', err);
+      return { success: false, error: err.message };
+    }
+  };
+
   return { 
     orders, 
     loading, 
@@ -305,6 +334,7 @@ export function useOrders(status = null) {
     updateOrderStatus,
     updateOrder,
     cancelOrder,
-    reactivateOrder
+    reactivateOrder,
+    transferOrder
   };
 }

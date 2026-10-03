@@ -1,6 +1,8 @@
 import {
   findDuplicateOrder,
   isRecent,
+  isToday,
+  getTopItems,
   minutesAgo,
   DUPLICATE_WINDOW_MS,
   parsePrice,
@@ -164,6 +166,60 @@ describe('validateCustomerInfo', () => {
   });
 
   test('domicilio requiere dirección', () => {
-    expect(validateCustomerInfo('delivery', { ...valid, address: '' })).toMatch(/dirección/i);
+    expect(validateCustomerInfo('delivery', { ...valid, address: '' })).toMatch(/dirección/);
+  });
+});
+
+describe('isToday', () => {
+  test('detecta un timestamp de hoy', () => {
+    expect(isToday({ toDate: () => new Date() })).toBe(true);
+  });
+
+  test('descarta un timestamp de otro día', () => {
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    expect(isToday({ toDate: () => yesterday })).toBe(false);
+  });
+
+  test('descarta valores vacíos', () => {
+    expect(isToday(null)).toBe(false);
+    expect(isToday(undefined)).toBe(false);
+  });
+});
+
+describe('getTopItems', () => {
+  const order = (items) => ({ items });
+
+  test('agrupa por item base ignorando el tamaño', () => {
+    const top = getTopItems([
+      order([
+        { id: 'a1--small', name: 'Arroz Costeño Wok (Pequeña)', quantity: 1 },
+        { id: 'b1', name: 'Gaseosa', quantity: 2 }
+      ]),
+      order([{ id: 'a1--large', name: 'Arroz Costeño Wok (Grande)', quantity: 2 }])
+    ]);
+
+    expect(top).toEqual([
+      { id: 'a1', name: 'Arroz Costeño Wok', count: 3 },
+      { id: 'b1', name: 'Gaseosa', count: 2 }
+    ]);
+  });
+
+  test('ordena por cantidad y respeta el límite', () => {
+    const top = getTopItems(
+      [
+        order([{ id: 'x1', name: 'A', quantity: 1 }]),
+        order([{ id: 'y1', name: 'B', quantity: 5 }]),
+        order([{ id: 'z1', name: 'C', quantity: 3 }])
+      ],
+      2
+    );
+
+    expect(top.map((i) => i.id)).toEqual(['y1', 'z1']);
+  });
+
+  test('retorna lista vacía sin pedidos ni items', () => {
+    expect(getTopItems([])).toEqual([]);
+    expect(getTopItems(undefined)).toEqual([]);
+    expect(getTopItems([{}])).toEqual([]);
   });
 });

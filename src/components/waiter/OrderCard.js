@@ -2,7 +2,7 @@ import React from 'react';
 import { useTimer } from '../../hooks/useTimer';
 import { ORDER_TYPE_LABELS, PAYMENT_METHOD_LABELS } from '../../utils/orderUtils';
 
-function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, canEdit = true, canUpdateStatus = true, canCancel = true, canCancelKitchen = false, canCharge = false }) {
+function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, onTransfer, canEdit = true, canUpdateStatus = true, canCancel = true, canCancelKitchen = false, canCharge = false, canTransfer = false }) {
   const preparationTimer = useTimer(order.preparingAt || order.createdAt);
   const orderTimer = useTimer(order.createdAt);
 
@@ -145,6 +145,15 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, canEdit 
                 className="w-full bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded text-sm"
               >
                 ✕ Cancelar listo
+              </button>
+            )}
+            {canTransfer && onTransfer && order.tableId &&
+              ['pending', 'preparing', 'ready'].includes(order.status) && (
+              <button
+                onClick={() => onTransfer(order)}
+                className="w-full bg-surface-3 hover:bg-dorado hover:text-negro border border-dorado/50 text-dorado-claro font-bold py-2 px-4 rounded text-sm"
+              >
+                🔀 Trasladar
               </button>
             )}
             {order.status === 'ready' && canCharge && order.type !== 'delivery' && onCharge && (

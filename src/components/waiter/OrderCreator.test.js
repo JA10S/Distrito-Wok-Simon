@@ -235,3 +235,59 @@ test('limpia el carrito tras una creación exitosa', async () => {
   );
   expect(screen.getByText('Mesa:').parentElement).toHaveTextContent('1');
 });
+
+test('busca platos en todas las categorías', () => {
+  renderCreator();
+
+  fireEvent.change(screen.getByLabelText('Buscar plato'), {
+    target: { value: 'gaseosa' },
+  });
+
+  expect(screen.getByText('Gaseosa')).toBeInTheDocument();
+  expect(screen.queryByText('Arroz Costeño Wok')).not.toBeInTheDocument();
+  expect(screen.getByText(/1 resultado para/)).toBeInTheDocument();
+  expect(screen.queryByText('Arroces')).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByLabelText('Limpiar búsqueda'));
+  expect(screen.getByText('Arroz Costeño Wok')).toBeInTheDocument();
+  expect(screen.getByText('Arroces')).toBeInTheDocument();
+});
+
+test('muestra mensaje cuando la búsqueda no tiene resultados', () => {
+  renderCreator();
+
+  fireEvent.change(screen.getByLabelText('Buscar plato'), {
+    target: { value: 'pizza' },
+  });
+
+  expect(screen.getByText(/No se encontraron platos/)).toBeInTheDocument();
+  expect(screen.queryByText('Arroz Costeño Wok')).not.toBeInTheDocument();
+});
+
+test('agrega un plato desde la sección de más pedidos hoy', () => {
+  renderCreator({
+    topItems: [{ id: 'a1', name: 'Arroz Costeño Wok', count: 7 }],
+  });
+
+  expect(screen.getByText(/Más pedidos hoy/)).toBeInTheDocument();
+  expect(screen.getByText('×7')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByLabelText('Agregar Arroz Costeño Wok'));
+
+  expect(screen.getByText('Arroz Costeño Wok (Pequeña)')).toBeInTheDocument();
+  expect(valueAfter('Subtotal:')).toBe(`$${(30000).toLocaleString()}`);
+});
+
+test('oculta los más pedidos mientras se usa el buscador', () => {
+  renderCreator({
+    topItems: [{ id: 'a1', name: 'Arroz Costeño Wok', count: 7 }],
+  });
+
+  expect(screen.getByText(/Más pedidos hoy/)).toBeInTheDocument();
+
+  fireEvent.change(screen.getByLabelText('Buscar plato'), {
+    target: { value: 'gaseosa' },
+  });
+
+  expect(screen.queryByText(/Más pedidos hoy/)).not.toBeInTheDocument();
+});

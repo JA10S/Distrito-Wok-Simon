@@ -20,7 +20,11 @@ jest.mock('../../hooks/useMenu', () => ({
 
 jest.mock('../../services/orderService', () => ({
   createTakeawayOrder: jest.fn(),
-  watchOrder: jest.fn(() => () => {}),
+  watchOrder: jest.fn(() => () => {})
+}));
+
+jest.mock('../../services/callService', () => ({
+  createCall: jest.fn()
 }));
 
 jest.mock('../../contexts/ThemeContext', () => ({
@@ -37,6 +41,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import MenuPage from './MenuPage';
 import { createTakeawayOrder, watchOrder } from '../../services/orderService';
+import { createCall } from '../../services/callService';
 
 beforeEach(() => {
   createTakeawayOrder.mockResolvedValue({ success: true, id: 'o1', orderNumber: 'ABC123' });
@@ -91,4 +96,37 @@ test('crea pedido para llevar y muestra confirmación', async () => {
     source: 'client',
     customer: expect.objectContaining({ name: 'Juan Pérez', phone: '3001234567' })
   }));
+});
+
+test('valida el número de mesa al llamar al mesero', async () => {
+  createCall.mockResolvedValue({ success: true, id: 'c1' });
+  render(<MenuPage />);
+
+  fireEvent.click(screen.getByLabelText('Llamar al mesero'));
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole('button', { name: /Avisar al camarero/ }));
+
+  expect(await screen.findByText('Ingrese el número de mesa')).toBeInTheDocument();
+  expect(createCall).not.toHaveBeenCalled();
+});
+
+test('envía el llamado de atención con mesa y motivo', async () => {
+  createCall.mockResolvedValue({ success: true, id: 'c1' });
+  render(<MenuPage />);
+
+  fireEvent.click(screen.getByLabelText('Llamar al mesero'));
+  fireEvent.change(screen.getByLabelText(/Número de mesa/), {
+    target: { value: '7' },
+  });
+  fireEvent.change(screen.getByLabelText(/Motivo/), {
+    target: { value: 'La cuenta por favor' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /Avisar al camarero/ }));
+
+  expect(await screen.findByText(/Ya avisamos a nuestro camarero/)).toBeInTheDocument();
+  expect(createCall).toHaveBeenCalledWith({
+    tableNumber: 7,
+    message: 'La cuenta por favor',
+  });
 });

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTables } from '../../hooks/useTables';
 import { useOrders, ACTIVE_ORDER_STATUSES } from '../../hooks/useOrders';
+import { useCalls } from '../../hooks/useCalls';
+import { useShift } from '../../hooks/useShift';
 import { useTimer } from '../../hooks/useTimer';
 import OrderCreator from '../../components/waiter/OrderCreator';
 import OrderCard from '../../components/waiter/OrderCard';
@@ -10,14 +12,24 @@ import OrderEditor from '../../components/waiter/OrderEditor';
 import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import SummaryStats from '../../components/common/SummaryStats';
-import { FaChair, FaReceipt, FaPlusCircle, FaCheckCircle, FaInbox, FaHistory } from 'react-icons/fa';
+import { FaChair, FaReceipt, FaPlusCircle, FaCheckCircle, FaInbox, FaHistory, FaBell, FaRegClock } from 'react-icons/fa';
 import {
   findDuplicateOrder,
   getOrderLabel,
+  getTopItems,
+  isToday,
+  minutesAgo,
+  timestampMs,
   ORDER_STATUS_LABELS,
   PAYMENT_METHOD_OPTIONS,
   PAYMENT_METHOD_LABELS
 } from '../../utils/orderUtils';
+
+const formatClock = (value) => {
+  const ms = timestampMs(value);
+  if (!ms) return '—';
+  return new Date(ms).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+};
 
 const TYPE_FILTERS = [
   { id: 'all', label: 'Todos' },
@@ -102,11 +114,55 @@ function WaiterDashboard() {
   const [editingOrder, setEditingOrder] = useState(null);
   const [typeFilter, setTypeFilter] = useState('all');
   const [chargingOrder, setChargingOrder] = useState(null);
-  
+  const [transferringOrder, setTransferringOrder] = useState(null);
+
   const { tables, loading: tablesLoading, error: tablesError, updateTableStatus } = useTables();
-  const { orders, loading: ordersLoading, error: ordersError, createOrder, updateOrderStatus, updateOrder, cancelOrder, reactivateOrder, processPayment } = useOrders(ACTIVE_ORDER_STATUSES);
+  const { orders, loading: ordersLoading, error: ordersError, createOrder, updateOrderStatus, updateOrder, cancelOrder, reactivateOrder, processPayment, transferOrder } = useOrders(ACTIVE_ORDER_STATUSES);
   const { orders: cancelledOrders } = useOrders('cancelled');
   const { orders: paidOrders } = useOrders('paid');
+
+  const topItems = useMemo(() => {
+    const todayOrders = paidOrders.filter((order) =>
+      isToday(timestampMs(order.paidAt) || timestampMs(order.createdAt))
+    );
+    return getTopItems(todayOrders, 5);
+  }, [paidOrders]);
+
+  const { pendingCalls, resolveCall } = useCalls();
+  const { shift, closeShift } = useShift(currentUser?.uid);
+
+  const myOrdersToday = useMemo(
+    () =>
+      paidOrders.filter(
+        (order) =>
+          order.waiterId === currentUser?.uid &&
+          isToday(timestampMs(order.paidAt) || timestampMs(order.createdAt))
+      ),
+    [paidOrders, currentUser]
+  );
+
+  const shiftSummary = useMemo(() => {
+    const byMethod = { cash: 0, nequi: 0, card: 0 };
+    myOrdersToday.forEach((order) => {
+      const method = order.paymentMethod;
+      if (method && byMethod.hasOwnProperty(method)) {
+        byMethod[method] += order.total || 0;
+      }
+    });
+
+    const times = myOrdersToday
+      .map((order) => timestampMs(order.paidAt) || timestampMs(order.createdAt))
+      .filter((ms) => ms > 0)
+      .sort((a, b) => a - b);
+
+    return {
+      orders: myOrdersToday.length,
+      total: myOrdersToday.reduce((sum, order) => sum + (order.total || 0), 0),
+      byMethod,
+      firstOrderAt: times[0] || null,
+      lastOrderAt: times[times.length - 1] || null
+    };
+  }, [myOrdersToday]);
 
   const handleCharge = (order) => {
     if (!hasPermission('charge_orders')) {
@@ -131,6 +187,85 @@ function WaiterDashboard() {
     } else {
       alert('Error al procesar pago: ' + result.error);
     }
+  };
+
+  const handleTransferRequest = (order) => {
+    if (!hasPermission('transfer_order')) {
+      alert('No tiene permiso para trasladar pedidos');
+      return;
+    }
+    if (!order.tableId) {
+      alert('Este pedido no está en una mesa');
+      return;
+    }
+    setTransferringOrder(order);
+  };
+
+  const handleTransfer = async (targetTable) => {
+    const order = transferringOrder;
+    if (!order) return;
+
+    if (!window.confirm(`¿Trasladar el pedido de ${getOrderLabel(order)} a la mesa ${targetTable.number}?`)) {
+      return;
+    }
+
+    setTransferringOrder(null);
+
+    const result = await transferOrder(order.id, targetTable);
+    if (!result.success) {
+      alert('Error al trasladar pedido: ' + result.error);
+      return;
+    }
+
+    if (result.previousTableId && result.previousTableId !== targetTable.id) {
+      const otherActive = orders.some(
+        (o) => o.tableId === result.previousTableId && o.id !== order.id
+      );
+      if (!otherActive) {
+        const freeResult = await updateTableStatus(result.previousTableId, 'available');
+        if (!freeResult.success) {
+          alert('Pedido trasladado, pero no se pudo liberar la mesa anterior: ' + freeResult.error);
+        }
+      }
+    }
+
+    const occupyResult = await updateTableStatus(targetTable.id, 'occupied', order.id);
+    if (!occupyResult.success) {
+      alert('Pedido trasladado, pero no se pudo ocupar la mesa destino: ' + occupyResult.error);
+      return;
+    }
+
+    alert(`Pedido trasladado a la mesa ${targetTable.number}`);
+  };
+
+  const handleResolveCall = async (call) => {
+    if (!hasPermission('attend_calls')) {
+      alert('No tiene permiso para atender llamados');
+      return;
+    }
+    const result = await resolveCall(call.id, currentUser);
+    if (!result.success) {
+      alert('Error al atender el llamado: ' + result.error);
+    }
+  };
+
+  const handleCloseShift = async () => {
+    if (!hasPermission('close_shift')) {
+      alert('No tiene permiso para cerrar el turno');
+      return;
+    }
+    if (shift) {
+      alert('El turno de hoy ya fue cerrado');
+      return;
+    }
+    if (!window.confirm('¿Cerrar el turno de hoy?')) return;
+
+    const result = await closeShift(shiftSummary);
+    if (!result.success) {
+      alert('Error al cerrar el turno: ' + result.error);
+      return;
+    }
+    alert('Turno cerrado exitosamente');
   };
 
   const handleLogout = async () => {
@@ -411,6 +546,12 @@ function WaiterDashboard() {
         tabs={[
           { id: 'tables', label: 'Mesas', icon: <FaChair />, badge: tables.length },
           { id: 'orders', label: 'Pedidos', icon: <FaReceipt />, badge: orders.length },
+          ...(hasPermission('attend_calls')
+            ? [{ id: 'calls', label: 'Llamados', icon: <FaBell />, badge: pendingCalls.length }]
+            : []),
+          ...(hasPermission('close_shift')
+            ? [{ id: 'shift', label: 'Mi turno', icon: <FaRegClock /> }]
+            : []),
           ...(hasPermission('view_history')
             ? [{ id: 'history', label: 'Historial', icon: <FaHistory /> }]
             : []),
@@ -512,11 +653,13 @@ function WaiterDashboard() {
                     onEdit={setEditingOrder}
                     onCancel={handleCancelOrderRequest}
                     onCharge={handleCharge}
+                    onTransfer={handleTransferRequest}
                     canEdit={hasPermission('create_order')}
                     canUpdateStatus={hasPermission('update_order_status')}
                     canCancel={hasPermission('update_order_status')}
                     canCancelKitchen={hasPermission('view_dashboard')}
                     canCharge={hasPermission('charge_orders')}
+                    canTransfer={hasPermission('transfer_order')}
                   />
                 ))}
               </div>
@@ -567,6 +710,112 @@ function WaiterDashboard() {
           </div>
         )}
 
+        {/* Llamados de atención de los clientes */}
+        {activeTab === 'calls' && (
+          <div>
+            <h2 className="text-xl font-cormorant text-dorado mb-6">Llamados de Atención</h2>
+            {pendingCalls.length === 0 ? (
+              <div className="bg-surface-2 rounded-xl p-6 border border-dorado-oscuro/25 text-center">
+                <FaBell className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
+                <p className="text-dorado-oscuro">No hay llamados pendientes</p>
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {pendingCalls.map((call) => {
+                  const mins = minutesAgo(call.createdAt);
+                  return (
+                    <div
+                      key={call.id}
+                      className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20 flex justify-between items-center gap-3 hover-lift"
+                    >
+                      <div>
+                        <div className="text-dorado-claro font-bold">Mesa {call.tableNumber}</div>
+                        {call.message && (
+                          <div className="text-dorado-oscuro text-sm">“{call.message}”</div>
+                        )}
+                        <div className="text-dorado-oscuro/70 text-xs mt-1">
+                          {mins !== null ? `hace ${mins} min` : 'ahora'}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => handleResolveCall(call)}
+                        className="bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded text-sm shrink-0"
+                      >
+                        ✅ Atendido
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Mi turno del día */}
+        {activeTab === 'shift' && (() => {
+          const displayed = shift && shift.summary ? shift.summary : shiftSummary;
+          return (
+          <div>
+            <h2 className="text-xl font-cormorant text-dorado mb-6">Mi Turno de Hoy</h2>
+            <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-6 max-w-2xl">
+              {shift && (
+                <div
+                  role="status"
+                  className="mb-4 bg-green-500/10 border border-green-500/40 text-green-500 rounded-lg px-4 py-3 text-sm"
+                >
+                  ✅ Turno cerrado a las {formatClock(shift.closedAt)}
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4 mb-5">
+                <div className="bg-surface-3 rounded-lg p-4 text-center">
+                  <div className="font-inter text-3xl font-semibold text-dorado-claro tabular-nums">
+                    {displayed.orders || 0}
+                  </div>
+                  <div className="text-dorado-oscuro text-sm">Pedidos atendidos</div>
+                </div>
+                <div className="bg-surface-3 rounded-lg p-4 text-center">
+                  <div className="font-inter text-3xl font-semibold text-dorado tabular-nums">
+                    ${(displayed.total || 0).toLocaleString()}
+                  </div>
+                  <div className="text-dorado-oscuro text-sm">Total cobrado hoy</div>
+                </div>
+              </div>
+
+              <div className="space-y-2 mb-5 text-sm">
+                {PAYMENT_METHOD_OPTIONS.map((option) => (
+                  <div
+                    key={option.id}
+                    className="flex justify-between text-dorado-claro border-b border-dorado-oscuro/20 pb-2"
+                  >
+                    <span>{option.label}</span>
+                    <span className="font-inter tabular-nums">
+                      ${((displayed.byMethod && displayed.byMethod[option.id]) || 0).toLocaleString()}
+                    </span>
+                  </div>
+                ))}
+                <div className="flex justify-between text-dorado-oscuro pt-1">
+                  <span>Primer pedido</span>
+                  <span className="font-inter">{formatClock(displayed.firstOrderAt)}</span>
+                </div>
+                <div className="flex justify-between text-dorado-oscuro">
+                  <span>Último pedido</span>
+                  <span className="font-inter">{formatClock(displayed.lastOrderAt)}</span>
+                </div>
+              </div>
+
+              <button
+                onClick={handleCloseShift}
+                disabled={!!shift}
+                className="bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-3 px-6 rounded disabled:opacity-50"
+              >
+                {shift ? 'Turno cerrado' : '🕒 Cerrar turno'}
+              </button>
+            </div>
+          </div>
+          );
+        })()}
+
         {/* Nuevo Pedido */}
         {activeTab === 'new-order' && (
           <div>
@@ -577,6 +826,7 @@ function WaiterDashboard() {
                 selectedTable={selectedTable}
                 onTableSelect={setSelectedTable}
                 onConfirmOrder={handleCreateOrder}
+                topItems={topItems}
               />
             ) : (
               <div className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20">
@@ -634,6 +884,47 @@ function WaiterDashboard() {
 
             <button
               onClick={() => setChargingOrder(null)}
+              className="w-full text-dorado-oscuro hover:text-dorado py-2 text-sm transition-colors"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de traslado a otra mesa */}
+      {transferringOrder && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-surface-2 rounded-xl border border-dorado/30 p-6 max-w-md w-full">
+            <h3 className="text-xl font-cormorant text-dorado-claro mb-1">Trasladar Pedido</h3>
+            <p className="text-dorado-oscuro text-sm mb-4">
+              Pedido #{transferringOrder.id.slice(-6).toUpperCase()} · {getOrderLabel(transferringOrder)}
+            </p>
+
+            <p className="text-dorado-claro text-sm mb-3">Seleccione la mesa destino:</p>
+
+            {tables.filter(t => t.status === 'available' && t.id !== transferringOrder.tableId).length === 0 ? (
+              <p className="text-dorado-oscuro text-sm mb-4">No hay mesas disponibles para trasladar</p>
+            ) : (
+              <div className="grid grid-cols-4 gap-2 mb-4 max-h-64 overflow-y-auto">
+                {tables
+                  .filter(t => t.status === 'available' && t.id !== transferringOrder.tableId)
+                  .map(table => (
+                    <button
+                      key={table.id}
+                      onClick={() => handleTransfer(table)}
+                      className="p-3 rounded-lg border-2 border-dorado-oscuro/30 bg-surface-3 hover:border-dorado hover:bg-dorado/20 transition"
+                      aria-label={`Mesa destino ${table.number}`}
+                    >
+                      <div className="text-dorado-claro font-bold">{table.number}</div>
+                      <div className="text-dorado-oscuro text-xs">{table.capacity} pers.</div>
+                    </button>
+                  ))}
+              </div>
+            )}
+
+            <button
+              onClick={() => setTransferringOrder(null)}
               className="w-full text-dorado-oscuro hover:text-dorado py-2 text-sm transition-colors"
             >
               Cancelar

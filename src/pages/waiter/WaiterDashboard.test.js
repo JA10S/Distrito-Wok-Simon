@@ -11,6 +11,11 @@ const mockUpdateOrder = jest.fn();
 const mockCancelOrder = jest.fn();
 const mockReactivateOrder = jest.fn();
 const mockProcessPayment = jest.fn();
+const mockTransferOrder = jest.fn();
+const mockResolveCall = jest.fn();
+const mockCloseShift = jest.fn();
+let mockPendingCalls = [];
+let mockShift = null;
 
 const mockTables = [
   { id: 't1', number: 1, capacity: 4, status: 'available', occupiedAt: null },
@@ -85,6 +90,26 @@ jest.mock('../../hooks/useOrders', () => ({
     cancelOrder: mockCancelOrder,
     reactivateOrder: mockReactivateOrder,
     processPayment: mockProcessPayment,
+    transferOrder: mockTransferOrder,
+  }),
+}));
+
+jest.mock('../../hooks/useCalls', () => ({
+  useCalls: () => ({
+    calls: mockPendingCalls,
+    pendingCalls: mockPendingCalls,
+    loading: false,
+    error: null,
+    resolveCall: mockResolveCall,
+  }),
+}));
+
+jest.mock('../../hooks/useShift', () => ({
+  useShift: () => ({
+    shift: mockShift,
+    loading: false,
+    error: null,
+    closeShift: mockCloseShift,
   }),
 }));
 
@@ -124,6 +149,13 @@ beforeEach(() => {
   mockCancelOrder.mockImplementation(() => Promise.resolve({ success: true }));
   mockReactivateOrder.mockImplementation(() => Promise.resolve({ success: true }));
   mockProcessPayment.mockImplementation(() => Promise.resolve({ success: true }));
+  mockTransferOrder.mockImplementation(() =>
+    Promise.resolve({ success: true, previousTableId: 't3' })
+  );
+  mockResolveCall.mockImplementation(() => Promise.resolve({ success: true }));
+  mockCloseShift.mockImplementation(() => Promise.resolve({ success: true }));
+  mockPendingCalls = [];
+  mockShift = null;
   window.confirm = jest.fn(() => true);
   window.prompt = jest.fn(() => null);
   window.alert = jest.fn();
@@ -396,4 +428,160 @@ test('oculta el botón de cancelar listo sin permiso view_dashboard', () => {
 
   expect(screen.queryByText('✕ Cancelar listo')).not.toBeInTheDocument();
   expect(mockCancelOrder).not.toHaveBeenCalled();
+});
+
+test('traslada un pedido a otra mesa y sincroniza las mesas', async () => {
+  mockHasPermission.mockImplementation(
+    (p) => ALL_PERMISSIONS.includes(p) || p === 'transfer_order'
+  );
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText('Pedidos (1)'));
+  fireEvent.click(screen.getByText('🔀 Trasladar'));
+
+  expect(screen.getByText('Trasladar Pedido')).toBeInTheDocument();
+  expect(screen.queryByLabelText('Mesa destino 3')).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByLabelText('Mesa destino 1'));
+
+  expect(window.confirm).toHaveBeenCalledWith(
+    expect.stringContaining('a la mesa 1')
+  );
+  await waitFor(() =>
+    expect(mockTransferOrder).toHaveBeenCalledWith(
+      'order1',
+      expect.objectContaining({ id: 't1', number: 1 })
+    )
+  );
+  await waitFor(() =>
+    expect(mockUpdateTableStatus).toHaveBeenCalledWith('t3', 'available')
+  );
+  await waitFor(() =>
+    expect(mockUpdateTableStatus).toHaveBeenCalledWith('t1', 'occupied', 'order1')
+  );
+  expect(screen.queryByText('Trasladar Pedido')).not.toBeInTheDocument();
+});
+
+test('cancela el traslado si el usuario rechaza la confirmación', async () => {
+  mockHasPermission.mockImplementation(
+    (p) => ALL_PERMISSIONS.includes(p) || p === 'transfer_order'
+  );
+  window.confirm.mockReturnValue(false);
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText('Pedidos (1)'));
+  fireEvent.click(screen.getByText('🔀 Trasladar'));
+  fireEvent.click(screen.getByLabelText('Mesa destino 1'));
+
+  expect(mockTransferOrder).not.toHaveBeenCalled();
+  expect(mockUpdateTableStatus).not.toHaveBeenCalled();
+  expect(screen.getByText('Trasladar Pedido')).toBeInTheDocument();
+});
+
+test('oculta el botón de trasladar sin permiso transfer_order', () => {
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText('Pedidos (1)'));
+
+  expect(screen.queryByText('🔀 Trasladar')).not.toBeInTheDocument();
+});
+
+test('no muestra la pestaña Llamados sin permiso attend_calls', () => {
+  render(<WaiterDashboard />);
+
+  expect(screen.queryByText(/Llamados/)).not.toBeInTheDocument();
+});
+
+test('muestra los llamados pendientes y los marca como atendidos', async () => {
+  mockHasPermission.mockImplementation(
+    (p) => ALL_PERMISSIONS.includes(p) || p === 'attend_calls'
+  );
+  mockPendingCalls = [
+    {
+      id: 'c1',
+      tableNumber: 5,
+      message: 'La cuenta por favor',
+      status: 'pending',
+      createdAt: { toDate: () => new Date(Date.now() - 3 * 60000) },
+    },
+  ];
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText(/Llamados/));
+
+  expect(screen.getByText('Mesa 5')).toBeInTheDocument();
+  expect(screen.getByText(/La cuenta por favor/)).toBeInTheDocument();
+  expect(screen.getByText(/hace 3 min/)).toBeInTheDocument();
+
+  fireEvent.click(screen.getByText('✅ Atendido'));
+
+  await waitFor(() =>
+    expect(mockResolveCall).toHaveBeenCalledWith(
+      'c1',
+      expect.objectContaining({ uid: 'u1' })
+    )
+  );
+});
+
+test('muestra estado vacío cuando no hay llamados', () => {
+  mockHasPermission.mockImplementation(
+    (p) => ALL_PERMISSIONS.includes(p) || p === 'attend_calls'
+  );
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText(/Llamados/));
+
+  expect(screen.getByText('No hay llamados pendientes')).toBeInTheDocument();
+});
+
+test('no muestra la pestaña Mi turno sin permiso close_shift', () => {
+  render(<WaiterDashboard />);
+
+  expect(screen.queryByText(/Mi turno/)).not.toBeInTheDocument();
+});
+
+test('muestra el resumen del turno y lo cierra con close_shift', async () => {
+  mockHasPermission.mockImplementation(
+    (p) => ALL_PERMISSIONS.includes(p) || p === 'close_shift'
+  );
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText(/Mi turno/));
+
+  expect(screen.getByText('Pedidos atendidos')).toBeInTheDocument();
+  expect(screen.getByText('Total cobrado hoy')).toBeInTheDocument();
+  expect(screen.getByText('Efectivo')).toBeInTheDocument();
+
+  fireEvent.click(screen.getByText('🕒 Cerrar turno'));
+
+  expect(window.confirm).toHaveBeenCalled();
+  await waitFor(() =>
+    expect(mockCloseShift).toHaveBeenCalledWith(
+      expect.objectContaining({ orders: 0, total: 0 })
+    )
+  );
+});
+
+test('muestra el turno ya cerrado y bloquea cerrarlo de nuevo', () => {
+  mockHasPermission.mockImplementation(
+    (p) => ALL_PERMISSIONS.includes(p) || p === 'close_shift'
+  );
+  mockShift = {
+    id: 'u1_2026-10-03',
+    closedAt: { toDate: () => new Date() },
+    summary: { orders: 4, total: 100000 },
+  };
+
+  render(<WaiterDashboard />);
+
+  fireEvent.click(screen.getByText(/Mi turno/));
+
+  expect(screen.getByText(/Turno cerrado a las/)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Turno cerrado' })).toBeDisabled();
+  expect(screen.getByText('4')).toBeInTheDocument();
 });

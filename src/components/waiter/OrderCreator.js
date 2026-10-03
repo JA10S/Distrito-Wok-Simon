@@ -17,7 +17,7 @@ const CATEGORIES = [
 
 const EMPTY_CUSTOMER = { name: '', phone: '', address: '', reference: '', notes: '' };
 
-function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) {
+function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder, topItems = [] }) {
   const { menu, loading } = useMenu();
   const [activeCategory, setActiveCategory] = useState('arroces');
   const [orderItems, setOrderItems] = useState([]);
@@ -26,6 +26,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
   const [fulfillment, setFulfillment] = useState('delivery');
   const [customer, setCustomer] = useState(EMPTY_CUSTOMER);
   const [preferredPayment, setPreferredPayment] = useState('cash');
+  const [search, setSearch] = useState('');
 
   const addItem = (item, variant = null) => {
     const resolved = resolveItemVariant(item, variant);
@@ -59,6 +60,25 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
   const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const tax = Math.round(subtotal * 0.10);
   const total = subtotal + tax;
+
+  const normalizeText = (text) =>
+    String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+  const allMenuItems = CATEGORIES.flatMap(cat => menu[cat.id] || []);
+  const query = search.trim();
+  const searchResults = query
+    ? allMenuItems.filter(item =>
+        item.available !== false &&
+        (normalizeText(item.name).includes(normalizeText(query)) ||
+          normalizeText(item.description).includes(normalizeText(query)))
+      )
+    : [];
+
+  // Los "más pedidos" guardan el id base (--small/--large) => se agrega la variante por defecto
+  const addTopItem = (baseId) => {
+    const item = allMenuItems.find(i => i.id === baseId);
+    if (item) addItem(item);
+  };
 
   const handleConfirm = async () => {
     if (orderMode === 'table' && !selectedTable) {
@@ -307,7 +327,51 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
         </div>
         )}
 
-        {/* Categorías */}
+        {/* Buscador de platos */}
+        <div className="relative mb-4">
+          <input
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="🔍 Buscar plato (ej: arroz, gaseosa...)"
+            aria-label="Buscar plato"
+            className="w-full bg-surface-3 border border-dorado-oscuro/30 rounded-lg pl-4 pr-10 py-3 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
+          />
+          {query && (
+            <button
+              onClick={() => setSearch('')}
+              aria-label="Limpiar búsqueda"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-dorado-oscuro hover:text-dorado text-sm"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        {/* Platos más pedidos del día */}
+        {!query && topItems.length > 0 && (
+          <div className="mb-4 bg-surface-2 rounded-lg p-3 border border-dorado-oscuro/20">
+            <div className="text-dorado-oscuro text-xs uppercase tracking-wider mb-2">
+              🔥 Más pedidos hoy
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {topItems.map(top => (
+                <button
+                  key={top.id}
+                  onClick={() => addTopItem(top.id)}
+                  aria-label={`Agregar ${top.name}`}
+                  className="bg-surface-3 hover:bg-dorado hover:text-negro border border-dorado/40 text-dorado-claro rounded-full px-3 py-1.5 text-sm transition"
+                >
+                  {top.name}{' '}
+                  <span className="text-dorado font-semibold">×{top.count}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Categorías (ocultas mientras se busca) */}
+        {!query && (
         <div className="flex space-x-2 mb-4 overflow-x-auto">
           {CATEGORIES.map(cat => (
             <button
@@ -324,13 +388,20 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
             </button>
           ))}
         </div>
+        )}
 
         {/* Items del menú */}
         <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
           <div className="divide-y divide-dorado-oscuro/20 max-h-96 overflow-y-auto">
-            {(menu[activeCategory] || [])
-              .filter(item => item.available !== false)
-              .map(item => {
+            {query && (
+              <div className="px-4 py-2 text-dorado-oscuro text-sm border-b border-dorado-oscuro/20">
+                {searchResults.length} resultado{searchResults.length === 1 ? '' : 's'} para “{query}”
+              </div>
+            )}
+            {(query
+              ? searchResults
+              : (menu[activeCategory] || []).filter(item => item.available !== false)
+            ).map(item => {
                 const sizeOptions = parsePriceOptions(item.price);
                 return (
                 <div
@@ -374,6 +445,11 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                 </div>
                 );
               })}
+            {query && searchResults.length === 0 && (
+              <div className="p-6 text-center text-dorado-oscuro">
+                No se encontraron platos para “{query}”
+              </div>
+            )}
           </div>
         </div>
       </div>
