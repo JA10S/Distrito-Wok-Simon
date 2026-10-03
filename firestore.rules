@@ -73,6 +73,13 @@ service cloud.firestore {
     match /shifts/{shiftId} {
       allow read, write: if request.auth != null;
     }
+    match /driverLocations/{driverId} {
+      // Solo el personal autenticado ve las posiciones
+      allow read: if request.auth != null;
+      // Cada domiciliario solo puede escribir su propio documento
+      allow create, update, delete: if request.auth != null
+        && request.auth.uid == driverId;
+    }
     match /settings/{settingId} {
       allow read: if true;
       allow write: if request.auth != null;

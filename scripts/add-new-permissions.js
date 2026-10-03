@@ -5,9 +5,9 @@ const config = require('../src/config/firebase.js');
 const app = initializeApp(config.default || config);
 const db = getFirestore(app);
 
-// Permisos nuevos de las funcionalidades del camarero (2026-10-03)
+// Permisos nuevos (merge seguro: solo agrega, nunca borra)
 const ADDITIONS = {
-  admin: ['attend_calls', 'transfer_order', 'close_shift'],
+  admin: ['attend_calls', 'transfer_order', 'close_shift', 'track_drivers'],
   waiter: ['attend_calls', 'transfer_order', 'close_shift']
 };
 

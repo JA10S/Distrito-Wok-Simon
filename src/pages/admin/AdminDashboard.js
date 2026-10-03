@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTables } from '../../hooks/useTables';
 import { useOrders } from '../../hooks/useOrders';
+import { useDeliveries } from '../../hooks/useDeliveries';
+import { useDriverLocations } from '../../hooks/useDriverLocations';
 import MenuManager from '../../components/admin/MenuManager';
 import RolesManager from '../../components/admin/RolesManager';
 import UsersManager from '../../components/admin/UsersManager';
 import ThemeManager from '../../components/admin/ThemeManager';
+import DriversMap from '../../components/admin/DriversMap';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import SummaryStats from '../../components/common/SummaryStats';
 import {
@@ -20,18 +23,21 @@ import {
   FaChair,
   FaCashRegister,
   FaMotorcycle,
-  FaReceipt
+  FaReceipt,
+  FaMapMarkedAlt
 } from 'react-icons/fa';
 import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
 
 function AdminDashboard() {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, hasPermission } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   
   const { tables, updateTableStatus } = useTables();
   const { orders } = useOrders();
   const { orders: cancelledOrders, reactivateOrder } = useOrders('cancelled');
+  const { deliveries } = useDeliveries();
+  const { drivers } = useDriverLocations();
 
   const handleReactivate = async (order) => {
     if (!window.confirm(`¿Reactivar el pedido de la mesa ${order.tableNumber}?`)) return;
@@ -91,6 +97,9 @@ function AdminDashboard() {
           { id: 'roles', label: 'Roles', icon: <FaUserShield /> },
           { id: 'users', label: 'Usuarios', icon: <FaUsers /> },
           { id: 'theme', label: 'Apariencia', icon: <FaPalette /> },
+          ...(hasPermission('track_drivers')
+            ? [{ id: 'drivers', label: 'Repartidores', icon: <FaMapMarkedAlt /> }]
+            : []),
           { id: 'reports', label: 'Reportes', icon: <FaChartBar /> }
         ]}
       />
@@ -213,6 +222,11 @@ function AdminDashboard() {
 
         {/* APARIENCIA */}
         {activeTab === 'theme' && <ThemeManager />}
+
+        {/* REPARTIDORES (ubicación en tiempo real) */}
+        {activeTab === 'drivers' && (
+          <DriversMap drivers={drivers} deliveries={deliveries} />
+        )}
 
         {/* REPORTES */}
         {activeTab === 'reports' && (

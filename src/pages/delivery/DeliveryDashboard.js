@@ -2,9 +2,17 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDeliveries } from '../../hooks/useDeliveries';
+import { useDriverLocation } from '../../hooks/useDriverLocation';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import SummaryStats from '../../components/common/SummaryStats';
 import { FaBell, FaTruck, FaHistory, FaCheckCircle, FaBoxOpen } from 'react-icons/fa';
+
+const formatAge = (timestamp) => {
+  if (!timestamp) return '';
+  const seconds = Math.max(0, Math.round((Date.now() - timestamp) / 1000));
+  if (seconds < 60) return `hace ${seconds} s`;
+  return `hace ${Math.round(seconds / 60)} min`;
+};
 
 function DeliveryDashboard() {
   const { currentUser, hasPermission, logout } = useAuth();
@@ -12,6 +20,14 @@ function DeliveryDashboard() {
   const [activeTab, setActiveTab] = useState('available');
 
   const { deliveries, loading, error, takeDelivery, markDelivered } = useDeliveries();
+  const {
+    supported,
+    sharing,
+    position,
+    error: locationError,
+    startSharing,
+    stopSharing
+  } = useDriverLocation(currentUser);
 
   const availableDeliveries = deliveries.filter((d) => d.status === 'ready');
   const myDeliveries = deliveries.filter(
@@ -65,6 +81,14 @@ function DeliveryDashboard() {
     } else {
       alert('Error al marcar entrega: ' + result.error);
     }
+  };
+
+  const handleLogout = async () => {
+    if (sharing) {
+      await stopSharing();
+    }
+    await logout();
+    navigate('/login');
   };
 
   const DeliveryCard = ({ delivery, action }) => (
@@ -154,7 +178,7 @@ function DeliveryDashboard() {
       <DashboardHeader
         title="Panel del Domiciliario"
         user={currentUser?.email}
-        onLogout={logout}
+        onLogout={handleLogout}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onBack={hasPermission('view_dashboard') ? () => navigate('/admin') : null}
@@ -166,6 +190,51 @@ function DeliveryDashboard() {
       />
 
       <main className="container mx-auto px-4 py-8">
+        {/* Compartir ubicación con el administrador */}
+        <div className="mb-6 bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <span
+              className={`text-2xl ${sharing ? 'text-green-500' : 'text-dorado-oscuro'}`}
+              aria-hidden="true"
+            >
+              📍
+            </span>
+            <div className="min-w-0">
+              <div className="text-dorado-claro font-semibold">Compartir mi ubicación</div>
+              <div className="text-dorado-oscuro text-sm">
+                {!supported
+                  ? 'Tu navegador no soporta la geolocalización'
+                  : sharing
+                  ? position
+                    ? `Activo · precisión ±${Math.round(position.accuracy)} m · ${formatAge(position.at)}`
+                    : 'Activo · esperando la primera señal…'
+                  : 'Apagado · el administrador no ve mi posición'}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            {locationError && (
+              <span className="text-rojo text-sm" role="alert">
+                {locationError}
+              </span>
+            )}
+            <button
+              onClick={sharing ? stopSharing : startSharing}
+              role="switch"
+              aria-checked={sharing}
+              aria-label="Compartir ubicación"
+              className={`font-bold py-2 px-5 rounded-lg transition ${
+                sharing
+                  ? 'bg-rojo hover:bg-rojo-oscuro text-white'
+                  : 'bg-dorado hover:bg-dorado-oscuro text-negro'
+              }`}
+            >
+              {sharing ? '⏹ Detener' : '📍 Compartir'}
+            </button>
+          </div>
+        </div>
+
         {/* Resúmenes (permiso view_summaries otorgado por el admin) */}
         {hasPermission('view_summaries') && (
           <SummaryStats

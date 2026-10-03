@@ -138,6 +138,11 @@ Firestore
 # Generar PDF desde Firestore
 node scripts/generate-pdf-from-firestore.js
 
+# Agregar permisos nuevos a roles (merge con arrayUnion, no borra nada)
+# Nota: falla con PERMISSION_DENIED si las reglas de roles exigen auth →
+# abrir temporalmente `match /roles` (allow write: if true), correrlo y restaurar
+node scripts/add-new-permissions.js
+
 # Build y deploy (solo si cambia código React)
 npm run build
 firebase deploy --only hosting
@@ -339,6 +344,14 @@ match /arroces/{itemId} {
   - **`firestore.rules`**: `calls` (create público validado: `status=='pending'`, `source=='client'`, `tableNumber` 1–999, `message` ≤300; read/update/delete solo autenticados) y `shifts` (lectura/escritura autenticada) — requiere `firebase deploy --only firestore:rules`
   - **Permisos nuevos**: `attend_calls`, `transfer_order`, `close_shift` en `RolesManager.ALL_PERMISSIONS` (admin y camarero); script de merge seguro: `node scripts/add-new-permissions.js` (usa `arrayUnion`, no sobreescribe) o desde Admin → Roles
   - Tests: 142 totales (21 nuevos: 9 en `orderUtils.test` — `isToday`/`getTopItems`, 4 en `OrderCreator.test` — buscador/estados/top items, 8 en `WaiterDashboard.test` — traslado (3) + llamados (3) + turno (2), 2 en `MenuPage.test` — modal de llamado)
+- [x] Ubicación de repartidores en tiempo real para el administrador (2026-10-03)
+  - **Domiciliario**: `src/hooks/useDriverLocation.js` con `startSharing`/`stopSharing` (botón manual **📍 Compartir mi ubicación** bajo el header en `DeliveryDashboard`, rol `role="switch"`); usa `navigator.geolocation.watchPosition` (high accuracy, máximo 1 escritura cada 5 s) → `setDoc(driverLocations/{uid}, …, {merge:true})` con `{driverId, driverName, driverEmail, lat, lng, accuracy, sharing, updatedAt}`; estados: posición + precisión + "hace Xs", error de permiso denegado/no soportado; `stopSharing` escribe `{sharing:false, stoppedAt}` y se ejecuta también al cerrar sesión
+  - **Admin**: pestaña **🗺️ Repartidores** en `AdminDashboard` (permiso `track_drivers`) monta `src/components/admin/DriversMap.js`: mapa **Leaflet + CartoDB dark** (`MapContainer`/`TileLayer`/`Marker` con `L.divIcon` — evita el bug de íconos de leaflet con webpack), popup con señal/precisión/entrega activa/enlace a Google Maps, lista lateral con estados **En línea / Sin señal / Compartir apagado** (>3 min = stale), botón "Centrar" (`MapController` con `useMap`; ajusta bounds solo cuando cambia la cantidad de marcadores) y estados vacíos; entrega activa cruzando `deliveries` por `assignedTo == driverId && status == 'delivering'`
+  - **Hook admin**: `src/hooks/useDriverLocations.js` (`onSnapshot` de `driverLocations` ordenado por `updatedAt` + `isLocationStale`, umbral 3 min)
+  - **Permisos/reglas**: `track_drivers` en `RolesManager.ALL_PERMISSIONS` (solo admin por defecto, agregado con `node scripts/add-new-permissions.js`); `firestore.rules` → `driverLocations`: `read` autenticado, `create/update/delete` solo con `request.auth.uid == driverId`
+  - **Deps**: `leaflet@1.9.4` + `react-leaflet@4.2.1` (v4 = compatible con React 18; v5 exige React 19)
+  - ⚠️ **`package.json` añade `jest.transformIgnorePatterns`** para transformar `react-leaflet` y `@react-leaflet/core` (ESM puro; sin esto `App.test` falla con "Unexpected token 'export'")
+  - Tests: 152 totales (10 nuevos: 3 en `DeliveryDashboard.test`, 5 en `DriversMap.test`, 2 en `AdminDashboard.test`)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: hooks — useOrders/useTables/useMenu, AdminDashboard, componentes admin y OrderCard)
@@ -515,6 +528,7 @@ roles/{roleId}
 | `attend_calls` | Atender llamados de clientes (pestaña Llamados) |
 | `transfer_order` | Trasladar pedidos a otra mesa |
 | `close_shift` | Cerrar turno (pestaña Mi turno) |
+| `track_drivers` | Ver Ubicación de Repartidores (pestaña Repartidores) |
 
 ### Usuarios de Prueba
 | Email | Rol | UID |

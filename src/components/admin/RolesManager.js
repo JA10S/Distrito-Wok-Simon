@@ -20,7 +20,8 @@ const ALL_PERMISSIONS = {
   view_summaries: 'Ver Resúmenes (Estadísticas)',
   attend_calls: 'Atender Llamados de Clientes',
   transfer_order: 'Trasladar Pedidos a otra Mesa',
-  close_shift: 'Cerrar Turno'
+  close_shift: 'Cerrar Turno',
+  track_drivers: 'Ver Ubicación de Repartidores'
 };
 
 const ROLE_ICONS = {
