@@ -77,7 +77,7 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-negro">
+    <div className="min-h-screen bg-surface">
       <DashboardHeader
         title="Panel de Administración"
         user={currentUser?.email}
@@ -138,7 +138,7 @@ function AdminDashboard() {
 
             {/* Últimos pedidos */}
             <h3 className="text-lg font-cormorant text-dorado mb-4">Últimos Pedidos</h3>
-            <div className="bg-gray-900 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
+            <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
               {orders.length === 0 ? (
                 <p className="text-dorado-oscuro text-center py-6 font-inter">
                   No hay pedidos registrados
@@ -164,7 +164,7 @@ function AdminDashboard() {
                         <span
                           className={`font-inter capitalize rounded-full px-3 py-1 text-xs border ${
                             statusPill[order.status] ||
-                            'bg-white/5 text-gray-300 border-white/10'
+                            'bg-surface-3 text-ink-muted border-line/60'
                           }`}
                         >
                           {order.status}
@@ -184,7 +184,7 @@ function AdminDashboard() {
             <h2 className="text-xl font-cormorant text-dorado mb-6">Dashboards por Rol</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {dashboards.map((dash) => (
-                <div key={dash.path} className="bg-gray-900 rounded-xl border border-dorado-oscuro/25 p-6 hover-lift">
+                <div key={dash.path} className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-6 hover-lift">
                   <div className="text-center mb-4">
                     <span className="text-5xl inline-block" style={{ '--role': dash.role, color: 'rgb(var(--role))' }}>{dash.icon}</span>
                     <h3 className="text-xl font-cormorant text-dorado-claro mt-2">{dash.name}</h3>
@@ -219,7 +219,7 @@ function AdminDashboard() {
           <div>
             <h2 className="text-xl font-cormorant text-dorado mb-6">Reportes</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20">
+              <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20">
                 <h3 className="text-lg font-cormorant text-dorado mb-4">Reporte de Menú</h3>
                 <p className="text-dorado-oscuro mb-4">Generar PDF con precios actuales</p>
                 <button
@@ -229,10 +229,10 @@ function AdminDashboard() {
                   Generar PDF
                 </button>
               </div>
-              <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20">
+              <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20">
                 <h3 className="text-lg font-cormorant text-dorado mb-4">Reporte de Pedidos</h3>
                 <p className="text-dorado-oscuro mb-4">Historial de pedidos del día</p>
-                <button className="bg-gray-700 hover:bg-gray-600 text-dorado-claro font-bold py-2 px-4 rounded">
+                <button className="bg-surface-3 hover:bg-ink/10 text-dorado-claro font-bold py-2 px-4 rounded">
                   Ver Pedidos
                 </button>
               </div>

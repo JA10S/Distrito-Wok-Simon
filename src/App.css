@@ -12,9 +12,61 @@
   --color-rojo: 196 15 15;           /* #C40F0F */
   --color-rojo-oscuro: 139 0 0;      /* #8B0000 */
   --color-negro: 13 13 13;           /* #0d0d0d */
+  --color-surface: 13 13 13;
+  --color-surface-2: 23 23 26;
+  --color-surface-3: 35 35 39;
+  --color-ink: 255 255 255;
+  --color-ink-muted: 169 151 103;
+  --color-border: 70 57 31;
   --font-heading: 'Cormorant Garamond', serif;
   --font-body: 'Montserrat', sans-serif;
+  --gold-from: #F6DE9A;
+  --gold-mid: #D4A843;
+  --gold-to: #8B6914;
+
+  /* Paleta oscura por defecto (para .surface-dark aunque applyTheme no corra) */
+  --dk-dorado: 212 168 67;
+  --dk-dorado-claro: 246 222 154;
+  --dk-dorado-oscuro: 139 105 20;
+  --dk-rojo: 196 15 15;
+  --dk-rojo-oscuro: 139 0 0;
+  --dk-negro: 13 13 13;
+  --dk-surface: 13 13 13;
+  --dk-surface-2: 23 23 26;
+  --dk-surface-3: 35 35 39;
+  --dk-ink: 255 255 255;
+  --dk-ink-muted: 169 151 103;
+  --dk-border: 70 57 31;
 }
+
+/* Escala de esquinas: controlada desde Admin → Apariencia → Esquinas */
+:root[data-radius='sm'] { --r-1: 2px; --r-2: 4px; --r-3: 6px; --r-4: 10px; }
+:root[data-radius='md'] { --r-1: 4px; --r-2: 8px; --r-3: 12px; --r-4: 16px; }
+:root[data-radius='lg'] { --r-1: 6px; --r-2: 12px; --r-3: 20px; --r-4: 28px; }
+
+.rounded { border-radius: var(--r-1, 4px); }
+.rounded-md { border-radius: var(--r-1, 4px); }
+.rounded-lg { border-radius: var(--r-2, 8px); }
+.rounded-xl { border-radius: var(--r-3, 12px); }
+.rounded-2xl { border-radius: var(--r-4, 16px); }
+
+/* Secciones que deben quedar oscuras en ambos modos (hero del login).
+   Las variables --dk-* las escribe applyTheme con la paleta oscura. */
+.surface-dark {
+  --color-dorado: var(--dk-dorado);
+  --color-dorado-claro: var(--dk-dorado-claro);
+  --color-dorado-oscuro: var(--dk-dorado-oscuro);
+  --color-rojo: var(--dk-rojo);
+  --color-rojo-oscuro: var(--dk-rojo-oscuro);
+  --color-negro: var(--dk-negro);
+  --color-surface: var(--dk-surface);
+  --color-surface-2: var(--dk-surface-2);
+  --color-surface-3: var(--dk-surface-3);
+  --color-ink: var(--dk-ink);
+  --color-ink-muted: var(--dk-ink-muted);
+  --color-border: var(--dk-border);
+}
+
 
 /* Estilos base */
 body {
@@ -72,7 +124,7 @@ body {
 }
 
 .btn-secondary {
-  @apply bg-gray-700 hover:bg-gray-600 text-dorado-claro font-bold py-2 px-4 rounded transition duration-200;
+  @apply bg-surface-3 hover:bg-line/60 text-ink font-bold py-2 px-4 rounded transition duration-200;
 }
 
 .btn-danger {
@@ -81,26 +133,58 @@ body {
 
 /* Tarjetas */
 .card {
-  @apply bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20;
+  @apply bg-surface-2 rounded-lg p-4 border border-line/60;
 }
 
 /* Inputs */
 .input {
-  @apply w-full bg-negro border border-dorado-oscuro rounded px-4 py-3 text-dorado-claro focus:outline-none focus:border-dorado;
+  @apply w-full bg-surface-3 border border-line rounded px-4 py-3 text-ink focus:outline-none focus:border-dorado;
 }
 
 /* Estados de mesa */
 .table-available {
-  @apply border-green-500 bg-green-900/30;
+  @apply border-green-500 bg-green-500/10;
 }
 
 .table-occupied {
-  @apply border-red-500 bg-red-900/30;
+  @apply border-red-500 bg-red-500/10;
 }
 
 .table-reserved {
-  @apply border-yellow-500 bg-yellow-900/30;
+  @apply border-yellow-500 bg-yellow-500/10;
 }
+
+/* Notas (cocina / domicilio): tinte cálido legible en ambos modos */
+.notes-box {
+  background: rgb(180 83 9 / 0.14);
+  border: 1px solid rgb(202 138 4 / 0.45);
+}
+.notes-box-title { color: #b45309; }
+.notes-box-text { color: rgb(var(--color-ink) / 0.9); }
+
+:root[data-mode='dark'] .notes-box {
+  background: rgb(120 53 15 / 0.3);
+  border-color: rgb(180 83 9 / 0.35);
+}
+:root[data-mode='dark'] .notes-box-title { color: #fbbf24; }
+:root[data-mode='dark'] .notes-box-text { color: #fde68a; }
+
+/* Modo diurno: los colores de estado claros se oscurecen para seguir leyéndose
+   sobre fondos claros (los botones y fondos de color no se tocan). */
+:root[data-mode='light'] .text-green-500 { color: #15803d; }
+:root[data-mode='light'] .text-green-600 { color: #166534; }
+:root[data-mode='light'] .text-emerald-300 { color: #047857; }
+:root[data-mode='light'] .text-emerald-400 { color: #065f46; }
+:root[data-mode='light'] .text-yellow-200 { color: #713f12; }
+:root[data-mode='light'] .text-yellow-400 { color: #854d0e; }
+:root[data-mode='light'] .text-yellow-500 { color: #a16207; }
+:root[data-mode='light'] .text-amber-300 { color: #92400e; }
+:root[data-mode='light'] .text-rose-400 { color: #be123c; }
+:root[data-mode='light'] .text-red-300 { color: #b91c1c; }
+:root[data-mode='light'] .text-red-400 { color: #991b1b; }
+:root[data-mode='light'] .text-red-500 { color: #b91c1b; }
+:root[data-mode='light'] .text-blue-400 { color: #1d4ed8; }
+:root[data-mode='light'] .text-sky-300 { color: #0369a1; }
 
 /* ============ Mejoras de diseño dinámico ============ */
 
@@ -140,7 +224,7 @@ body {
 
 /* Superficie translúcida con desenfoque */
 .glass {
-  background: rgb(var(--color-negro) / 0.8);
+  background: rgb(var(--color-surface) / 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -149,7 +233,7 @@ body {
    Fondo carbón translúcido; el color del rol (--role: canales RGB)
    vive solo en borde, icono y texto, con glow al hover. */
 .quick-card {
-  background: rgb(255 255 255 / 0.04);
+  background: rgb(var(--color-ink) / 0.04);
   border: 1px solid rgb(var(--role) / 0.4);
   color: rgb(var(--role));
   transition:
@@ -288,13 +372,15 @@ body {
   }
 }
 
-/* Botón principal del login: dorado metálico con degradado */
+/* Botón principal del login: dorado metálico con degradado.
+   Los tonos --gold-* los escribe applyTheme (en modo claro se aclara el
+   acento para que el texto negro mantenga contraste). */
 .btn-gold {
   background-image: linear-gradient(
     135deg,
-    rgb(var(--color-dorado-claro)) 0%,
-    rgb(var(--color-dorado)) 50%,
-    rgb(var(--color-dorado-oscuro)) 100%
+    var(--gold-from) 0%,
+    var(--gold-mid) 50%,
+    var(--gold-to) 100%
   );
   background-size: 170% 170%;
   background-position: 0% 50%;
@@ -328,6 +414,15 @@ body {
   -webkit-text-fill-color: #ffffff;
   caret-color: #ffffff;
   transition: background-color 9999s ease-out;
+}
+
+/* En modo diurno el campo es claro: el autocompletado sigue claro */
+:root[data-mode='light'] .login-input:-webkit-autofill,
+:root[data-mode='light'] .login-input:-webkit-autofill:hover,
+:root[data-mode='light'] .login-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 40rem #f1e9d6 inset;
+  -webkit-text-fill-color: #14120e;
+  caret-color: #14120e;
 }
 
 /* Animación de carga: contenido de marca (izquierda) con fade-in suave 0 → 1 en 0.8s */

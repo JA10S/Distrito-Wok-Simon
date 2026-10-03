@@ -127,7 +127,7 @@ function MenuManager() {
             className={`flex items-center space-x-2 py-2 px-4 rounded whitespace-nowrap ${
               activeCollection === key
                 ? 'bg-dorado text-negro'
-                : 'bg-gray-800 text-dorado-oscuro hover:text-dorado'
+                : 'bg-surface-3 text-dorado-oscuro hover:text-dorado'
             }`}
           >
             <span>{col.icon}</span>
@@ -139,7 +139,7 @@ function MenuManager() {
 
       {/* Formulario */}
       {showForm && (
-        <div className="bg-gray-800 rounded-lg p-6 mb-6 border border-dorado-oscuro/30">
+        <div className="bg-surface-3 rounded-lg p-6 mb-6 border border-dorado-oscuro/30">
           <h3 className="text-lg font-cormorant text-dorado-claro mb-4">
             {editingItem ? 'Editar Producto' : 'Nuevo Producto'}
           </h3>
@@ -158,7 +158,7 @@ function MenuManager() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-gray-900 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
+                  className="w-full bg-surface-2 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
                   placeholder="Nombre del producto"
                 />
               </div>
@@ -168,7 +168,7 @@ function MenuManager() {
                   type="text"
                   value={formData.price}
                   onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                  className="w-full bg-gray-900 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
+                  className="w-full bg-surface-2 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
                   placeholder="Ej: 26K / 35K"
                 />
               </div>
@@ -178,7 +178,7 @@ function MenuManager() {
                     type="checkbox"
                     checked={formData.available}
                     onChange={(e) => setFormData({ ...formData, available: e.target.checked })}
-                    className="w-5 h-5 rounded border-dorado-oscuro bg-negro text-dorado focus:ring-dorado"
+                    className="w-5 h-5 rounded border-dorado-oscuro bg-surface-3 text-dorado focus:ring-dorado"
                   />
                   <span className="text-dorado-claro">Disponible</span>
                 </label>
@@ -190,7 +190,7 @@ function MenuManager() {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full bg-gray-900 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
+                className="w-full bg-surface-2 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
                 rows="2"
                 placeholder="Descripción del producto"
               />
@@ -211,7 +211,7 @@ function MenuManager() {
                   setEditingItem(null);
                   setError('');
                 }}
-                className="bg-gray-700 hover:bg-gray-600 text-dorado-claro font-bold py-2 px-6 rounded"
+                className="bg-surface-3 hover:bg-ink/10 text-dorado-claro font-bold py-2 px-6 rounded"
               >
                 Cancelar
               </button>
@@ -221,7 +221,7 @@ function MenuManager() {
       )}
 
       {/* Lista de productos */}
-      <div className="bg-gray-900 rounded-lg border border-dorado-oscuro/20">
+      <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
         {items.length === 0 ? (
           <p className="text-dorado-oscuro text-center py-8">
             No hay productos en esta categoría
@@ -249,7 +249,7 @@ function MenuManager() {
                 <div className="flex space-x-2">
                   <button
                     onClick={() => handleEdit(item)}
-                    className="bg-gray-700 hover:bg-gray-600 text-dorado-claro px-3 py-1 rounded text-sm"
+                    className="bg-surface-3 hover:bg-ink/10 text-dorado-claro px-3 py-1 rounded text-sm"
                   >
                     Editar
                   </button>

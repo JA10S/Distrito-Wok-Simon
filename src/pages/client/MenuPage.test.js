@@ -23,6 +23,16 @@ jest.mock('../../services/orderService', () => ({
   watchOrder: jest.fn(() => () => {}),
 }));
 
+jest.mock('../../contexts/ThemeContext', () => ({
+  useTheme: () => ({
+    theme: { layout: 'clasic' },
+    resolvedMode: 'dark',
+    isLight: false,
+    setLocalMode: () => {},
+    toggleMode: () => {}
+  })
+}));
+
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import MenuPage from './MenuPage';

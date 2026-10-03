@@ -68,7 +68,7 @@ function DeliveryDashboard() {
   };
 
   const DeliveryCard = ({ delivery, action }) => (
-    <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift">
+    <div className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="font-cormorant text-xl font-bold text-dorado-claro">
@@ -110,8 +110,8 @@ function DeliveryDashboard() {
           </div>
         )}
         {delivery.notes && (
-          <div className="text-yellow-400">
-            <span className="font-semibold">Notas:</span> {delivery.notes}
+          <div className="notes-box text-sm mt-1 p-2 rounded">
+            <span className="notes-box-title font-semibold">🗒️ Notas:</span> {delivery.notes}
           </div>
         )}
       </div>
@@ -121,7 +121,7 @@ function DeliveryDashboard() {
   );
 
   const EmptyState = ({ message }) => (
-    <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
+    <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
       <FaBoxOpen className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
       <p className="text-dorado-oscuro">{message}</p>
     </div>
@@ -129,7 +129,7 @@ function DeliveryDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-negro flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4 animate-bounce">🏮</div>
           <p className="text-dorado">Cargando entregas...</p>
@@ -140,7 +140,7 @@ function DeliveryDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-negro flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-500">Error al cargar las entregas</p>
           <p className="text-dorado-oscuro text-sm mt-2">{error}</p>
@@ -150,7 +150,7 @@ function DeliveryDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-negro">
+    <div className="min-h-screen bg-surface">
       <DashboardHeader
         title="Panel del Domiciliario"
         user={currentUser?.email}

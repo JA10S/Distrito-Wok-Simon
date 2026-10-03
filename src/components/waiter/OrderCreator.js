@@ -135,7 +135,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
       {/* Panel izquierdo: Selección de mesa y menú */}
       <div className="lg:col-span-2">
         {/* Tipo de pedido */}
-        <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 mb-4">
+        <div className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20 mb-4">
           <label className="block text-dorado-claro text-sm mb-2">
             Tipo de Pedido
           </label>
@@ -145,7 +145,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
               className={`p-3 rounded-lg border-2 transition font-medium ${
                 orderMode === 'table'
                   ? 'border-dorado bg-dorado/20 text-dorado-claro'
-                  : 'border-dorado-oscuro/30 bg-gray-800 text-dorado-oscuro hover:border-dorado/50'
+                  : 'border-dorado-oscuro/30 bg-surface-3 text-dorado-oscuro hover:border-dorado/50'
               }`}
             >
               🍽️ En mesa
@@ -155,7 +155,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
               className={`p-3 rounded-lg border-2 transition font-medium ${
                 orderMode === 'takeaway'
                   ? 'border-dorado bg-dorado/20 text-dorado-claro'
-                  : 'border-dorado-oscuro/30 bg-gray-800 text-dorado-oscuro hover:border-dorado/50'
+                  : 'border-dorado-oscuro/30 bg-surface-3 text-dorado-oscuro hover:border-dorado/50'
               }`}
             >
               🥡 Para llevar
@@ -165,7 +165,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
 
         {/* Selección de mesa */}
         {orderMode === 'table' && (
-        <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 mb-4">
+        <div className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20 mb-4">
           <label className="block text-dorado-claro text-sm mb-2">
             Seleccionar Mesa
           </label>
@@ -179,7 +179,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                   className={`p-3 rounded-lg border-2 transition ${
                     selectedTable?.id === table.id
                       ? 'border-dorado bg-dorado/20'
-                      : 'border-dorado-oscuro/30 bg-gray-800 hover:border-dorado/50'
+                      : 'border-dorado-oscuro/30 bg-surface-3 hover:border-dorado/50'
                   }`}
                 >
                   <div className="text-dorado-claro font-bold">{table.number}</div>
@@ -195,14 +195,14 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
 
         {/* Formulario para llevar / domicilio */}
         {orderMode === 'takeaway' && (
-        <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 mb-4">
+        <div className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20 mb-4">
           <div className="grid grid-cols-2 gap-2 mb-4">
             <button
               onClick={() => setFulfillment('delivery')}
               className={`p-3 rounded-lg border-2 transition text-sm ${
                 fulfillment === 'delivery'
                   ? 'border-dorado bg-dorado/20 text-dorado-claro'
-                  : 'border-dorado-oscuro/30 bg-gray-800 text-dorado-oscuro hover:border-dorado/50'
+                  : 'border-dorado-oscuro/30 bg-surface-3 text-dorado-oscuro hover:border-dorado/50'
               }`}
             >
               🛵 Domicilio
@@ -212,7 +212,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
               className={`p-3 rounded-lg border-2 transition text-sm ${
                 fulfillment === 'pickup'
                   ? 'border-dorado bg-dorado/20 text-dorado-claro'
-                  : 'border-dorado-oscuro/30 bg-gray-800 text-dorado-oscuro hover:border-dorado/50'
+                  : 'border-dorado-oscuro/30 bg-surface-3 text-dorado-oscuro hover:border-dorado/50'
               }`}
             >
               🥡 Recoger en local
@@ -228,7 +228,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                 type="text"
                 value={customer.name}
                 onChange={(e) => updateCustomer('name', e.target.value)}
-                className="w-full bg-gray-800 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
+                className="w-full bg-surface-3 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
                 placeholder="Ej: Juan Pérez"
               />
             </div>
@@ -240,7 +240,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                 type="tel"
                 value={customer.phone}
                 onChange={(e) => updateCustomer('phone', e.target.value)}
-                className="w-full bg-gray-800 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
+                className="w-full bg-surface-3 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
                 placeholder="Ej: 300 123 4567"
               />
             </div>
@@ -255,7 +255,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                     type="text"
                     value={customer.address}
                     onChange={(e) => updateCustomer('address', e.target.value)}
-                    className="w-full bg-gray-800 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
+                    className="w-full bg-surface-3 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
                     placeholder="Ej: Calle 45 #12-34, Barrio El Prado"
                   />
                 </div>
@@ -267,7 +267,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                     type="text"
                     value={customer.reference}
                     onChange={(e) => updateCustomer('reference', e.target.value)}
-                    className="w-full bg-gray-800 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
+                    className="w-full bg-surface-3 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
                     placeholder="Ej: Portón negro, al lado de la farmacia"
                   />
                 </div>
@@ -281,7 +281,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
               <select
                 value={preferredPayment}
                 onChange={(e) => setPreferredPayment(e.target.value)}
-                className="w-full bg-gray-800 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
+                className="w-full bg-surface-3 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
               >
                 {PAYMENT_METHOD_OPTIONS.map((option) => (
                   <option key={option.id} value={option.id}>{option.label}</option>
@@ -296,7 +296,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                 type="text"
                 value={customer.notes}
                 onChange={(e) => updateCustomer('notes', e.target.value)}
-                className="w-full bg-gray-800 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
+                className="w-full bg-surface-3 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
                 placeholder="Ej: Llamar al llegar"
               />
             </div>
@@ -316,7 +316,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
               className={`flex items-center space-x-2 py-2 px-4 rounded whitespace-nowrap ${
                 activeCategory === cat.id
                   ? 'bg-dorado text-negro'
-                  : 'bg-gray-800 text-dorado-oscuro hover:text-dorado'
+                  : 'bg-surface-3 text-dorado-oscuro hover:text-dorado'
               }`}
             >
               <span>{cat.icon}</span>
@@ -326,7 +326,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
         </div>
 
         {/* Items del menú */}
-        <div className="bg-gray-900 rounded-lg border border-dorado-oscuro/20">
+        <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
           <div className="divide-y divide-dorado-oscuro/20 max-h-96 overflow-y-auto">
             {(menu[activeCategory] || [])
               .filter(item => item.available !== false)
@@ -335,7 +335,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                 return (
                 <div
                   key={item.id}
-                  className="p-4 flex justify-between items-center gap-3 hover:bg-gray-800/50"
+                  className="p-4 flex justify-between items-center gap-3 hover:bg-surface-3/50"
                 >
                   <div className="flex-1">
                     <div className="text-dorado-claro font-medium">{item.name}</div>
@@ -352,7 +352,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                         <button
                           key={opt.size}
                           onClick={() => addItem(item, opt)}
-                          className="bg-gray-800 hover:bg-dorado hover:text-negro border border-dorado/50 text-dorado-claro font-bold py-2 px-3 rounded text-sm text-center leading-tight transition"
+                          className="bg-surface-3 hover:bg-dorado hover:text-negro border border-dorado/50 text-dorado-claro font-bold py-2 px-3 rounded text-sm text-center leading-tight transition"
                           aria-label={`${opt.label} ${item.name}`}
                         >
                           {opt.label}
@@ -380,7 +380,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
 
       {/* Panel derecho: Resumen del pedido */}
       <div className="lg:col-span-1">
-        <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 sticky top-4">
+        <div className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20 sticky top-4">
           <h3 className="font-cormorant text-xl font-bold text-dorado-claro mb-4">
             Resumen del Pedido
           </h3>
@@ -427,14 +427,14 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="bg-gray-700 hover:bg-gray-600 text-dorado-claro w-6 h-6 rounded text-sm"
+                        className="bg-surface-3 hover:bg-ink/10 text-dorado-claro w-6 h-6 rounded text-sm"
                       >
                         -
                       </button>
                       <span className="text-dorado-claro w-6 text-center">{item.quantity}</span>
                       <button
                         onClick={() => addItem(item)}
-                        className="bg-gray-700 hover:bg-gray-600 text-dorado-claro w-6 h-6 rounded text-sm"
+                        className="bg-surface-3 hover:bg-ink/10 text-dorado-claro w-6 h-6 rounded text-sm"
                       >
                         +
                       </button>
@@ -454,7 +454,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder }) 
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full bg-gray-800 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
+                  className="w-full bg-surface-3 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
                   rows="2"
                   placeholder="Ej: Sin cebolla, poco cocido, extra salsa..."
                 />

@@ -42,10 +42,10 @@ function TableCard({ table, onClick, onClose, canClose, hasActiveOrder }) {
       onClick={onClick}
       className={`rounded-lg p-4 border-2 cursor-pointer transition hover-lift ${
         table.status === 'available'
-          ? 'border-green-500 bg-green-900/30 hover:bg-green-900/50'
+          ? 'border-green-500 bg-green-500/10 hover:bg-green-500/20'
           : table.status === 'occupied'
-          ? 'border-red-500 bg-red-900/30'
-          : 'border-yellow-500 bg-yellow-900/30'
+          ? 'border-red-500 bg-red-500/10'
+          : 'border-yellow-500 bg-yellow-500/10'
       }`}
     >
       <div className="text-center">
@@ -390,7 +390,7 @@ function WaiterDashboard() {
 
   if (tablesLoading || ordersLoading) {
     return (
-      <div className="min-h-screen bg-negro flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
           <div className="text-4xl mb-4 animate-bounce">🏮</div>
           <p className="text-dorado font-cormorant text-xl">Cargando...</p>
@@ -400,7 +400,7 @@ function WaiterDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-negro">
+    <div className="min-h-screen bg-surface">
       <DashboardHeader
         title="Panel del Camarero"
         user={currentUser?.email}
@@ -424,7 +424,7 @@ function WaiterDashboard() {
       <main className="container mx-auto px-4 py-8">
         {/* Errores de sincronización (Firestore/reglas) */}
         {(tablesError || ordersError) && (
-          <div className="mb-6 bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg text-sm" role="alert">
+          <div className="mb-6 bg-rojo/10 border border-rojo/40 text-ink px-4 py-3 rounded-lg text-sm" role="alert">
             ⚠️ Error al sincronizar datos: {tablesError || ordersError}
           </div>
         )}
@@ -484,7 +484,7 @@ function WaiterDashboard() {
                     className={`px-4 py-2 rounded-full text-sm font-medium transition ${
                       typeFilter === filter.id
                         ? 'bg-dorado text-negro'
-                        : 'bg-gray-800 text-dorado-oscuro hover:text-dorado-claro border border-dorado-oscuro/30'
+                        : 'bg-surface-3 text-dorado-oscuro hover:text-dorado-claro border border-dorado-oscuro/30'
                     }`}
                   >
                     {filter.label} ({count})
@@ -494,7 +494,7 @@ function WaiterDashboard() {
             </div>
 
             {filteredOrders.length === 0 ? (
-              <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
+              <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
                 <FaInbox className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
                 <p className="text-dorado-oscuro">
                   {orders.length === 0
@@ -529,12 +529,12 @@ function WaiterDashboard() {
           <div>
             <h2 className="text-xl font-cormorant text-dorado mb-6">Historial de Pedidos</h2>
             {paidOrders.length === 0 ? (
-              <div className="bg-gray-900 rounded-xl p-6 border border-dorado-oscuro/25 text-center">
+              <div className="bg-surface-2 rounded-xl p-6 border border-dorado-oscuro/25 text-center">
                 <FaHistory className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
                 <p className="text-dorado-oscuro">No hay pedidos pagados todavía</p>
               </div>
             ) : (
-              <div className="bg-gray-900 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
+              <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
                 <div className="divide-y divide-dorado-oscuro/20">
                   {paidOrders.slice(0, 50).map((order) => (
                     <div key={order.id} className="px-5 py-4 flex justify-between items-center gap-3">
@@ -579,7 +579,7 @@ function WaiterDashboard() {
                 onConfirmOrder={handleCreateOrder}
               />
             ) : (
-              <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
+              <div className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20">
                 <p className="text-dorado-oscuro text-center">
                   No tiene permiso para crear pedidos
                 </p>
@@ -606,7 +606,7 @@ function WaiterDashboard() {
       {/* Modal de cobro (en mesa / recoger) */}
       {chargingOrder && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-900 rounded-xl border border-dorado/30 p-6 max-w-sm w-full">
+          <div className="bg-surface-2 rounded-xl border border-dorado/30 p-6 max-w-sm w-full">
             <h3 className="text-xl font-cormorant text-dorado-claro mb-1">Cobrar Pedido</h3>
             <p className="text-dorado-oscuro text-sm mb-4">
               Pedido #{chargingOrder.id.slice(-6).toUpperCase()} · {getOrderLabel(chargingOrder)}

@@ -67,7 +67,7 @@ function CashierDashboard() {
   const collectedToday = paidToday.reduce((sum, o) => sum + (o.total || 0), 0);
 
   return (
-    <div className="min-h-screen bg-negro">
+    <div className="min-h-screen bg-surface">
       <DashboardHeader
         title="Panel del Cajero"
         user={currentUser?.email}
@@ -106,7 +106,7 @@ function CashierDashboard() {
                 <p className="text-dorado">Cargando pedidos...</p>
               </div>
             ) : readyOrders.length === 0 ? (
-              <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
+              <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
                 <FaInbox className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
                 <p className="text-dorado-oscuro">
                   No hay pedidos pendientes de pago
@@ -117,7 +117,7 @@ function CashierDashboard() {
                 {readyOrders.map((order) => (
                   <div
                     key={order.id}
-                    className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift"
+                    className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20 hover-lift"
                   >
                     <div className="flex justify-between items-start mb-4">
                       <div>
@@ -157,9 +157,9 @@ function CashierDashboard() {
 
                     {/* Notas del pedido */}
                     {order.notes && (
-                      <div className="mb-4 p-2 bg-yellow-900/30 border border-yellow-600/30 rounded">
-                        <div className="text-yellow-400 text-xs font-bold mb-1">📝 Notas:</div>
-                        <div className="text-yellow-200 text-sm">{order.notes}</div>
+                      <div className="notes-box mb-4 p-2 rounded">
+                        <div className="notes-box-title text-xs font-bold mb-1">🗒️ Notas:</div>
+                        <div className="notes-box-text text-sm">{order.notes}</div>
                       </div>
                     )}
 
@@ -188,7 +188,7 @@ function CashierDashboard() {
                           ...paymentMethods, 
                           [order.id]: e.target.value 
                         })}
-                        className="w-full bg-negro border border-dorado-oscuro rounded px-4 py-3 text-dorado-claro mb-4"
+                        className="w-full bg-surface-3 border border-dorado-oscuro rounded px-4 py-3 text-dorado-claro mb-4"
                       >
                         <option value="">Seleccionar...</option>
                         <option value="cash">Efectivo</option>
@@ -216,14 +216,14 @@ function CashierDashboard() {
             <h2 className="text-xl font-cormorant text-dorado mb-6">Historial de Ventas</h2>
             
             {paidOrders.length === 0 ? (
-              <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
+              <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
                 <FaHistory className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
                 <p className="text-dorado-oscuro">
                   No hay ventas registradas hoy
                 </p>
               </div>
             ) : (
-              <div className="bg-gray-900 rounded-lg border border-dorado-oscuro/20">
+              <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
                 <div className="divide-y divide-dorado-oscuro/20">
                   {paidOrders.map((order) => (
                     <div key={order.id} className="p-4 flex justify-between items-center">
@@ -254,7 +254,7 @@ function CashierDashboard() {
         {activeTab === 'close' && (
           <div>
             <h2 className="text-xl font-cormorant text-dorado mb-6">Cuadre de Caja</h2>
-            <div className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20">
+            <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20">
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <h3 className="text-dorado font-semibold mb-4">Resumen del Día</h3>

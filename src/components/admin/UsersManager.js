@@ -105,7 +105,7 @@ function UsersManager() {
 
       {/* Formulario de creación */}
       {showForm && (
-        <div className="bg-gray-800 rounded-lg p-6 mb-6 border border-dorado-oscuro/30">
+        <div className="bg-surface-3 rounded-lg p-6 mb-6 border border-dorado-oscuro/30">
           <h3 className="text-lg font-cormorant text-dorado-claro mb-4">
             Crear Nuevo Usuario
           </h3>
@@ -124,7 +124,7 @@ function UsersManager() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full bg-gray-900 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
+                  className="w-full bg-surface-2 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
                   placeholder="usuario@ejemplo.com"
                 />
               </div>
@@ -134,7 +134,7 @@ function UsersManager() {
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full bg-gray-900 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
+                  className="w-full bg-surface-2 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
                   placeholder="Mínimo 6 caracteres"
                 />
               </div>
@@ -144,7 +144,7 @@ function UsersManager() {
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-gray-900 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
+                  className="w-full bg-surface-2 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro focus:border-dorado focus:outline-none"
                   placeholder="Nombre del usuario"
                 />
               </div>
@@ -154,7 +154,7 @@ function UsersManager() {
               <label className="block text-dorado-oscuro text-sm mb-2">Roles</label>
               <div className="flex flex-wrap gap-2">
                 {Object.entries(roles).map(([roleId, role]) => (
-                  <label key={roleId} className="flex items-center space-x-2 cursor-pointer bg-gray-900 px-3 py-2 rounded">
+                  <label key={roleId} className="flex items-center space-x-2 cursor-pointer bg-surface-2 px-3 py-2 rounded">
                     <input
                       type="checkbox"
                       checked={formData.roles.includes(roleId)}
@@ -165,7 +165,7 @@ function UsersManager() {
                           setFormData({ ...formData, roles: formData.roles.filter(r => r !== roleId) });
                         }
                       }}
-                      className="w-4 h-4 rounded border-dorado-oscuro bg-negro text-dorado focus:ring-dorado"
+                      className="w-4 h-4 rounded border-dorado-oscuro bg-surface-3 text-dorado focus:ring-dorado"
                     />
                     <span className="text-dorado-claro text-sm">
                       {ROLE_ICONS[roleId]} {role.name}
@@ -190,7 +190,7 @@ function UsersManager() {
                   setFormData({ email: '', password: '', name: '', roles: [] });
                   setError('');
                 }}
-                className="bg-gray-700 hover:bg-gray-600 text-dorado-claro font-bold py-2 px-6 rounded"
+                className="bg-surface-3 hover:bg-ink/10 text-dorado-claro font-bold py-2 px-6 rounded"
               >
                 Cancelar
               </button>
@@ -200,7 +200,7 @@ function UsersManager() {
       )}
 
       {/* Lista de usuarios */}
-      <div className="bg-gray-900 rounded-lg border border-dorado-oscuro/20">
+      <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
         {users.length === 0 ? (
           <p className="text-dorado-oscuro text-center py-8">
             No hay usuarios registrados
@@ -217,12 +217,12 @@ function UsersManager() {
                   
                   <div className="flex flex-wrap gap-2">
                     {Object.entries(roles).map(([roleId, role]) => (
-                      <label key={roleId} className="flex items-center space-x-2 cursor-pointer bg-gray-800 px-3 py-1 rounded">
+                      <label key={roleId} className="flex items-center space-x-2 cursor-pointer bg-surface-3 px-3 py-1 rounded">
                         <input
                           type="checkbox"
                           checked={user.roles?.includes(roleId) || false}
                           onChange={() => handleToggleRole(user.id, user.roles || [], roleId)}
-                          className="w-4 h-4 rounded border-dorado-oscuro bg-negro text-dorado focus:ring-dorado"
+                          className="w-4 h-4 rounded border-dorado-oscuro bg-surface-3 text-dorado focus:ring-dorado"
                         />
                         <span className="text-dorado-claro text-sm">
                           {ROLE_ICONS[roleId]} {role.name}

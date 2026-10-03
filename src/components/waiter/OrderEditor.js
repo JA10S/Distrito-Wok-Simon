@@ -74,7 +74,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 rounded-lg border border-dorado-oscuro/30 max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/30 max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-dorado-oscuro/30 flex justify-between items-center">
           <div>
@@ -112,7 +112,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
                     className={`flex items-center space-x-1 py-1 px-3 rounded text-sm whitespace-nowrap ${
                       activeCategory === cat.id
                         ? 'bg-dorado text-negro'
-                        : 'bg-gray-800 text-dorado-oscuro hover:text-dorado'
+                        : 'bg-surface-3 text-dorado-oscuro hover:text-dorado'
                     }`}
                   >
                     <span>{cat.icon}</span>
@@ -122,7 +122,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
               </div>
 
               {/* Items del menú */}
-              <div className="bg-gray-800 rounded-lg border border-dorado-oscuro/20 max-h-64 overflow-y-auto">
+              <div className="bg-surface-3 rounded-lg border border-dorado-oscuro/20 max-h-64 overflow-y-auto">
                 {(menu[activeCategory] || [])
                   .filter(item => item.available !== false)
                   .map(item => {
@@ -130,7 +130,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
                     return (
                     <div
                       key={item.id}
-                      className="p-3 flex justify-between items-center gap-3 hover:bg-gray-700 border-b border-dorado-oscuro/10 last:border-b-0"
+                      className="p-3 flex justify-between items-center gap-3 hover:bg-surface-3 border-b border-dorado-oscuro/10 last:border-b-0"
                     >
                       <div className="flex-1">
                         <div className="text-dorado-claro text-sm font-medium">{item.name}</div>
@@ -144,7 +144,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
                             <button
                               key={opt.size}
                               onClick={() => addItem(item, opt)}
-                              className="bg-gray-700 hover:bg-dorado hover:text-negro border border-dorado/50 text-dorado-claro py-1 px-2 rounded text-xs text-center leading-tight transition"
+                              className="bg-surface-3 hover:bg-dorado hover:text-negro border border-dorado/50 text-dorado-claro py-1 px-2 rounded text-xs text-center leading-tight transition"
                               aria-label={`${opt.label} ${item.name}`}
                             >
                               {opt.label}
@@ -178,7 +178,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
               ) : (
                 <div className="space-y-2 mb-4">
                   {items.map(item => (
-                    <div key={item.id} className="flex justify-between items-center bg-gray-800 p-2 rounded">
+                    <div key={item.id} className="flex justify-between items-center bg-surface-3 p-2 rounded">
                       <div className="flex-1">
                         <div className="text-dorado-claro text-sm">{item.name}</div>
                         <div className="text-dorado-oscuro text-xs">
@@ -188,14 +188,14 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => removeItem(item.id)}
-                          className="bg-gray-700 hover:bg-gray-600 text-dorado-claro w-6 h-6 rounded text-sm"
+                          className="bg-surface-3 hover:bg-ink/10 text-dorado-claro w-6 h-6 rounded text-sm"
                         >
                           -
                         </button>
                         <span className="text-dorado-claro w-6 text-center">{item.quantity}</span>
                         <button
                           onClick={() => addItem(item)}
-                          className="bg-gray-700 hover:bg-gray-600 text-dorado-claro w-6 h-6 rounded text-sm"
+                          className="bg-surface-3 hover:bg-ink/10 text-dorado-claro w-6 h-6 rounded text-sm"
                         >
                           +
                         </button>
@@ -216,7 +216,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  className="w-full bg-gray-800 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
+                  className="w-full bg-surface-3 border border-dorado-oscuro/30 rounded px-3 py-2 text-dorado-claro text-sm focus:border-dorado focus:outline-none"
                   rows="2"
                   placeholder="Ej: Sin cebolla, poco cocido..."
                 />
@@ -257,7 +257,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
           <div className="space-x-2">
             <button
               onClick={onClose}
-              className="bg-gray-700 hover:bg-gray-600 text-dorado-claro font-bold py-2 px-4 rounded"
+              className="bg-surface-3 hover:bg-ink/10 text-dorado-claro font-bold py-2 px-4 rounded"
             >
               Cerrar
             </button>

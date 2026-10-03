@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import ChefAnimation from '../../components/common/ChefAnimation';
+import ModeToggle from '../../components/common/ModeToggle';
 import { FaEnvelope, FaLock, FaSignInAlt, FaSpinner } from 'react-icons/fa';
 
 function LoginPage() {
@@ -64,16 +65,18 @@ function LoginPage() {
     );
 
   return (
-    <main className="min-h-screen bg-negro pattern-bg flex items-center justify-center px-4 py-10">
+    <main className="relative min-h-screen bg-surface pattern-bg flex items-center justify-center px-4 py-10">
+      <ModeToggle className="absolute top-4 right-4" />
+
       <div className="max-w-6xl w-full grid lg:grid-cols-2 gap-12 items-center">
         {/* Lado izquierdo: marca sobre la ilustración de fondo (solo desktop) */}
         <section
-          className="login-brand relative hidden lg:block rounded-3xl overflow-hidden border border-dorado/15 h-[460px]"
+          className="login-brand surface-dark relative hidden lg:block rounded-3xl overflow-hidden border border-dorado/15 h-[460px] bg-negro"
           aria-label="Distrito Wok Simón"
         >
           <BrandArt />
           {/* Velo oscuro para legibilidad del texto */}
-          <div className="absolute inset-0 bg-negro/45" aria-hidden="true" />
+          <div className="absolute inset-0 bg-black/45" aria-hidden="true" />
 
           {/* Contenido de marca (aparece con fade-in de 0.8s) */}
           <div className="relative h-full flex flex-col items-center justify-center text-center px-8">
@@ -95,7 +98,7 @@ function LoginPage() {
           {/* Marca compacta (móvil, apilado) */}
           <div className="lg:hidden text-center mb-6">
             <div
-              className="login-chef relative overflow-hidden rounded-2xl mx-auto"
+              className="login-chef surface-dark relative overflow-hidden rounded-2xl mx-auto bg-negro"
               style={{ width: 270, maxWidth: '100%' }}
             >
               <img
@@ -117,7 +120,7 @@ function LoginPage() {
             </p>
           </div>
 
-          <div className="bg-black/60 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-2xl border border-dorado/25 hover-lift">
+          <div className="bg-surface-2/85 backdrop-blur-md rounded-2xl p-6 sm:p-8 shadow-2xl border border-dorado/25 hover-lift">
             <div className="flex items-center justify-center gap-3 mb-6">
               <span className="h-px w-8 bg-dorado-oscuro/50" />
               <h2 className="text-2xl font-cormorant text-dorado text-center">
@@ -127,8 +130,8 @@ function LoginPage() {
             </div>
 
             {error && (
-              <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-4 flex items-center gap-2" role="alert">
-                <FaLock aria-hidden="true" className="text-red-400" />
+              <div className="bg-rojo/10 border border-rojo/40 text-ink px-4 py-3 rounded mb-4 flex items-center gap-2" role="alert">
+                <FaLock aria-hidden="true" className="text-rojo shrink-0" />
                 {error}
               </div>
             )}
@@ -148,7 +151,7 @@ function LoginPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="login-input w-full bg-black/50 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-dorado-oscuro/60"
+                    className="login-input w-full bg-surface-3 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-ink placeholder:text-dorado-oscuro/60"
                     placeholder="usuario@restaurante.com"
                     required
                   />
@@ -169,7 +172,7 @@ function LoginPage() {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="login-input w-full bg-black/50 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-white placeholder:text-dorado-oscuro/60"
+                    className="login-input w-full bg-surface-3 border border-dorado-oscuro/50 rounded-lg pl-10 pr-4 py-3 text-ink placeholder:text-dorado-oscuro/60"
                     placeholder="••••••••"
                     required
                   />

@@ -1,5 +1,12 @@
 import {
   DEFAULT_THEME,
+  PRESETS,
+  COLOR_KEYS,
+  MODES,
+  LAYOUTS,
+  RADII,
+  getPalette,
+  resolveMode,
   hexToRgbChannels,
   sanitizeTheme,
   applyTheme
@@ -77,5 +84,89 @@ describe('applyTheme', () => {
     expect(() => applyTheme({ colors: { dorado: 'xxx' }, headingFont: 42 })).not.toThrow();
     expect(setPropertySpy).toHaveBeenCalledWith('--color-dorado', '212 168 67');
     expect(setPropertySpy).toHaveBeenCalledWith('--font-heading', expect.stringContaining('Cormorant'));
+  });
+});
+
+describe('presets y paletas', () => {
+  test('hay 3 estilos y cada uno define modo oscuro y claro completos', () => {
+    expect(PRESETS.map((p) => p.id)).toEqual(['clasico', 'jade', 'carmesi']);
+
+    PRESETS.forEach((preset) => {
+      COLOR_KEYS.forEach((key) => {
+        expect(preset.dark[key]).toMatch(/^#[0-9a-fA-F]{6}$/);
+        expect(preset.light[key]).toMatch(/^#[0-9a-fA-F]{6}$/);
+      });
+      expect(preset.fonts.headingFont).toBeTruthy();
+      expect(preset.fonts.bodyFont).toBeTruthy();
+    });
+  });
+
+  test('getPalette devuelve la paleta del modo pedido', () => {
+    expect(getPalette('jade', 'light').surface).toBe('#F4FAF7');
+    expect(getPalette('jade', 'dark').surface).toBe('#0A1311');
+    expect(getPalette('noexiste', 'dark')).toEqual(getPalette('clasico', 'dark'));
+  });
+
+  test('las opciones de modo, disposición y esquinas están completas', () => {
+    expect(MODES.map((m) => m.id)).toEqual(['dark', 'light', 'system']);
+    expect(LAYOUTS.map((l) => l.id)).toEqual(['clasic', 'hamburger', 'side']);
+    expect(RADII.map((r) => r.id)).toEqual(['sm', 'md', 'lg']);
+  });
+});
+
+describe('sanitizeTheme con modo, disposición y esquinas', () => {
+  test('acepta valores válidos', () => {
+    const result = sanitizeTheme({ preset: 'jade', mode: 'light', layout: 'side', radius: 'lg' });
+    expect(result).toMatchObject({ preset: 'jade', mode: 'light', layout: 'side', radius: 'lg' });
+    expect(result.colors.surface).toBe(getPalette('jade', 'light').surface);
+  });
+
+  test('descarta valores inválidos', () => {
+    const result = sanitizeTheme({ preset: 'otro', mode: 'sepia', layout: 'grid', radius: 'xl' });
+    expect(result).toMatchObject({
+      preset: DEFAULT_THEME.preset,
+      mode: DEFAULT_THEME.mode,
+      layout: DEFAULT_THEME.layout,
+      radius: DEFAULT_THEME.radius
+    });
+  });
+});
+
+describe('resolveMode', () => {
+  test('usa el modo guardado si no es system', () => {
+    expect(resolveMode({ mode: 'light' })).toBe('light');
+    expect(resolveMode({ mode: 'dark' })).toBe('dark');
+  });
+
+  test('con system sigue la preferencia del sistema', () => {
+    const matches = jest.fn().mockReturnValue(true);
+    const original = window.matchMedia;
+    window.matchMedia = jest.fn(() => ({ matches }));
+
+    expect(resolveMode({ mode: 'system' })).toBe('light');
+    expect(window.matchMedia).toHaveBeenCalledWith('(prefers-color-scheme: light)');
+
+    window.matchMedia = original;
+  });
+});
+
+describe('applyTheme: modo, disposición y esquinas', () => {
+  beforeEach(() => {
+    document.documentElement.removeAttribute('data-mode');
+    document.documentElement.removeAttribute('data-layout');
+    document.documentElement.removeAttribute('data-radius');
+  });
+
+  test('escribe el dataset y la paleta oscura de respaldo', () => {
+    applyTheme({ mode: 'light', layout: 'hamburger', radius: 'lg' });
+
+    expect(document.documentElement.dataset.mode).toBe('light');
+    expect(document.documentElement.dataset.layout).toBe('hamburger');
+    expect(document.documentElement.dataset.radius).toBe('lg');
+
+    const styles = document.documentElement.style;
+    expect(styles.getPropertyValue('--dk-dorado').trim()).toBe('212 168 67');
+    expect(styles.getPropertyValue('--color-dorado').trim()).toBe('150 115 26');
+    expect(styles.getPropertyValue('--gold-mid').trim()).not.toBe('');
   });
 });

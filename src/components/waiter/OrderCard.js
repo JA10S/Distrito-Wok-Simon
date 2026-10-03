@@ -20,7 +20,7 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, canEdit 
   };
 
   return (
-    <div className="bg-gray-900 rounded-lg p-4 border border-dorado-oscuro/20">
+    <div className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20">
       <div className="flex justify-between items-start">
         <div className="flex-1">
           <div className="flex items-center space-x-3">
@@ -50,7 +50,7 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, canEdit 
           
           <div className="mt-2 space-y-1">
             {order.items?.map((item, i) => (
-              <div key={i} className="text-white text-sm flex justify-between">
+              <div key={i} className="text-ink text-sm flex justify-between">
                 <span>{item.quantity}x {item.name}</span>
                 <span className="text-dorado-oscuro">
                   ${(item.price * item.quantity).toLocaleString()}
@@ -61,9 +61,9 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, canEdit 
 
           {/* Notas del pedido */}
           {order.notes && (
-            <div className="mt-2 p-2 bg-yellow-900/30 border border-yellow-600/30 rounded">
-              <div className="text-yellow-400 text-xs font-bold mb-1">📝 Notas:</div>
-              <div className="text-yellow-200 text-sm">{order.notes}</div>
+            <div className="notes-box mt-2 p-2 rounded">
+              <div className="notes-box-title text-xs font-bold mb-1">🗒️ Notas:</div>
+              <div className="notes-box-text text-sm">{order.notes}</div>
             </div>
           )}
 

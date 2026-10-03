@@ -7,7 +7,7 @@ function PrivateRoute({ children, allowedRoles }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-negro">
+      <div className="min-h-screen flex items-center justify-center bg-surface">
         <div className="text-dorado text-xl">Cargando...</div>
       </div>
     );

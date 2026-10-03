@@ -53,7 +53,7 @@ function PaymentButton({ amount, description, reference, onSuccess, onError }) {
       {/* Modal con link de pago */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-900 rounded-lg p-6 max-w-md w-full mx-4 border border-dorado-oscuro">
+          <div className="bg-surface-2 rounded-lg p-6 max-w-md w-full mx-4 border border-dorado-oscuro">
             <h3 className="text-xl font-cormorant text-dorado mb-4">
               Link de Pago Creado
             </h3>
@@ -62,7 +62,7 @@ function PaymentButton({ amount, description, reference, onSuccess, onError }) {
               Comparte este link con el cliente para que realice el pago:
             </p>
 
-            <div className="bg-gray-800 rounded p-3 mb-4">
+            <div className="bg-surface-3 rounded p-3 mb-4">
               <p className="text-dorado-claro text-sm break-all">
                 {paymentUrl}
               </p>
@@ -77,7 +77,7 @@ function PaymentButton({ amount, description, reference, onSuccess, onError }) {
               </button>
               <button
                 onClick={() => setShowModal(false)}
-                className="flex-1 bg-gray-700 hover:bg-gray-600 text-dorado-claro font-bold py-2 px-4 rounded"
+                className="flex-1 bg-surface-3 hover:bg-ink/10 text-dorado-claro font-bold py-2 px-4 rounded"
               >
                 Cerrar
               </button>

@@ -85,7 +85,7 @@ function RolesManager() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {Object.entries(roles).map(([roleId, role]) => (
-          <div key={roleId} className="bg-gray-900 rounded-lg p-6 border border-dorado-oscuro/20">
+          <div key={roleId} className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <span className="text-3xl mr-3">{ROLE_ICONS[roleId] || '👤'}</span>
@@ -104,7 +104,7 @@ function RolesManager() {
                     checked={role.permissions?.includes(permId) || false}
                     onChange={() => handleTogglePermission(roleId, permId, role.permissions || [])}
                     disabled={saving}
-                    className="w-4 h-4 rounded border-dorado-oscuro bg-negro text-dorado focus:ring-dorado"
+                    className="w-4 h-4 rounded border-dorado-oscuro bg-surface-3 text-dorado focus:ring-dorado"
                   />
                   <span className="text-dorado-claro text-sm">{permName}</span>
                 </label>

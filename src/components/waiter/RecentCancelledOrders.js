@@ -17,7 +17,7 @@ function RecentCancelledOrders({ orders, onReactivate, canReactivate = true, tit
       <h2 className="text-xl font-cormorant text-dorado mb-4">{title}</h2>
       <div className="grid gap-4">
         {recent.map((order) => (
-          <div key={order.id} className="bg-gray-900 rounded-lg p-4 border border-red-600/40">
+          <div key={order.id} className="bg-surface-2 rounded-lg p-4 border border-red-600/40">
             <div className="flex justify-between items-start">
               <div className="flex-1">
                 <div className="flex items-center space-x-3">
@@ -29,7 +29,7 @@ function RecentCancelledOrders({ orders, onReactivate, canReactivate = true, tit
 
                 <div className="mt-2 space-y-1">
                   {(order.items || []).map((item, i) => (
-                    <div key={i} className="text-white text-sm">
+                    <div key={i} className="text-ink text-sm">
                       {item.quantity}x {item.name}
                     </div>
                   ))}

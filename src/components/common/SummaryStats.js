@@ -6,7 +6,7 @@ function SummaryStats({ stats }) {
       {stats.map((stat, index) => (
         <div
           key={stat.label}
-          className="bg-gray-900 rounded-xl p-4 border border-dorado-oscuro/25 hover-lift animate-fade-in-up"
+          className="bg-surface-2 rounded-xl p-4 border border-dorado-oscuro/25 hover-lift animate-fade-in-up"
           style={{ animationDelay: `${index * 0.05}s` }}
         >
           <div className="flex items-center justify-between text-dorado-oscuro text-sm">
