@@ -312,9 +312,15 @@ match /arroces/{itemId} {
   - **Selector de tamaño** para precios dobles (`30K / 40K`): `parsePriceOptions` + `resolveItemVariant` en orderUtils; botones "Pequeña $30.000 / Grande $40.000" en OrderCreator y OrderEditor; items guardados con id `base--small|--large` y `size`; `findDuplicateOrder` normaliza esos sufijos al comparar
   - **Historial del camarero**: pestaña `history` con permiso `view_history` — últimos 50 pedidos `paid` (número, label, camarero, método, total) usando `useOrders('paid')`
   - Tests: 62 totales (5 nuevos: cobrar con `charge_orders`, cobro oculto sin permiso, filtro por tipo, historial con/sin permiso)
+- [x] Tests de CashierDashboard, OrderCreator y OrderEditor (2026-10-03)
+  - `src/pages/cashier/CashierDashboard.test.js` (12): pedidos listos y label, estado vacío, pago con método seleccionado, aviso sin método, error de pago, datos de pedido para llevar, historial con métodos traducidos, cuadre de caja (totales por método + promedio), estado vacío del historial, gating de `view_summaries` y botón volver con `view_dashboard`
+  - `src/components/waiter/OrderCreator.test.js` (11): items no disponibles ocultos, tamaño (Pequeña/Grande) con subtotal/IVA/total, cantidades +/-, botón deshabilitado sin mesa, `onTableSelect`, payload completo en mesa, validación nombre/teléfono/dirección en para-llevar, domicilio con datos del cliente, pickup sin dirección, carrito no se limpia si falla, carrito limpio si tiene éxito
+  - `src/components/waiter/OrderEditor.test.js` (9): items y totales, agregar item (categoría Bebidas), notas en `onUpdate`, bloqueo de edición en cocina, guardar sin items, cancelar desde el editor, `canCancel=false`, estado `paid`, cerrar con botón y equis
+  - Técnicas: mocks de `useAuth`/`useOrders(status)`/`useMenu` + `useNavigate`; para colisiones de texto (menú vs resumen) usar `valueAfter('Subtotal:')` (hermano del label) y `within(panel)`; `selectedTable` es prop controlada → `onTableSelect` solo se verifica por el mock
+  - Tests: 94 totales (32 nuevos)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
-- [ ] Ampliar cobertura de tests (faltan: CashierDashboard, OrderCreator/Editor, hooks)
+- [ ] Ampliar cobertura de tests (faltan: hooks — useOrders/useTables/useMenu, AdminDashboard, componentes admin y OrderCard)
 
 ### ✅ Bugs Resueltos (2026-08-22):
 1. ~~**pushNotification.js**: Import de `messaging` no existe en firebase.js~~ → firebase.js ahora exporta `messaging`
