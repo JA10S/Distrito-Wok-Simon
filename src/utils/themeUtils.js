@@ -251,21 +251,30 @@ export function resolveMode(theme) {
   return 'dark';
 }
 
-export function applyTheme(theme) {
+export function applyTheme(theme, modeOverride) {
   const safe = sanitizeTheme(theme);
   const root = document.documentElement;
-  const effectiveMode = resolveMode(safe);
 
-  Object.entries(safe.colors).forEach(([key, hex]) => {
+  /* Modo al que pertenecen los colores personalizados guardados */
+  const savedMode = safe.mode === 'system' ? resolveMode(safe) : safe.mode;
+
+  /* Modo que se va a aplicar (el visitante puede forzar dark/light) */
+  const effectiveMode =
+    modeOverride === 'light' || modeOverride === 'dark' ? modeOverride : resolveMode(safe);
+
+  /* Si el modo aplicado es distinto al guardado, los colores personalizados
+     ya no corresponden: se usa la paleta del preset para el modo pedido. */
+  const colors =
+    effectiveMode === savedMode ? safe.colors : getPalette(safe.preset, effectiveMode);
+
+  Object.entries(colors).forEach(([key, hex]) => {
     const cssVar = `--color-${key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)}`;
     root.style.setProperty(cssVar, hexToRgbChannels(hex));
   });
 
   /* Paleta oscura: se expone con prefijo --dk- para que las secciones
      fijamente oscuras (hero del login) no cambien con el modo. */
-  const darkPalette = effectiveMode === 'dark'
-    ? safe.colors
-    : getPalette(safe.preset, 'dark');
+  const darkPalette = savedMode === 'dark' ? safe.colors : getPalette(safe.preset, 'dark');
   Object.entries(darkPalette).forEach(([key, hex]) => {
     const cssVar = `--dk-${key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)}`;
     root.style.setProperty(cssVar, hexToRgbChannels(hex));
@@ -278,15 +287,15 @@ export function applyTheme(theme) {
 
   /* Degradado del botón dorado: en modo claro se aclara el acento para que
      el texto negro siga teniendo contraste. */
-  const accent = safe.colors.dorado;
+  const accent = colors.dorado;
   if (effectiveMode === 'light') {
     root.style.setProperty('--gold-from', mixWithWhite(accent, 0.55));
     root.style.setProperty('--gold-mid', mixWithWhite(accent, 0.35));
     root.style.setProperty('--gold-to', mixWithWhite(accent, 0.12));
   } else {
-    root.style.setProperty('--gold-from', safe.colors.doradoClaro);
-    root.style.setProperty('--gold-mid', safe.colors.dorado);
-    root.style.setProperty('--gold-to', safe.colors.doradoOscuro);
+    root.style.setProperty('--gold-from', colors.doradoClaro);
+    root.style.setProperty('--gold-mid', colors.dorado);
+    root.style.setProperty('--gold-to', colors.doradoOscuro);
   }
 
   root.dataset.mode = effectiveMode;

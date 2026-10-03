@@ -72,3 +72,31 @@ test('botón de modo nocturno/diurno invoca toggleMode', () => {
   fireEvent.click(screen.getByLabelText('Cambiar a modo diurno'));
   expect(toggleMode).toHaveBeenCalledTimes(1);
 });
+
+test('el botón de modo queda a la izquierda de Cerrar Sesión y alterna el modo', () => {
+  const Harness = () => {
+    const [isLight, setIsLight] = React.useState(false);
+    useTheme.mockReturnValue({
+      theme: { layout: 'clasic' },
+      isLight,
+      toggleMode: () => setIsLight((current) => !current)
+    });
+    return <DashboardHeader {...baseProps} />;
+  };
+
+  render(<Harness />);
+
+  const toggle = screen.getByLabelText('Cambiar a modo diurno');
+  const logout = screen.getByRole('button', { name: /Cerrar Sesión/ });
+
+  // el interruptor va antes (a la izquierda) del botón de cerrar sesión
+  expect(
+    toggle.compareDocumentPosition(logout) & Node.DOCUMENT_POSITION_FOLLOWING
+  ).toBeTruthy();
+
+  fireEvent.click(toggle);
+
+  expect(screen.getByLabelText('Cambiar a modo nocturno')).toBeInTheDocument();
+  expect(screen.queryByLabelText('Cambiar a modo diurno')).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Cerrar Sesión/ })).toBeInTheDocument();
+});

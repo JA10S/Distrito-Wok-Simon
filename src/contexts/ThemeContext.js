@@ -58,7 +58,7 @@ export function ThemeProvider({ children }) {
       : resolveMode(localMode === 'system' ? { ...theme, mode: 'system' } : theme);
 
   useEffect(() => {
-    applyTheme({ ...theme, mode: resolvedMode });
+    applyTheme(theme, resolvedMode);
   }, [theme, resolvedMode]);
 
   const setLocalMode = useCallback((mode) => {

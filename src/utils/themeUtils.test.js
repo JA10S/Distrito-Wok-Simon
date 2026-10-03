@@ -169,4 +169,16 @@ describe('applyTheme: modo, disposición y esquinas', () => {
     expect(styles.getPropertyValue('--color-dorado').trim()).toBe('150 115 26');
     expect(styles.getPropertyValue('--gold-mid').trim()).not.toBe('');
   });
+
+  test('con el modo forzado al contrario usa la paleta de ese modo (no la guardada)', () => {
+    const guardado = { mode: 'dark', colors: { ...DEFAULT_THEME.colors } };
+
+    applyTheme(guardado, 'light');
+    expect(document.documentElement.dataset.mode).toBe('light');
+    expect(document.documentElement.style.getPropertyValue('--color-surface').trim()).toBe('250 246 236');
+
+    applyTheme(guardado, 'dark');
+    expect(document.documentElement.dataset.mode).toBe('dark');
+    expect(document.documentElement.style.getPropertyValue('--color-surface').trim()).toBe('13 13 13');
+  });
 });
