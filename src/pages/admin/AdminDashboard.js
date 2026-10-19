@@ -10,6 +10,10 @@ import RolesManager from '../../components/admin/RolesManager';
 import UsersManager from '../../components/admin/UsersManager';
 import ThemeManager from '../../components/admin/ThemeManager';
 import DriversMap from '../../components/admin/DriversMap';
+import InvoiceCreator from '../../components/admin/InvoiceCreator';
+import CustomersManager from '../../components/admin/CustomersManager';
+import ExpenseManager from '../../components/admin/ExpenseManager';
+import CashClosingsHistory from '../../components/admin/CashClosingsHistory';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import SummaryStats from '../../components/common/SummaryStats';
 import {
@@ -24,7 +28,10 @@ import {
   FaCashRegister,
   FaMotorcycle,
   FaReceipt,
-  FaMapMarkedAlt
+  FaMapMarkedAlt,
+  FaFileInvoiceDollar,
+  FaMoneyBillWave,
+  FaLock
 } from 'react-icons/fa';
 import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
 
@@ -34,7 +41,7 @@ function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('overview');
   
   const { tables, updateTableStatus } = useTables();
-  const { orders } = useOrders();
+  const { orders, createQuickInvoice, updateInvoicePayment, cancelInvoice } = useOrders();
   const { orders: cancelledOrders, reactivateOrder } = useOrders('cancelled');
   const { deliveries } = useDeliveries();
   const { drivers } = useDriverLocations();
@@ -94,6 +101,12 @@ function AdminDashboard() {
           { id: 'overview', label: 'Resumen', icon: <FaThLarge /> },
           { id: 'dashboards', label: 'Dashboards', icon: <FaTachometerAlt /> },
           { id: 'menu', label: 'Menú', icon: <FaUtensils /> },
+          { id: 'invoices', label: 'Facturas', icon: <FaFileInvoiceDollar /> },
+          { id: 'expenses', label: 'Caja Menor', icon: <FaMoneyBillWave /> },
+          { id: 'closings', label: 'Cierres', icon: <FaLock /> },
+          ...(hasPermission('manage_credit')
+            ? [{ id: 'credit', label: 'Cartera', icon: <FaUsers /> }]
+            : []),
           { id: 'roles', label: 'Roles', icon: <FaUserShield /> },
           { id: 'users', label: 'Usuarios', icon: <FaUsers /> },
           { id: 'theme', label: 'Apariencia', icon: <FaPalette /> },
@@ -138,9 +151,9 @@ function AdminDashboard() {
               ))}
             </div>
 
-            {/* Cancelados recientes (cocina) */}
+            {/* Cancelados recientes (cocina) — sin facturas directas del admin */}
             <RecentCancelledOrders
-              orders={cancelledOrders}
+              orders={cancelledOrders.filter(o => o.source !== 'admin')}
               onReactivate={handleReactivate}
               title="Cancelados recientes — avisar a cocina"
             />
@@ -213,6 +226,34 @@ function AdminDashboard() {
 
         {/* MENÚ */}
         {activeTab === 'menu' && <MenuManager />}
+
+        {/* FACTURAS (ventas directas pagadas) */}
+        {activeTab === 'invoices' && (
+          <InvoiceCreator
+            tables={tables}
+            invoices={orders}
+            onCreateInvoice={createQuickInvoice}
+            onUpdateInvoice={updateInvoicePayment}
+            onCancelInvoice={cancelInvoice}
+            user={currentUser}
+          />
+        )}
+
+        {/* CAJA MENOR (gastos del día) */}
+        {activeTab === 'expenses' && <ExpenseManager />}
+
+        {/* CARTERA (fiado de clientes) */}
+        {activeTab === 'credit' && (
+          <CustomersManager user={currentUser} />
+        )}
+
+        {/* CIERRES DE CAJA (historial de arqueos del cajero) */}
+        {activeTab === 'closings' && (
+          <div>
+            <h2 className="text-xl font-cormorant text-dorado mb-6">Cierres de Caja</h2>
+            <CashClosingsHistory />
+          </div>
+        )}
 
         {/* ROLES */}
         {activeTab === 'roles' && <RolesManager />}

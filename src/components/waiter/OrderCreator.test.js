@@ -60,15 +60,15 @@ test('oculta del menú los items que no están disponibles', () => {
   expect(screen.queryByText('Arroz No Disponible')).not.toBeInTheDocument();
 });
 
-test('agrega un item con tamaño y calcula subtotal, IVA y total', () => {
+test('agrega un item con tamaño y calcula subtotal y total sin IVA extra', () => {
   renderCreator();
 
   fireEvent.click(screen.getByRole('button', { name: 'Grande Arroz Costeño Wok' }));
 
   expect(screen.getByText('Arroz Costeño Wok (Grande)')).toBeInTheDocument();
   expect(valueAfter('Subtotal:')).toBe(`$${(40000).toLocaleString()}`);
-  expect(valueAfter('IVA (10%):')).toBe(`$${(4000).toLocaleString()}`);
-  expect(valueAfter('Total:')).toBe(`$${(44000).toLocaleString()}`);
+  expect(valueAfter('IVA (incluido):')).toBe(`$${(0).toLocaleString()}`);
+  expect(valueAfter('Total:')).toBe(`$${(40000).toLocaleString()}`);
 });
 
 test('incrementa y decrementa la cantidad de un item del resumen', () => {
@@ -80,7 +80,7 @@ test('incrementa y decrementa la cantidad de un item del resumen', () => {
 
   fireEvent.click(within(summaryPanel()).getByText('-'));
   expect(valueAfter('Subtotal:')).toBe(`$${(40000).toLocaleString()}`);
-  expect(valueAfter('Total:')).toBe(`$${(44000).toLocaleString()}`);
+  expect(valueAfter('Total:')).toBe(`$${(40000).toLocaleString()}`);
 });
 
 test('no permite crear el pedido en mesa sin mesa seleccionada', () => {
@@ -114,8 +114,8 @@ test('crea el pedido en mesa con items, notas y totales', async () => {
     items: [expect.objectContaining({ id: 'a1--small', size: 'small', price: 30000, quantity: 1 })],
     notes: 'Poco cocido',
     subtotal: 30000,
-    tax: 3000,
-    total: 33000,
+    tax: 0,
+    total: 30000,
     type: 'table',
     tableId: 't1',
     tableNumber: 1,
@@ -183,7 +183,7 @@ test('crea un pedido de domicilio con los datos del cliente', async () => {
         phone: '300 123 4567',
         address: 'Calle 10 #20-30',
       }),
-      total: 33000,
+      total: 30000,
     })
   );
 });

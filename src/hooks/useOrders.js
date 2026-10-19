@@ -82,7 +82,33 @@ export function useOrders(status = null) {
     }
   };
 
-  const processPayment = async (orderId, paymentMethod, cashier = null) => {
+  /**
+   * Factura rápida del administrador: se registra directamente como pagada,
+   * sin pasar por cocina ni domiciliario y sin tocar mesas.
+   * Los precios del menú ya incluyen IVA → no se agrega impuesto.
+   */
+  const createQuickInvoice = async (payload, user = null) => {
+    try {
+      const docRef = await addDoc(collection(db, 'orders'), {
+        ...payload,
+        tax: 0,
+        status: 'paid',
+        paymentStatus: 'paid',
+        source: 'admin',
+        cashierId: user?.uid || null,
+        cashierName: user?.email || '',
+        createdAt: serverTimestamp(),
+        paidAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      return { success: true, id: docRef.id };
+    } catch (err) {
+      console.error('Error creating quick invoice:', err);
+      return { success: false, error: err.message };
+    }
+  };
+
+  const processPayment = async (orderId, paymentMethod, cashier = null, paymentSplit = null) => {
     try {
       const orderRef = doc(db, 'orders', orderId);
       const orderSnap = await getDoc(orderRef);
@@ -91,6 +117,7 @@ export function useOrders(status = null) {
       const updateData = {
         status: 'paid',
         paymentMethod: paymentMethod,
+        paymentSplit: paymentMethod === 'mixed' && paymentSplit ? paymentSplit : null,
         paymentStatus: 'paid',
         paidAt: serverTimestamp(),
         updatedAt: serverTimestamp()
@@ -133,6 +160,64 @@ export function useOrders(status = null) {
       return { success: true };
     } catch (err) {
       console.error('Error processing payment:', err);
+      return { success: false, error: err.message };
+    }
+  };
+
+  /**
+   * Edita el método de pago de una factura rápida del administrador
+   * (pedido pagado con source: 'admin'), incluido el pago mixto.
+   */
+  const updateInvoicePayment = async (orderId, { paymentMethod, paymentSplit = null }) => {
+    try {
+      await updateDoc(doc(db, 'orders', orderId), {
+        paymentMethod,
+        paymentSplit: paymentMethod === 'mixed' ? paymentSplit : null,
+        updatedAt: serverTimestamp()
+      });
+      return { success: true };
+    } catch (err) {
+      console.error('Error updating invoice payment:', err);
+      return { success: false, error: err.message };
+    }
+  };
+
+  /**
+   * Anula una factura directa del administrador (source: 'admin', status: 'paid')
+   * exigiendo motivo. Queda fuera de los cobros y del cuadre de caja.
+   */
+  const cancelInvoice = async (orderId, { reason, user = null } = {}) => {
+    try {
+      const trimmed = String(reason || '').trim();
+      if (!trimmed) {
+        return { success: false, error: 'Indique el motivo de la anulación' };
+      }
+      const snap = await getDoc(doc(db, 'orders', orderId));
+      const data = snap.exists() ? snap.data() : null;
+      if (!data) {
+        return { success: false, error: 'Factura no encontrada' };
+      }
+      if (data.source !== 'admin') {
+        return { success: false, error: 'Solo se pueden anular facturas directas del administrador' };
+      }
+      if (data.status === 'cancelled') {
+        return { success: false, error: 'La factura ya está anulada' };
+      }
+      if (data.status !== 'paid') {
+        return { success: false, error: 'Solo se pueden anular facturas pagadas' };
+      }
+
+      await updateDoc(doc(db, 'orders', orderId), {
+        status: 'cancelled',
+        cancelledAt: serverTimestamp(),
+        cancelledReason: trimmed,
+        cancelledBy: user?.uid || null,
+        cancelledByName: user?.email || '',
+        updatedAt: serverTimestamp()
+      });
+      return { success: true };
+    } catch (err) {
+      console.error('Error cancelling invoice:', err);
       return { success: false, error: err.message };
     }
   };
@@ -200,11 +285,11 @@ export function useOrders(status = null) {
       };
 
       if (updates.items) {
+        // Los precios del menú ya incluyen IVA → no se agrega impuesto
         const subtotal = updates.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const tax = Math.round(subtotal * 0.10);
         updateData.subtotal = subtotal;
-        updateData.tax = tax;
-        updateData.total = subtotal + tax;
+        updateData.tax = 0;
+        updateData.total = subtotal;
       }
 
       await updateDoc(orderRef, updateData);
@@ -330,7 +415,10 @@ export function useOrders(status = null) {
     loading, 
     error, 
     createOrder, 
+    createQuickInvoice,
     processPayment, 
+    updateInvoicePayment,
+    cancelInvoice,
     updateOrderStatus,
     updateOrder,
     cancelOrder,

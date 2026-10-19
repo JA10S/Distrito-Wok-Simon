@@ -19,7 +19,10 @@ export const ORDER_TYPE_LABELS = {
 export const PAYMENT_METHOD_LABELS = {
   cash: 'Efectivo',
   nequi: 'Nequi',
-  card: 'Tarjeta'
+  card: 'Tarjeta',
+  bold: 'Bold (Nequi/Tarjeta)',
+  transfer: 'Transferencia',
+  mixed: 'Mixto (Efectivo + Transferencia)'
 };
 
 export const PAYMENT_METHOD_OPTIONS = [
@@ -27,6 +30,42 @@ export const PAYMENT_METHOD_OPTIONS = [
   { id: 'nequi', label: 'Nequi' },
   { id: 'card', label: 'Tarjeta' }
 ];
+
+// Métodos del panel del administrador (facturas y caja menor)
+export const ADMIN_PAYMENT_METHODS = [
+  { id: 'cash', label: 'Efectivo' },
+  { id: 'transfer', label: 'Transferencia' },
+  { id: 'card', label: 'Tarjeta' },
+  { id: 'mixed', label: 'Mixto (Efectivo + Transferencia)' }
+];
+
+// Detalle legible del método (para pagos mixtos muestra cada parte)
+export function formatPaymentDetail(method, split = null) {
+  if (method === 'mixed' && split) {
+    const cash = Number(split.cash || 0);
+    const transfer = Number(split.transfer || 0);
+    return `Mixto: Efectivo $${cash.toLocaleString()} + Transferencia $${transfer.toLocaleString()}`;
+  }
+  return PAYMENT_METHOD_LABELS[method] || method || '—';
+}
+
+/**
+ * Divide un pago en sus partes: efectivo, transferencia, tarjeta y otros
+ * (Bold/Nequi u otros métodos heredados). `other` absorbe el resto para
+ * que las sumas siempre cuadren con el total.
+ */
+export function getPaymentParts(method, total, split = null) {
+  const t = Number(total || 0);
+  if (method === 'mixed' && split) {
+    const cash = Number(split.cash || 0);
+    const transfer = Number(split.transfer || 0);
+    return { cash, transfer, card: 0, other: Math.max(t - cash - transfer, 0) };
+  }
+  if (method === 'cash') return { cash: t, transfer: 0, card: 0, other: 0 };
+  if (method === 'transfer') return { cash: 0, transfer: t, card: 0, other: 0 };
+  if (method === 'card') return { cash: 0, transfer: 0, card: t, other: 0 };
+  return { cash: 0, transfer: 0, card: 0, other: t };
+}
 
 export function parsePrice(price) {
   if (typeof price === 'number') return price;
@@ -44,8 +83,8 @@ export function parsePrice(price) {
 
 export function calculateTotals(items) {
   const subtotal = (items || []).reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const tax = Math.round(subtotal * 0.10);
-  return { subtotal, tax, total: subtotal + tax };
+  // Los precios del menú ya incluyen IVA → no se agrega impuesto
+  return { subtotal, tax: 0, total: subtotal };
 }
 
 export function getOrderLabel(order) {
@@ -120,6 +159,64 @@ export function isToday(timestamp, now = Date.now()) {
     date.getMonth() === reference.getMonth() &&
     date.getDate() === reference.getDate()
   );
+}
+
+/** Convierte 'YYYY-MM-DD' a Date local (sin el desfase UTC de new Date(string)). */
+export function parseDayKey(day) {
+  if (day instanceof Date) return new Date(day.getTime());
+  if (typeof day === 'string') {
+    const [y, m, d] = day.split('-').map(Number);
+    return new Date(y, (m || 1) - 1, d || 1);
+  }
+  return new Date();
+}
+
+/**
+ * Totales de un día: ventas pagadas por método + gastos de caja menor.
+ * Usado por el cuadre/cierre del cajero y el cierre manual del admin.
+ */
+export function computeDayTotals(orders, expenses, day = new Date()) {
+  const start = parseDayKey(day);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 1);
+  const startMs = start.getTime();
+  const endMs = end.getTime();
+
+  const inDay = (value) => {
+    const ms = timestampMs(value);
+    return ms >= startMs && ms < endMs;
+  };
+
+  const paidOrders = (orders || []).filter((o) => inDay(o.createdAt));
+  const totalSales = paidOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+  const parts = paidOrders.map((o) => getPaymentParts(o.paymentMethod, o.total, o.paymentSplit));
+  const cash = parts.reduce((sum, p) => sum + p.cash, 0);
+  const transfer = parts.reduce((sum, p) => sum + p.transfer, 0);
+  const bold = parts.reduce((sum, p) => sum + p.other, 0);
+  const card = parts.reduce((sum, p) => sum + p.card, 0);
+
+  const dayExpenses = (expenses || []).filter((e) => inDay(e.createdAt));
+  const expenseTotal = dayExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+  const cashExpenseTotal = dayExpenses.reduce(
+    (sum, e) => sum + getPaymentParts(e.method, e.amount, e.paymentSplit).cash,
+    0
+  );
+
+  return {
+    paidOrders,
+    dayExpenses,
+    totalSales,
+    cash,
+    transfer,
+    bold,
+    card,
+    expenseTotal,
+    cashExpenseTotal,
+    cashExpected: cash - cashExpenseTotal,
+    ordersCount: paidOrders.length,
+    avgTicket: paidOrders.length > 0 ? Math.round(totalSales / paidOrders.length) : 0
+  };
 }
 
 // Platos más pedidos: agrupa por item base (ignora tamaño) de pedidos pagados

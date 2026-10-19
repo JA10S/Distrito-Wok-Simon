@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMenu } from '../../hooks/useMenu';
+import LoadingScreen from '../common/LoadingScreen';
 import {
   validateCustomerInfo,
   PAYMENT_METHOD_OPTIONS,
@@ -58,8 +59,9 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder, to
   };
 
   const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const tax = Math.round(subtotal * 0.10);
-  const total = subtotal + tax;
+  // Los precios del menú ya incluyen IVA → no se agrega impuesto
+  const tax = 0;
+  const total = subtotal;
 
   const normalizeText = (text) =>
     String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
@@ -142,12 +144,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder, to
   };
 
   if (loading) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-4xl mb-4 animate-bounce">🏮</div>
-        <p className="text-dorado">Cargando menú...</p>
-      </div>
-    );
+    return <LoadingScreen message="Cargando menú..." fullScreen={false} />;
   }
 
   return (
@@ -542,7 +539,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder, to
                   <span>${subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-dorado-claro mb-2">
-                  <span>IVA (10%):</span>
+                  <span>IVA (incluido):</span>
                   <span>${tax.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-dorado font-bold text-xl">

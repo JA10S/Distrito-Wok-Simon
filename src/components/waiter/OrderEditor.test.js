@@ -64,8 +64,8 @@ test('muestra los items actuales, la mesa y los totales', () => {
   expect(screen.getByText('Mesa 3')).toBeInTheDocument();
   expect(screen.getByText('Arroz Costeño Wok (Pequeña)')).toBeInTheDocument();
   expect(valueAfter('Subtotal:')).toBe(`$${(30000).toLocaleString()}`);
-  expect(valueAfter('IVA (10%):')).toBe(`$${(3000).toLocaleString()}`);
-  expect(valueAfter('Total:')).toBe(`$${(33000).toLocaleString()}`);
+  expect(valueAfter('IVA (incluido):')).toBe(`$${(0).toLocaleString()}`);
+  expect(valueAfter('Total:')).toBe(`$${(30000).toLocaleString()}`);
 });
 
 test('agrega un item desde el menú y actualiza los totales', () => {
@@ -76,8 +76,8 @@ test('agrega un item desde el menú y actualiza los totales', () => {
 
   expect(screen.getAllByText('Gaseosa').length).toBeGreaterThan(1);
   expect(valueAfter('Subtotal:')).toBe(`$${(35000).toLocaleString()}`);
-  expect(valueAfter('IVA (10%):')).toBe(`$${(3500).toLocaleString()}`);
-  expect(valueAfter('Total:')).toBe(`$${(38500).toLocaleString()}`);
+  expect(valueAfter('IVA (incluido):')).toBe(`$${(0).toLocaleString()}`);
+  expect(valueAfter('Total:')).toBe(`$${(35000).toLocaleString()}`);
 });
 
 test('guarda los cambios con los items y las notas editadas', () => {
