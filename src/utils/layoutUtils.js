@@ -16,6 +16,23 @@ export const SECTION_ICONS = {
   bebidas: <TbGlass />
 };
 
+/* Distribución de las tarjetas de una sección del menú */
+export const SECTION_COLUMNS = {
+  auto: 'Automática',
+  '1': '1 columna',
+  '2': '2 columnas',
+  '3': '3 columnas'
+};
+
+/* Clase de grid para las tarjetas de una sección.
+   'auto' = comportamiento según el layout del tema (clasic → 1 col, resto → 2 en sm+) */
+export function sectionGridClass(columns, themeLayout) {
+  if (columns === '1') return 'grid-cols-1';
+  if (columns === '2') return 'sm:grid-cols-2';
+  if (columns === '3') return 'sm:grid-cols-2 lg:grid-cols-3';
+  return themeLayout === 'clasic' ? '' : 'sm:grid-cols-2';
+}
+
 export const DEFAULT_BLOCKS = [
   {
     id: 'hero',
@@ -31,7 +48,8 @@ export const DEFAULT_BLOCKS = [
     emoji: '🍚',
     label: 'Arroces',
     title: '🍚 Nuestros Arroces',
-    subtitle: 'precio · medio / entero'
+    subtitle: 'precio · medio / entero',
+    columns: 'auto'
   },
   {
     id: 'corrientes',
@@ -40,7 +58,8 @@ export const DEFAULT_BLOCKS = [
     emoji: '🍖',
     label: 'Corrientes',
     title: '🍖 Corrientes',
-    subtitle: 'platos principales'
+    subtitle: 'platos principales',
+    columns: 'auto'
   },
   {
     id: 'porciones',
@@ -49,7 +68,8 @@ export const DEFAULT_BLOCKS = [
     emoji: '🍽️',
     label: 'Porciones',
     title: '🍽️ Porciones',
-    subtitle: 'acompañamientos'
+    subtitle: 'acompañamientos',
+    columns: 'auto'
   },
   {
     id: 'bebidas',
@@ -58,7 +78,8 @@ export const DEFAULT_BLOCKS = [
     emoji: '🥤',
     label: 'Bebidas',
     title: '🥤 Bebidas',
-    subtitle: ''
+    subtitle: '',
+    columns: 'auto'
   },
   {
     id: 'footer',
@@ -121,6 +142,12 @@ function sanitizeBlock(candidate, fallback) {
   fields.forEach(({ key }) => {
     block[key] = sanitizeText(candidate[key], fallback[key], EMPTY_ALLOWED.has(key));
   });
+  if (fallback.kind === 'category') {
+    block.columns =
+      candidate.columns && SECTION_COLUMNS[candidate.columns]
+        ? candidate.columns
+        : 'auto';
+  }
   return block;
 }
 

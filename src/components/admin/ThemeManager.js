@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
 import PageDesigner from './PageDesigner';
+import CustomCssEditor from './CustomCssEditor';
 import {
   COLOR_FIELDS,
   HEADING_FONTS,
@@ -140,11 +141,25 @@ function ThemeManager() {
           >
             🧱 Diseño de página
           </button>
+          <button
+            type="button"
+            onClick={() => setSectionTab('css')}
+            aria-pressed={sectionTab === 'css'}
+            className={`px-4 py-2 rounded text-sm font-bold ${
+              sectionTab === 'css'
+                ? 'bg-dorado text-negro'
+                : 'text-dorado-oscuro hover:text-dorado'
+            }`}
+          >
+            🧩 CSS
+          </button>
         </div>
       </div>
 
       {sectionTab === 'design' ? (
         <PageDesigner />
+      ) : sectionTab === 'css' ? (
+        <CustomCssEditor />
       ) : (
       <>
       <p className="text-dorado-oscuro text-sm mb-6">

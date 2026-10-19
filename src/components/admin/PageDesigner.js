@@ -21,7 +21,9 @@ import {
   sanitizeLayout,
   BLOCK_KIND_LABELS,
   BLOCK_TEXT_FIELDS,
-  SECTION_ICONS
+  SECTION_ICONS,
+  SECTION_COLUMNS,
+  sectionGridClass
 } from '../../utils/layoutUtils';
 import SiteHeader from '../client/SiteHeader';
 import SiteFooter from '../client/SiteFooter';
@@ -130,7 +132,7 @@ function BlockRow({
         </button>
       </div>
 
-      {expanded && fields.length > 0 && (
+      {expanded && (fields.length > 0 || block.kind === 'category') && (
         <div className="px-3 pb-3 pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2 border-t border-dorado-oscuro/20">
           {fields.map((field) => (
             <label key={field.key} className="text-xs text-dorado-oscuro">
@@ -144,6 +146,23 @@ function BlockRow({
               />
             </label>
           ))}
+          {block.kind === 'category' && (
+            <label className="text-xs text-dorado-oscuro">
+              Columnas de las tarjetas
+              <select
+                aria-label={`${name}: Columnas`}
+                value={block.columns || 'auto'}
+                onChange={(e) => onFieldChange(block.id, 'columns', e.target.value)}
+                className="mt-1 w-full bg-surface-2 border border-dorado-oscuro/30 rounded px-2 py-1.5 text-sm text-dorado-claro focus:border-dorado focus:outline-none"
+              >
+                {Object.entries(SECTION_COLUMNS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
       )}
     </div>
@@ -166,6 +185,7 @@ function MenuPreview({ draft, device }) {
       label: b.label,
       title: b.title,
       subtitle: b.subtitle || null,
+      columns: b.columns || 'auto',
       icon: SECTION_ICONS[b.id] || null
     }));
 
@@ -214,7 +234,7 @@ function MenuPreview({ draft, device }) {
                   Sin productos disponibles
                 </p>
               ) : (
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className={`grid gap-2 ${sectionGridClass(section.columns, themeLayout)}`}>
                   {items.map((item) => (
                     <div
                       key={item.id}

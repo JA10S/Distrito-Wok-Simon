@@ -24,7 +24,8 @@ import {
 import {
   getVisibleCategories,
   getBlock,
-  SECTION_ICONS
+  SECTION_ICONS,
+  sectionGridClass
 } from '../../utils/layoutUtils';
 
 const EMPTY_CUSTOMER = { name: '', phone: '', address: '', reference: '', notes: '' };
@@ -45,6 +46,7 @@ function MenuPage() {
         label: block.label,
         title: block.title,
         subtitle: block.subtitle || null,
+        columns: block.columns || 'auto',
         icon: SECTION_ICONS[block.id] || null
       })),
     [pageLayout]
@@ -234,7 +236,7 @@ function MenuPage() {
                     </div>
                   </div>
 
-                  <div className={`grid gap-3 ${layout === 'clasic' ? '' : 'sm:grid-cols-2'}`}>
+                  <div className={`grid gap-3 ${sectionGridClass(section.columns, layout)}`}>
                     {items.map((item) => (
                       <div key={item.id} className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition hover-lift animate-fade-in-up">
                         <div className="flex justify-between items-start gap-3">

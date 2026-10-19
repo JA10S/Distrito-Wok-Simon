@@ -1,5 +1,18 @@
+const mockSaveCss = jest.fn(() => Promise.resolve({ success: true }));
+const mockResetCss = jest.fn(() => Promise.resolve({ success: true }));
+
 jest.mock('../../contexts/ThemeContext', () => ({
   useTheme: jest.fn()
+}));
+
+jest.mock('../../hooks/useCustomCss', () => ({
+  useCustomCss: () => ({
+    css: '.demo { color: red; }',
+    loading: false,
+    saveCss: (...args) => mockSaveCss(...args),
+    resetCss: (...args) => mockResetCss(...args)
+  }),
+  MAX_CSS_LENGTH: 10000
 }));
 
 import React from 'react';
@@ -19,6 +32,10 @@ beforeEach(() => {
     saveTheme,
     resetTheme
   });
+  mockSaveCss.mockClear();
+  mockSaveCss.mockImplementation(() => Promise.resolve({ success: true }));
+  mockResetCss.mockClear();
+  mockResetCss.mockImplementation(() => Promise.resolve({ success: true }));
   window.confirm = jest.fn(() => true);
 });
 
@@ -132,4 +149,14 @@ test('muestra las tres opciones de modo y disposición', () => {
   expect(screen.getByText('Sistema').closest('button')).toBeInTheDocument();
   expect(screen.getByRole('button', { name: /Clásica/ })).toBeInTheDocument();
   expect(screen.getByText('Menú lateral').closest('button')).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('muestra el editor de CSS personalizado en la pestaña 🧩 CSS', () => {
+  render(<ThemeManager />);
+
+  fireEvent.click(screen.getByRole('button', { name: '🧩 CSS' }));
+
+  expect(screen.getByText('CSS personalizado')).toBeInTheDocument();
+  expect(screen.getByDisplayValue('.demo { color: red; }')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Guardar CSS' })).toBeInTheDocument();
 });

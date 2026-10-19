@@ -5,6 +5,7 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import PrivateRoute from './components/auth/PrivateRoute';
 import LoadingScreen from './components/common/LoadingScreen';
 import OfflineBanner from './components/common/OfflineBanner';
+import CustomCssInjector from './components/common/CustomCssInjector';
 
 // Páginas públicas
 import MenuPage from './pages/client/MenuPage';
@@ -26,6 +27,7 @@ function App() {
       <AuthProvider>
         <Router>
           <div className="App">
+            <CustomCssInjector />
             <OfflineBanner />
             <Suspense fallback={<LoadingScreen />}>
               <Routes>

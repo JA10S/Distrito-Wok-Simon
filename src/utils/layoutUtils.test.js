@@ -6,7 +6,9 @@ import {
   getBlock,
   moveBlock,
   BLOCK_TEXT_FIELDS,
-  SECTION_ICONS
+  SECTION_ICONS,
+  SECTION_COLUMNS,
+  sectionGridClass
 } from './layoutUtils';
 
 test('sanitizeLayout sin documento devuelve los bloques por defecto', () => {
@@ -117,4 +119,31 @@ test('expone campos de texto por bloque e iconos de categoría', () => {
     'porciones',
     'bebidas'
   ]);
+});
+
+test('sanitizeLayout valida columns de categorías (guardado, inválido y doc antiguo)', () => {
+  const result = sanitizeLayout({
+    blocks: [
+      { id: 'arroces', kind: 'category', visible: true, emoji: '🍚', label: 'A', title: 'A', subtitle: '', columns: '2' },
+      { id: 'bebidas', kind: 'category', visible: true, emoji: '🥤', label: 'B', title: 'B', subtitle: '', columns: '99' },
+      // resto de bloques por defecto (sin columns, como un doc antiguo)
+      ...DEFAULT_BLOCKS.filter((b) => !['arroces', 'bebidas'].includes(b.id))
+    ]
+  });
+
+  expect(result.blocks.find((b) => b.id === 'arroces').columns).toBe('2');
+  expect(result.blocks.find((b) => b.id === 'bebidas').columns).toBe('auto');
+  expect(result.blocks.find((b) => b.id === 'corrientes').columns).toBe('auto');
+  // hero/footer no llevan columns
+  expect(result.blocks.find((b) => b.id === 'hero').columns).toBeUndefined();
+});
+
+test('sectionGridClass según columnas y layout del tema', () => {
+  expect([...Object.keys(SECTION_COLUMNS)].sort()).toEqual(['1', '2', '3', 'auto']);
+  expect(sectionGridClass('auto', 'clasic')).toBe('');
+  expect(sectionGridClass('auto', 'side')).toBe('sm:grid-cols-2');
+  expect(sectionGridClass(undefined, 'hamburger')).toBe('sm:grid-cols-2');
+  expect(sectionGridClass('1', 'side')).toBe('grid-cols-1');
+  expect(sectionGridClass('2', 'clasic')).toBe('sm:grid-cols-2');
+  expect(sectionGridClass('3', 'clasic')).toBe('sm:grid-cols-2 lg:grid-cols-3');
 });

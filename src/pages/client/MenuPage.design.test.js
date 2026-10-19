@@ -108,3 +108,27 @@ test('oculta la portada cuando el bloque hero está oculto', () => {
   expect(screen.getByText(/Nuestros Arroces/)).toBeInTheDocument();
   expect(screen.getByText('Contáctanos')).toBeInTheDocument();
 });
+
+test('aplica columns: 1 a la sección (una sola columna en cualquier layout)', () => {
+  mockBlocks.push(...blocksWith([{ id: 'arroces', columns: '1' }]));
+
+  render(<MenuPage />);
+
+  const heading = screen.getByRole('heading', { name: /Nuestros Arroces/, level: 2 });
+  const sectionGrid = heading.closest('section').querySelector('.grid');
+
+  expect(sectionGrid).toHaveClass('grid-cols-1');
+  expect(sectionGrid).not.toHaveClass('sm:grid-cols-2');
+});
+
+test('aplica columns: 3 con lg:grid-cols-3 en la sección', () => {
+  mockBlocks.push(...blocksWith([{ id: 'arroces', columns: '3' }]));
+
+  render(<MenuPage />);
+
+  const heading = screen.getByRole('heading', { name: /Nuestros Arroces/, level: 2 });
+  const sectionGrid = heading.closest('section').querySelector('.grid');
+
+  expect(sectionGrid).toHaveClass('sm:grid-cols-2');
+  expect(sectionGrid).toHaveClass('lg:grid-cols-3');
+});

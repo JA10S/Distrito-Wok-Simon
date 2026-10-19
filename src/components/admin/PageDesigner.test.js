@@ -175,3 +175,45 @@ test('cambia entre vista de menú y login y entre dispositivos', () => {
   fireEvent.click(screen.getByRole('button', { name: '🔐 Login' }));
   expect(screen.getByLabelText('Vista previa del login')).toBeInTheDocument();
 });
+
+test('permite cambiar las columnas de una categoría y se refleja en la preview', () => {
+  render(<PageDesigner />);
+
+  fireEvent.click(screen.getByLabelText('Editar textos: 🍚 Arroces'));
+
+  const sectionGrid = () =>
+    screen
+      .getByRole('heading', { name: /Nuestros Arroces/, level: 2 })
+      .closest('section')
+      .querySelector('.grid');
+
+  // clasic + auto → una columna por defecto
+  expect(sectionGrid()).not.toHaveClass('sm:grid-cols-2');
+
+  fireEvent.change(screen.getByLabelText('🍚 Arroces: Columnas'), {
+    target: { value: '2' }
+  });
+
+  expect(sectionGrid()).toHaveClass('sm:grid-cols-2');
+
+  fireEvent.click(screen.getByRole('button', { name: 'Guardar diseño' }));
+  const payload = mockSaveLayout.mock.calls[0][0];
+  expect(payload.blocks.find((b) => b.id === 'arroces').columns).toBe('2');
+});
+
+test('columnas 3 en la preview agregan lg:grid-cols-3', () => {
+  render(<PageDesigner />);
+
+  fireEvent.click(screen.getByLabelText('Editar textos: 🍚 Arroces'));
+  fireEvent.change(screen.getByLabelText('🍚 Arroces: Columnas'), {
+    target: { value: '3' }
+  });
+
+  const grid = screen
+    .getByRole('heading', { name: /Nuestros Arroces/, level: 2 })
+    .closest('section')
+    .querySelector('.grid');
+
+  expect(grid).toHaveClass('sm:grid-cols-2');
+  expect(grid).toHaveClass('lg:grid-cols-3');
+});
