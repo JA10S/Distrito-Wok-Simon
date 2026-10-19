@@ -22,6 +22,15 @@ jest.mock('../../services/orderService', () => ({
   watchOrder: jest.fn(() => () => {})
 }));
 
+jest.mock('../../hooks/useMenuLayout', () => ({
+  useMenuLayout: () => ({
+    layout: { blocks: [] },
+    loading: false,
+    saveLayout: jest.fn(() => Promise.resolve({ success: true })),
+    resetLayout: jest.fn(() => Promise.resolve({ success: true }))
+  })
+}));
+
 jest.mock('../../contexts/ThemeContext', () => ({
   useTheme: jest.fn()
 }));

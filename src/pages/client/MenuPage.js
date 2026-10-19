@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useMenu } from '../../hooks/useMenu';
+import { useMenuLayout } from '../../hooks/useMenuLayout';
 import { createTakeawayOrder, watchOrder } from '../../services/orderService';
 import { createCall } from '../../services/callService';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -7,17 +8,10 @@ import Logo from '../../components/common/Logo';
 import ModeToggle from '../../components/common/ModeToggle';
 import LoadingScreen from '../../components/common/LoadingScreen';
 import SiteHeader from '../../components/client/SiteHeader';
+import SiteFooter from '../../components/client/SiteFooter';
 import MenuDrawer from '../../components/client/MenuDrawer';
 import CallWaiterButton from '../../components/client/CallWaiterButton';
 import PanelShortcut from '../../components/client/PanelShortcut';
-import { GiRiceCooker, GiFrenchFries } from 'react-icons/gi';
-import { TbMeat, TbGlass } from 'react-icons/tb';
-import {
-  FaMapMarkerAlt,
-  FaPhoneAlt,
-  FaClock,
-  FaHeart
-} from 'react-icons/fa';
 import {
   parsePrice,
   calculateTotals,
@@ -27,20 +21,37 @@ import {
   PAYMENT_METHOD_OPTIONS,
   PAYMENT_METHOD_LABELS
 } from '../../utils/orderUtils';
+import {
+  getVisibleCategories,
+  getBlock,
+  SECTION_ICONS
+} from '../../utils/layoutUtils';
 
 const EMPTY_CUSTOMER = { name: '', phone: '', address: '', reference: '', notes: '' };
-
-const SECTIONS = [
-  { id: 'arroces', key: 'arroces', emoji: '🍚', label: 'Arroces', icon: <GiRiceCooker />, title: '🍚 Nuestros Arroces', subtitle: 'precio · medio / entero' },
-  { id: 'corrientes', key: 'corrientes', emoji: '🍖', label: 'Corrientes', icon: <TbMeat />, title: '🍖 Corrientes', subtitle: 'platos principales' },
-  { id: 'porciones', key: 'porciones', emoji: '🍽️', label: 'Porciones', icon: <GiFrenchFries />, title: '🍽️ Porciones', subtitle: 'acompañamientos' },
-  { id: 'bebidas', key: 'bebidas', emoji: '🥤', label: 'Bebidas', icon: <TbGlass />, title: '🥤 Bebidas', subtitle: null }
-];
 
 function MenuPage() {
   const { menu, loading, error } = useMenu();
   const { theme } = useTheme();
   const layout = (theme && theme.layout) || 'clasic';
+  const { layout: pageLayout } = useMenuLayout();
+
+  /* Secciones del menú según el diseño guardado (orden, visibilidad y textos) */
+  const SECTIONS = useMemo(
+    () =>
+      getVisibleCategories(pageLayout).map((block) => ({
+        id: block.id,
+        key: block.id,
+        emoji: block.emoji,
+        label: block.label,
+        title: block.title,
+        subtitle: block.subtitle || null,
+        icon: SECTION_ICONS[block.id] || null
+      })),
+    [pageLayout]
+  );
+
+  const heroBlock = getBlock(pageLayout, 'hero');
+  const footerBlock = getBlock(pageLayout, 'footer');
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [cart, setCart] = useState([]);
@@ -181,6 +192,9 @@ function MenuPage() {
             layout={layout}
             sections={SECTIONS}
             onOpenMenu={() => setMenuOpen(true)}
+            showHero={heroBlock.visible !== false}
+            heroTitle={heroBlock.title}
+            heroSlogan={heroBlock.slogan}
           />
 
           {layout !== 'clasic' && (
@@ -497,56 +511,7 @@ function MenuPage() {
       )}
 
       {/* Footer con información del restaurante */}
-      <footer className="bg-surface-2 border-t border-dorado-oscuro/30 py-10">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center sm:text-left">
-            {/* Logo */}
-            <div className="flex flex-col items-center sm:items-start gap-3">
-              <Logo size={64} />
-              <p className="text-dorado-oscuro text-xs tracking-[0.3em] uppercase">
-                Comida oriental colombiana
-              </p>
-            </div>
-
-            {/* Contacto */}
-            <div className="space-y-2 text-sm">
-              <p className="text-dorado font-cormorant text-lg mb-3">Contáctanos</p>
-              <p className="text-dorado-claro flex items-center justify-center sm:justify-start gap-2">
-                <FaMapMarkerAlt className="text-dorado shrink-0" aria-hidden="true" />
-                Calle Principal #12-34, Simón
-              </p>
-              <p className="text-dorado-claro flex items-center justify-center sm:justify-start gap-2">
-                <FaPhoneAlt className="text-dorado shrink-0" aria-hidden="true" />
-                (601) 555-0123
-              </p>
-              <p className="text-dorado-claro flex items-center justify-center sm:justify-start gap-2">
-                <FaClock className="text-dorado shrink-0" aria-hidden="true" />
-                Lun a Dom · 11:00 a.m. – 10:00 p.m.
-              </p>
-            </div>
-
-            {/* Mensaje */}
-            <div className="text-center sm:text-right">
-              <p className="text-dorado font-cormorant text-xl mb-2">
-                ¡Gracias por su visita!
-              </p>
-              <p className="text-dorado-oscuro text-sm tracking-widest mb-3">
-                謝謝 · XIE XIE
-              </p>
-              <p className="text-dorado-oscuro text-xs flex items-center justify-center sm:justify-end gap-1">
-                Hecho con <FaHeart className="text-rojo" aria-hidden="true" /> en Simón
-              </p>
-            </div>
-          </div>
-
-          {/* Decoración */}
-          <div className="flex justify-center mt-8 space-x-8 items-center" aria-hidden="true">
-            <span className="text-2xl">🏮</span>
-            <span className="text-dorado/60 text-sm">福 禄 寿</span>
-            <span className="text-2xl">🏮</span>
-          </div>
-        </div>
-      </footer>
+      {footerBlock.visible !== false && <SiteFooter config={footerBlock} />}
     </div>
   );
 }

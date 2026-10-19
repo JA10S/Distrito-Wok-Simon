@@ -29,6 +29,7 @@ restaurante/
 │   ├── 📁 hooks/                    # Custom Hooks
 │   │   ├── usePayment.js
 │   │   ├── useMenu.js
+│   │   ├── useMenuLayout.js         # Diseño de la página (settings/layout)
 │   │   └── useOrders.js
 │   │
 │   ├── 📁 services/                 # Servicios externos (APIs)

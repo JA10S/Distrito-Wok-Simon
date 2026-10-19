@@ -18,6 +18,15 @@ jest.mock('../../hooks/useMenu', () => ({
   }),
 }));
 
+jest.mock('../../hooks/useMenuLayout', () => ({
+  useMenuLayout: () => ({
+    layout: { blocks: [] },
+    loading: false,
+    saveLayout: jest.fn(() => Promise.resolve({ success: true })),
+    resetLayout: jest.fn(() => Promise.resolve({ success: true }))
+  })
+}));
+
 jest.mock('../../services/orderService', () => ({
   createTakeawayOrder: jest.fn(),
   watchOrder: jest.fn(() => () => {})

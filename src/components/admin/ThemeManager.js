@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
+import PageDesigner from './PageDesigner';
 import {
   COLOR_FIELDS,
   HEADING_FONTS,
@@ -25,6 +26,7 @@ function ThemeManager() {
   const [draft, setDraft] = useState(theme);
   const [status, setStatus] = useState('');
   const [saving, setSaving] = useState(false);
+  const [sectionTab, setSectionTab] = useState('style');
   const savedThemeRef = useRef(theme);
 
   useEffect(() => {
@@ -111,7 +113,40 @@ function ThemeManager() {
 
   return (
     <div>
-      <h2 className="text-xl font-cormorant text-dorado mb-6">Apariencia de las Páginas</h2>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <h2 className="text-xl font-cormorant text-dorado">Apariencia de las Páginas</h2>
+        <div className="flex space-x-1 bg-surface-2 border border-dorado-oscuro/25 rounded-lg p-1">
+          <button
+            type="button"
+            onClick={() => setSectionTab('style')}
+            aria-pressed={sectionTab === 'style'}
+            className={`px-4 py-2 rounded text-sm font-bold ${
+              sectionTab === 'style'
+                ? 'bg-dorado text-negro'
+                : 'text-dorado-oscuro hover:text-dorado'
+            }`}
+          >
+            🎨 Estilo
+          </button>
+          <button
+            type="button"
+            onClick={() => setSectionTab('design')}
+            aria-pressed={sectionTab === 'design'}
+            className={`px-4 py-2 rounded text-sm font-bold ${
+              sectionTab === 'design'
+                ? 'bg-dorado text-negro'
+                : 'text-dorado-oscuro hover:text-dorado'
+            }`}
+          >
+            🧱 Diseño de página
+          </button>
+        </div>
+      </div>
+
+      {sectionTab === 'design' ? (
+        <PageDesigner />
+      ) : (
+      <>
       <p className="text-dorado-oscuro text-sm mb-6">
         Los cambios se aplican en vivo a todas las páginas (menú, login y dashboards).
         Sin guardar, se descartan al salir de esta sección.
@@ -324,6 +359,8 @@ function ThemeManager() {
           <span className="text-rojo text-sm">Error al guardar, intente de nuevo</span>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }
