@@ -7,9 +7,12 @@ import { isLocationStale } from '../../hooks/useDriverLocations';
 import { timestampMs } from '../../utils/orderUtils';
 
 const DARK_TILES =
-  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+  'https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
+const DARK_LABELS =
+  'https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}';
 const ATTRIBUTION =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+  'Tiles &copy; <a href="https://www.esri.com/">Esri</a>, HERE, Garmin, FAO, NOAA, USGS, ' +
+  '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
 const GOLD = '#D4A843';
 const GREY = '#9ca3af';
@@ -125,6 +128,7 @@ function DriversMap({ drivers = [], deliveries = [] }) {
             scrollWheelZoom
           >
             <TileLayer url={DARK_TILES} attribution={ATTRIBUTION} />
+            <TileLayer url={DARK_LABELS} />
             <MapController points={positions} focus={focus} />
             {onMap.map((driver) => {
               const stale = isLocationStale(driver);

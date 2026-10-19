@@ -6,6 +6,11 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 import { app } from '../services/firebase';
+import {
+  requestWakeLock,
+  releaseWakeLock,
+  isWakeLockSupported
+} from '../utils/wakeLock';
 
 const db = getFirestore(app);
 
@@ -24,6 +29,7 @@ export function useDriverLocation(user) {
   const [sharing, setSharing] = useState(false);
   const [position, setPosition] = useState(null);
   const [error, setError] = useState('');
+  const [wakeLocked, setWakeLocked] = useState(false);
   const watchIdRef = useRef(null);
   const lastWriteRef = useRef(0);
 
@@ -65,6 +71,7 @@ export function useDriverLocation(user) {
       watchIdRef.current = null;
     }
     setSharing(false);
+    releaseWakeLock().then(() => setWakeLocked(false));
 
     if (!user?.uid) return;
     try {
@@ -92,6 +99,10 @@ export function useDriverLocation(user) {
     setError('');
     lastWriteRef.current = 0;
     setSharing(true);
+
+    // Mantiene la pantalla encendida mientras comparte ubicación (Android).
+    // En navegadores sin soporte (iOS) devuelve false: se muestra el aviso.
+    requestWakeLock().then((ok) => setWakeLocked(ok));
 
     // Marca como activo de inmediato (antes de la primera posición)
     setDoc(
@@ -146,6 +157,7 @@ export function useDriverLocation(user) {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
+      releaseWakeLock();
     };
   }, []);
 
@@ -154,6 +166,8 @@ export function useDriverLocation(user) {
     sharing,
     position,
     error,
+    wakeSupported: isWakeLockSupported(),
+    wakeLocked,
     startSharing,
     stopSharing
   };

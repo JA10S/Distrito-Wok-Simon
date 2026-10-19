@@ -5,6 +5,7 @@ import { useDeliveries } from '../../hooks/useDeliveries';
 import { useDriverLocation } from '../../hooks/useDriverLocation';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import SummaryStats from '../../components/common/SummaryStats';
+import LoadingScreen from '../../components/common/LoadingScreen';
 import { FaBell, FaTruck, FaHistory, FaCheckCircle, FaBoxOpen } from 'react-icons/fa';
 
 const formatAge = (timestamp) => {
@@ -25,6 +26,8 @@ function DeliveryDashboard() {
     sharing,
     position,
     error: locationError,
+    wakeSupported,
+    wakeLocked,
     startSharing,
     stopSharing
   } = useDriverLocation(currentUser);
@@ -152,14 +155,7 @@ function DeliveryDashboard() {
   );
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4 animate-bounce">🏮</div>
-          <p className="text-dorado">Cargando entregas...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Cargando entregas..." />;
   }
 
   if (error) {
@@ -234,6 +230,18 @@ function DeliveryDashboard() {
             </button>
           </div>
         </div>
+
+        {sharing && (
+          <div
+            role="status"
+            className="mb-6 bg-amber-500/10 border border-amber-500/30 text-amber-300 rounded-xl px-4 py-3 text-sm font-inter"
+          >
+            📱{' '}
+            {wakeSupported && wakeLocked
+              ? 'Pantalla mantenida encendida automáticamente — el administrador ve tu ubicación en tiempo real.'
+              : 'Mantén la pantalla encendida mientras compartes: si se apaga, el seguimiento se pausa hasta que la vuelvas a encender.'}
+          </div>
+        )}
 
         {/* Resúmenes (permiso view_summaries otorgado por el admin) */}
         {hasPermission('view_summaries') && (

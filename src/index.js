@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './App.css';
 import App from './App';
+import { registerServiceWorker } from './utils/pwa';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -9,3 +10,7 @@ root.render(
     <App />
   </React.StrictMode>
 );
+
+window.addEventListener('load', () => {
+  registerServiceWorker();
+});

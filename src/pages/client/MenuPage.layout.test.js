@@ -26,6 +26,14 @@ jest.mock('../../contexts/ThemeContext', () => ({
   useTheme: jest.fn()
 }));
 
+jest.mock('../../contexts/AuthContext', () => ({
+  useAuth: () => ({ currentUser: null, userRoles: [] })
+}));
+
+jest.mock('react-router-dom', () => ({
+  useNavigate: () => jest.fn()
+}));
+
 import React from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import MenuPage from './MenuPage';

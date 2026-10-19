@@ -5,9 +5,11 @@ import { createCall } from '../../services/callService';
 import { useTheme } from '../../contexts/ThemeContext';
 import Logo from '../../components/common/Logo';
 import ModeToggle from '../../components/common/ModeToggle';
+import LoadingScreen from '../../components/common/LoadingScreen';
 import SiteHeader from '../../components/client/SiteHeader';
 import MenuDrawer from '../../components/client/MenuDrawer';
 import CallWaiterButton from '../../components/client/CallWaiterButton';
+import PanelShortcut from '../../components/client/PanelShortcut';
 import { GiRiceCooker, GiFrenchFries } from 'react-icons/gi';
 import { TbMeat, TbGlass } from 'react-icons/tb';
 import {
@@ -131,14 +133,7 @@ function MenuPage() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="text-center animate-fade-in">
-          <Logo size={80} className="mx-auto glow animate-float" />
-          <p className="text-dorado font-cormorant text-xl mt-4">Cargando menú...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Cargando menú..." />;
   }
 
   if (error) {
@@ -279,6 +274,9 @@ function MenuPage() {
       {/* Llamado de atención al camarero */}
       <CallWaiterButton onSubmit={createCall} />
 
+      {/* Acceso directo al panel del personal (solo con sesión activa) */}
+      <PanelShortcut />
+
       {/* Modal: carrito y datos de entrega */}
       {showCart && !createdOrder && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
@@ -320,7 +318,7 @@ function MenuPage() {
                 <span>${totals.subtotal.toLocaleString('es-CO')}</span>
               </div>
               <div className="flex justify-between text-dorado-oscuro">
-                <span>IVA (10%)</span>
+                <span>IVA (incluido)</span>
                 <span>${totals.tax.toLocaleString('es-CO')}</span>
               </div>
               <div className="flex justify-between text-dorado font-bold text-base">
