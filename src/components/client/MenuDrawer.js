@@ -11,7 +11,7 @@ function MenuDrawer({ open, onClose, sections, hideOnDesktop = false }) {
     <>
       {open && (
         <div
-          className={`fixed inset-0 z-40 bg-black/60 ${desktopClass}`}
+          className={`scrim fixed inset-0 z-40 ${desktopClass}`}
           onClick={onClose}
           aria-hidden="true"
         />

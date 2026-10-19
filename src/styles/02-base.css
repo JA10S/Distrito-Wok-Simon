@@ -52,17 +52,36 @@ body {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Botones */
+/* Botones de acción (colores del sistema; el espaciado y el ancho van en el JSX) */
 .btn-primary {
-  @apply bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded transition duration-200;
+  @apply bg-dorado hover:bg-dorado-oscuro text-negro font-bold rounded transition duration-200;
 }
 
-.btn-secondary {
-  @apply bg-surface-3 hover:bg-line/60 text-ink font-bold py-2 px-4 rounded transition duration-200;
+.btn-info {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-bold rounded transition duration-200;
+}
+
+.btn-success {
+  @apply bg-green-600 hover:bg-green-700 text-white font-bold rounded transition duration-200;
 }
 
 .btn-danger {
-  @apply bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded transition duration-200;
+  @apply bg-rojo hover:bg-rojo-oscuro text-white font-bold rounded transition duration-200;
+}
+
+/* Botón de cerrar sesión (carmesí quemado, exclusivo del DashboardHeader) */
+.btn-carmesi {
+  background-color: #6e1414;
+  border: 1px solid rgb(165 42 42 / 0.5);
+  color: #fff;
+  box-shadow: 0 4px 14px -8px rgb(165 42 42 / 0.9);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.btn-carmesi:hover {
+  background-color: #8a1d1d;
+  border-color: rgb(194 54 54 / 0.7);
 }
 
 /* Tarjetas */
@@ -73,19 +92,6 @@ body {
 /* Inputs */
 .input {
   @apply w-full bg-surface-3 border border-line rounded px-4 py-3 text-ink focus:outline-none focus:border-dorado;
-}
-
-/* Estados de mesa */
-.table-available {
-  @apply border-green-500 bg-green-500/10;
-}
-
-.table-occupied {
-  @apply border-red-500 bg-red-500/10;
-}
-
-.table-reserved {
-  @apply border-yellow-500 bg-yellow-500/10;
 }
 
 /* Notas (cocina / domicilio): tinte cálido legible en ambos modos */

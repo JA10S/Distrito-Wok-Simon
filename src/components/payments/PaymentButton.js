@@ -52,7 +52,7 @@ function PaymentButton({ amount, description, reference, onSuccess, onError }) {
 
       {/* Modal con link de pago */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="scrim fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-surface-2 rounded-lg p-6 max-w-md w-full mx-4 border border-dorado-oscuro">
             <h3 className="text-xl font-cormorant text-dorado mb-4">
               Link de Pago Creado

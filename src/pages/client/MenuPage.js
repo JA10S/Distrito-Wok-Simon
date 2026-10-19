@@ -295,7 +295,7 @@ function MenuPage() {
 
       {/* Modal: carrito y datos de entrega */}
       {showCart && !createdOrder && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div className="scrim fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="bg-surface-2 border border-dorado-oscuro/40 rounded-lg w-full max-w-lg max-h-[90vh] overflow-y-auto p-5">
             <div className="flex justify-between items-center mb-4">
               <h2 className="font-cormorant text-2xl font-bold text-dorado">Tu pedido</h2>
@@ -474,7 +474,7 @@ function MenuPage() {
 
       {/* Modal: pedido creado + estado en vivo */}
       {createdOrder && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+        <div className="scrim fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="bg-surface-2 border border-dorado rounded-lg w-full max-w-md p-6 text-center">
             <span className="text-4xl">✅</span>
             <h2 className="font-cormorant text-2xl font-bold text-dorado mt-2">

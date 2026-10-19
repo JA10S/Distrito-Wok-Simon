@@ -39,6 +39,13 @@
   display: none;
 }
 
+/* Scrim unificado de modales/overlays (el posicionamiento z-* va en el JSX).
+   Excepciones a propósito: velos de imagen del login (bg-black/45) y el
+   velo de etiquetas del PageDesigner (bg-black/50) — no usar .scrim ahí. */
+.scrim {
+  background-color: rgb(0 0 0 / 0.7);
+}
+
 /* Superficie translúcida con desenfoque */
 .glass {
   background: rgb(var(--color-surface) / 0.85);

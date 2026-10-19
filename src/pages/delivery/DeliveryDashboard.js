@@ -220,10 +220,10 @@ function DeliveryDashboard() {
               role="switch"
               aria-checked={sharing}
               aria-label="Compartir ubicación"
-              className={`font-bold py-2 px-5 rounded-lg transition ${
+              className={`py-2 px-5 ${
                 sharing
-                  ? 'bg-rojo hover:bg-rojo-oscuro text-white'
-                  : 'bg-dorado hover:bg-dorado-oscuro text-negro'
+                  ? 'btn-danger'
+                  : 'btn-primary'
               }`}
             >
               {sharing ? '⏹ Detener' : '📍 Compartir'}
@@ -269,7 +269,7 @@ function DeliveryDashboard() {
                     action={
                       <button
                         onClick={() => handleTakeDelivery(delivery.id)}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded"
+                        className="w-full btn-info py-3 px-4"
                       >
                         Recoger Pedido
                       </button>
@@ -295,7 +295,7 @@ function DeliveryDashboard() {
                     action={
                       <button
                         onClick={() => handleMarkDelivered(delivery.id)}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded"
+                        className="w-full btn-success py-3 px-4"
                       >
                         Marcar como Entregado
                       </button>

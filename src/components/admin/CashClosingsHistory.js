@@ -268,7 +268,7 @@ function CashClosingsHistory() {
               <button
                 onClick={handleExport}
                 disabled={ordersLoading}
-                className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-bold px-4 py-2 rounded text-sm font-inter flex items-center gap-2"
+                className="btn-success disabled:opacity-50 px-4 py-2 text-sm font-inter flex items-center gap-2"
               >
                 <FaFileExcel aria-hidden="true" /> Exportar Excel
               </button>

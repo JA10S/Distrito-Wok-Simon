@@ -465,7 +465,7 @@ function MenuManager() {
           aria-labelledby="menu-form-title"
         >
           <div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            className="scrim absolute inset-0 backdrop-blur-sm"
             onClick={closeForm}
             aria-hidden="true"
           />

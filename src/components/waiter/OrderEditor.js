@@ -70,7 +70,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+    <div className="scrim fixed inset-0 flex items-center justify-center z-50 p-4">
       <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/30 max-w-4xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-dorado-oscuro/30 flex justify-between items-center">
@@ -244,7 +244,7 @@ function OrderEditor({ order, onUpdate, onCancel, onClose, canCancel = true }) {
             {canCancel && order.status !== 'paid' && order.status !== 'cancelled' && (
               <button
                 onClick={() => onCancel(order)}
-                className="bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded"
+                className="btn-danger py-2 px-4"
               >
                 Cancelar Pedido
               </button>

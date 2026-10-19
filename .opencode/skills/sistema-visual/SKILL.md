@@ -40,7 +40,8 @@ Nunca: editar el cuerpo de `App.css`, reordenar sus imports, crear un segundo ar
 
 | Patrón | Ejemplos | Uso |
 |---|---|---|
-| `.btn-<variante>` | `.btn-gold`, `.btn-primary` | Botones globales |
+| `.btn-<variante>` | `.btn-primary` (dorado), `.btn-info` (azul), `.btn-success` (verde), `.btn-danger` (rojo), `.btn-carmesi` (cerrar sesión) | Botones de acción. La clase lleva **solo color + font-bold + rounded + transition**; el espaciado (`py-* px-*`), ancho (`w-full`) y tamaño de texto van en el JSX |
+| `.scrim` | — | Fondo de modales/overlays (negro 70%). El posicionamiento (`fixed/absolute inset-0 z-*`) va en el JSX. Excepciones: velos del login (`bg-black/45`) y PageDesigner (`bg-black/50`) |
 | `.hover-lift`, `.glow`, `.glass` | — | Efectos reutilizables |
 | `.login-*` | `.login-input`, `.login-form` | Zona login |
 | `.chef-*` | `.chef-arm`, `.chef-flame-1` | Ilustración SVG |

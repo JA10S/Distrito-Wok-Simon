@@ -849,7 +849,7 @@ function WaiterDashboard() {
 
       {/* Modal de cobro (en mesa / recoger) */}
       {chargingOrder && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div className="scrim fixed inset-0 flex items-center justify-center z-50 p-4">
           <div className="bg-surface-2 rounded-xl border border-dorado/30 p-6 max-w-sm w-full">
             <h3 className="text-xl font-cormorant text-dorado-claro mb-1">Cobrar Pedido</h3>
             <p className="text-dorado-oscuro text-sm mb-4">
@@ -888,7 +888,7 @@ function WaiterDashboard() {
 
       {/* Modal de traslado a otra mesa */}
       {transferringOrder && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div className="scrim fixed inset-0 flex items-center justify-center z-50 p-4">
           <div className="bg-surface-2 rounded-xl border border-dorado/30 p-6 max-w-md w-full">
             <h3 className="text-xl font-cormorant text-dorado-claro mb-1">Trasladar Pedido</h3>
             <p className="text-dorado-oscuro text-sm mb-4">

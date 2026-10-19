@@ -102,7 +102,7 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, onTransf
             {order.status === 'pending' && canEdit && (
               <button
                 onClick={() => onEdit(order)}
-                className="w-full bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded text-sm"
+                className="w-full btn-primary py-2 px-4 text-sm"
               >
                 ✏️ Editar
               </button>
@@ -110,7 +110,7 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, onTransf
             {order.status === 'pending' && canUpdateStatus && (
               <button
                 onClick={() => onStatusChange(order.id, 'preparing')}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
+                className="w-full btn-info py-2 px-4 text-sm"
               >
                 Preparando
               </button>
@@ -118,7 +118,7 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, onTransf
             {order.status === 'preparing' && canUpdateStatus && (
               <button
                 onClick={() => onStatusChange(order.id, 'ready')}
-                className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded text-sm"
+                className="w-full btn-success py-2 px-4 text-sm"
               >
                 Listo
               </button>
@@ -126,7 +126,7 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, onTransf
             {order.status === 'pending' && canCancel && onCancel && (
               <button
                 onClick={() => onCancel(order)}
-                className="w-full bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded text-sm"
+                className="w-full btn-danger py-2 px-4 text-sm"
               >
                 ✕ Cancelar
               </button>
@@ -134,7 +134,7 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, onTransf
             {order.status === 'preparing' && canCancelKitchen && onCancel && (
               <button
                 onClick={() => onCancel(order)}
-                className="w-full bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded text-sm"
+                className="w-full btn-danger py-2 px-4 text-sm"
               >
                 ✕ Cancelar en cocina
               </button>
@@ -142,7 +142,7 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, onTransf
             {order.status === 'ready' && canCancelKitchen && onCancel && (
               <button
                 onClick={() => onCancel(order)}
-                className="w-full bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded text-sm"
+                className="w-full btn-danger py-2 px-4 text-sm"
               >
                 ✕ Cancelar listo
               </button>
@@ -159,7 +159,7 @@ function OrderCard({ order, onStatusChange, onEdit, onCancel, onCharge, onTransf
             {order.status === 'ready' && canCharge && order.type !== 'delivery' && onCharge && (
               <button
                 onClick={() => onCharge(order)}
-                className="w-full bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded text-sm"
+                className="w-full btn-primary py-2 px-4 text-sm"
               >
                 💵 Cobrar
               </button>

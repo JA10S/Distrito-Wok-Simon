@@ -467,6 +467,13 @@ match /arroces/{itemId} {
   - Limpieza: eliminado el `import './App.css'` duplicado en `App.js` (queda solo `index.js`)
   - **Verificación de equivalencia**: mismo número de reglas (603 antes/después) y mismo orden de cascada; única diferencia: se perdieron declaraciones *fallback* hex (`#8b691433`) previas a las `var()` en 109 utilidades de color — navegadores que soportan variables CSS (todos los soportados) dan resultado visual idéntico; CSS compilado ~1,6 KB menor
   - Tests: 311 totales sin cambios (33 suites)
+- [x] Reorganización de clases de botones y scrims + limpieza de CSS muerto (2026-10-18)
+  - **Punto de retorno del diseño**: tag git `diseno-v1-pre-organizacion` (commit `06b3f20`, pusheado) — volver con `git checkout diseno-v1-pre-organizacion`
+  - **CSS base** (`02-base.css`): variantes de botón del sistema con **solo color** en la clase (espaciado en JSX) — `.btn-primary` (dorado), `.btn-info` (azul), `.btn-success` (verde), `.btn-danger` (rojo), `.btn-carmesi` (cerrar sesión, centraliza los hex `#6e1414/#8a1d1d` que estaban como arbitrary values en DashboardHeader); eliminados `.btn-secondary`, `.table-available/occupied/reserved` (0 usos)
+  - **`.scrim`** en `04-utilities.css`: fondo de modales unificado (negro 70%) — migrados 10 overlays de `bg-black/60|70|80` y `bg-opacity-50` en DashboardHeader, MenuDrawer, CallWaiterButton, OrderEditor, WaiterDashboard, MenuPage, MenuManager y PaymentButton; excepciones intencionales: velo del login (`/45`) y PageDesigner (`/50`)
+  - **Migración de botones duplicados** en OrderCard (5), OrderEditor (1), DeliveryDashboard (3), RecentCancelledOrders (1), CashClosingsHistory (1: emerald→btn-success)
+  - `sistema-visual` §3 actualizada con la tabla de variantes `.btn-*` y `.scrim`
+  - Tests: 311 totales sin cambios; build OK
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: hooks — useOrders/useTables/useMenu, AdminDashboard, componentes admin y OrderCard)

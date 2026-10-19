@@ -44,7 +44,7 @@ function DashboardHeader({ title, user, onLogout, activeTab, onTabChange, tabs =
             <ModeToggle />
             <button
               onClick={onLogout}
-              className="bg-[#6e1414] hover:bg-[#8a1d1d] border border-[#a52a2a]/50 hover:border-[#c23636]/70 text-white px-4 py-2 rounded-lg flex items-center gap-2 text-sm sm:text-base hover-lift transition-colors shadow-[0_4px_14px_-8px_rgba(165,42,42,0.9)]"
+              className="btn-carmesi hover-lift transition-colors flex items-center gap-2 text-sm sm:text-base"
             >
               <FaSignOutAlt aria-hidden="true" />
               Cerrar Sesión
@@ -93,7 +93,7 @@ function DashboardHeader({ title, user, onLogout, activeTab, onTabChange, tabs =
       {showMenuButton && (
         <>
           {menuOpen && (
-            <div className="fixed inset-0 z-40 bg-black/60" onClick={closeMenu} aria-hidden="true" />
+            <div className="scrim fixed inset-0 z-40" onClick={closeMenu} aria-hidden="true" />
           )}
           <aside
             aria-label="Menú de secciones"
