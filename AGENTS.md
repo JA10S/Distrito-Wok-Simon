@@ -42,7 +42,7 @@ tools/                              # Herramientas del proyecto
 
 .opencode/                          # Configuración para IA (opencode)
 ├── agents/                         # Agentes: diseno-visual.md
-├── skills/                         # Skills: firebase-db-modeler/, ilustraciones-svg/
+├── skills/                         # Skills: firebase-db-modeler/, ilustraciones-svg/, sistema-visual/
 └── (leer: sección 🤖 Estructura IA más abajo)
 ```
 
@@ -53,7 +53,7 @@ tools/                              # Herramientas del proyecto
 | Tipo | Carpeta | Contenido |
 |------|---------|-----------|
 | **Agentes** | `.opencode/agents/<nombre>.md` | Subagentes con frontmatter (`description`, `mode`) y prompt en el cuerpo. Actual: `diseno-visual` (UI/estilo) |
-| **Skills** | `.opencode/skills/<nombre>/SKILL.md` | Conocimiento reutilizable con frontmatter `name` (igual a la carpeta) + `description`. Actual: `firebase-db-modeler`, `ilustraciones-svg` |
+| **Skills** | `.opencode/skills/<nombre>/SKILL.md` | Conocimiento reutilizable con frontmatter `name` (igual a la carpeta) + `description` en tercera persona con palabras clave de activación. Actual: `firebase-db-modeler`, `ilustraciones-svg`, `sistema-visual` |
 | **Tools** | `tools/` | Scripts del proyecto: `harness.ps1` (+ `harness.bat`, `README.md`) |
 | **Config** | `opencode.json` | `skills.paths` (`.opencode/skills`) + `instructions: ["AGENTS.md"]` |
 
@@ -67,6 +67,7 @@ tools/                              # Herramientas del proyecto
 - **Colores:** Dorado (#D4A843), Negro (#0d0d0d), Rojo (#C40F0F)
 - **Fuentes:** Cormorant Garamond (títulos), Montserrat (cuerpo), Inter (datos numéricos/UI de dashboards)
 - **Estilo:** Tailwind CSS
+- **Organización CSS:** skill `sistema-visual` (`.opencode/skills/sistema-visual/SKILL.md`) — árbol de decisión de `src/styles/00–06`, convenciones de nombres y cadena para agregar tokens de tema. Agente: `diseno-visual`.
 
 ## 🔑 Credenciales
 - **Firebase:** Configuradas en `src/config/firebase.js`

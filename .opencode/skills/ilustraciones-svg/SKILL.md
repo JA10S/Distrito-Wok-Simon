@@ -1,19 +1,19 @@
 ---
 name: ilustraciones-svg
-description: Use cuando se deban crear o modificar ilustraciones SVG animadas o animaciones CSS del proyecto (ChefAnimation.js, Logo.js, keyframes de App.css, animación del login, faroles, llamas, chispas, estilo visual). Explica convenciones de colores del tema, transform-box en SVG, prefers-reduced-motion y pasos de verificación.
+description: Use cuando se deban crear o modificar ilustraciones SVG animadas o animaciones CSS del proyecto (ChefAnimation.js, Logo.js, keyframes de src/styles/06-chef-animation.css, animación del login, faroles, llamas, chispas, estilo visual). Explica convenciones de colores del tema, transform-box en SVG, prefers-reduced-motion y pasos de verificación.
 ---
 
 # Ilustraciones SVG animadas - Distrito Wok
 
 ## Cuándo usarla
 - Crear/editar ilustraciones SVG animadas (`src/components/common/ChefAnimation.js`, `Logo.js`).
-- Agregar o modificar keyframes de animación en `src/App.css`.
+- Agregar o modificar keyframes de animación en `src/styles/06-chef-animation.css`.
 - Tareas de "animación", "ilustración", "silueta", "chef", "logo", "efectos visuales" en login/menú/dashboards.
 
 ## Arquitectura de la ilustración
 - Componente en `src/components/common/`, PascalCase, props: `size` (ancho px) y `className`.
 - SVG con `viewBox`, `role="img"` + `aria-label` en español.
-- El componente NO lleva estilos inline de tema: las clases (`chef-solid-line`, `chef-arm`, `chef-flame-*`, `chef-spark`, `chef-food*`, `chef-utensil*`) se definen en `src/App.css` bajo el bloque "Ilustración animada".
+- El componente NO lleva estilos inline de tema: las clases (`chef-solid-line`, `chef-arm`, `chef-flame-*`, `chef-spark`, `chef-food*`, `chef-utensil*`) se definen en `src/styles/06-chef-animation.css` (la organización general del CSS está en la skill `sistema-visual`).
 - **Estilo: silueta SÓLIDA** con `fill="currentColor"` (la página pone `text-dorado`) — SIN contornos/strokes internos (los contornos en formas superpuestas generan costuras visibles y ensucian la figura; se rechazó en revisión). Trazos con clase `.chef-solid-line` (`stroke: currentColor`) para piernas/brazos.
 - Escena MÍNIMA (revisión: "menos elementos, más limpio"): chef + wok + estufa/mesa atenuada (`opacity 0.5`) + fuego 3 capas + chispas + 3 trozos de comida. NO agregar props (faroles, botellas, ollas…).
 - Espátula oscura (`#050505`, clases `chef-utensil*`) para que se recorte legible sobre el fuego dorado.
@@ -35,6 +35,6 @@ Luego AGENTS.md, commit en español (Conventional Commits), push con cuenta JA10
 
 ## Archivos de referencia
 - `src/components/common/ChefAnimation.js` — ilustración principal (chef + wok + fuego).
-- `src/App.css` — bloque "Ilustración animada: chef con wok (login)".
+- `src/styles/06-chef-animation.css` — ilustración del chef (clases + keyframes).
 - `tailwind.config.js` / `:root` de App.css — variables de color y fuentes.
 - `AGENTS.md` (sección Diseño) y `docs/PROJECT_STRUCTURE.md`.

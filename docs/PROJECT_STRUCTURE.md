@@ -85,6 +85,8 @@ restaurante/
 │   │   │   └── SKILL.md
 │   │   ├── ilustraciones-svg/       # Ilustraciones SVG animadas
 │   │   │   └── SKILL.md
+│   │   ├── sistema-visual/          # Organización del CSS (src/styles/, tokens)
+│   │   │   └── SKILL.md
 │   │   ├── slack-gif-creator/       # GIFs animados (PIL, easing, validación)
 │   │   │   ├── SKILL.md
 │   │   │   └── core/                # gif_builder, validators, easing

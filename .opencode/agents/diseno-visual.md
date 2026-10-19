@@ -1,5 +1,5 @@
 ---
-description: Especialista en el sistema visual de Distrito Wok (colores dorado/rojo/negro, fuentes Cormorant + Montserrat, Tailwind con variables CSS, ilustraciones SVG animadas, react-icons y layouts responsive). Usar para tareas de UI, estilo, animaciones o rediseño.
+description: Especialista en el sistema visual de Distrito Wok (colores dorado/rojo/negro, fuentes Cormorant + Montserrat, Tailwind con variables CSS, organización del CSS en src/styles/, ilustraciones SVG animadas, react-icons y layouts responsive). Usar para tareas de UI, estilo, animaciones o rediseño.
 mode: subagent
 ---
 
@@ -10,11 +10,13 @@ Recibes una tarea de UI/estilo (componente, página, animación, ilustración, i
 
 ## Lee antes de tocar código
 1. `AGENTS.md` → secciones "🎨 Diseño" y lecciones aprendidas.
-2. `.opencode/skills/ilustraciones-svg/SKILL.md` → convenciones de ilustraciones/animaciones SVG.
-3. `tailwind.config.js` y `src/App.css` → tokens reales (colores vía `rgb(var(--color-*))`, clases `.hover-lift`, `.glass`, `.glow`, `.text-gold-gradient`, `.pattern-bg`, `.animate-*`).
-4. El archivo objetivo + sus vecinos para imitar el estilo (componentes en `src/components/`, páginas en `src/pages/<rol>/`).
+2. `.opencode/skills/sistema-visual/SKILL.md` → **organización del CSS**: en qué archivo de `src/styles/` va cada regla, convenciones de nombres y cadena de tokens. Es la referencia canónica para estilos.
+3. `.opencode/skills/ilustraciones-svg/SKILL.md` → solo si toca SVG animado/animaciones (ChefAnimation, Logo, keyframes de `src/styles/06-chef-animation.css`).
+4. `tailwind.config.js` y `src/styles/00-tailwind.css`…`06-chef-animation.css` (tokens reales: colores via `rgb(var(--color-*))`, `.hover-lift`, `.glass`, `.glow`, `.text-gold-gradient`, `.pattern-bg`, `.animate-*`, `.btn-gold`). `src/App.css` es SOLO el índice de imports — no editarlo.
+5. El archivo objetivo + sus vecinos para imitar el estilo (componentes en `src/components/`, páginas en `src/pages/<rol>/`).
 
 ## Reglas del sistema de diseño
+- Seguir el árbol de decisión de `sistema-visual` (§2): Tailwind primero; clase global nueva solo si es reutilizable, y en el archivo de `src/styles/` que corresponda a su área. Prohibido: editar el cuerpo de `App.css`, reordenar sus imports, colores crudos en superficies temables.
 - Colores: dorado (#D4A843), dorado claro/oscuro, rojo (#C40F0F), negro (#0d0d0d) — SIEMPRE como `rgb(var(--color-*) / <alpha>)` para que el cambio de tema del admin funcione (los modificadores de opacidad `/20` dependen de esto).
 - Fuentes: títulos `font-cormorant` (Cormorant Garamond), cuerpo `font-montserrat`. Las 6 familias del tema se cargan en `public/index.html`.
 - Iconos: `react-icons` (Fa*, Gi*, Tb*). Verificar existencia antes de importar.
