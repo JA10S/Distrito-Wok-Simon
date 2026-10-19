@@ -50,3 +50,9 @@ menu-pagina-*.png
 # Firebase
 .firebase/
 *.log
+
+# Secretos locales (nunca se commitean)
+.secrets/
+
+# Config de opencode deshabilitada (local)
+.opencode/opencode.json.disabled
