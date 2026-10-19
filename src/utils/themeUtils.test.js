@@ -166,8 +166,12 @@ describe('applyTheme: modo, disposición y esquinas', () => {
 
     const styles = document.documentElement.style;
     expect(styles.getPropertyValue('--dk-dorado').trim()).toBe('212 168 67');
-    expect(styles.getPropertyValue('--color-dorado').trim()).toBe('150 115 26');
+    expect(styles.getPropertyValue('--color-dorado').trim()).toBe('150 122 36');
     expect(styles.getPropertyValue('--gold-mid').trim()).not.toBe('');
+    /* Botón dorado: degradado CREMA (acento mezclado con crema, no blanco puro) */
+    expect(styles.getPropertyValue('--gold-from').trim()).toBe('#f2e7c5');
+    expect(styles.getPropertyValue('--gold-mid').trim()).toBe('#e2d3a8');
+    expect(styles.getPropertyValue('--gold-to').trim()).toBe('#c2ae71');
   });
 
   test('con el modo forzado al contrario usa la paleta de ese modo (no la guardada)', () => {
@@ -175,7 +179,7 @@ describe('applyTheme: modo, disposición y esquinas', () => {
 
     applyTheme(guardado, 'light');
     expect(document.documentElement.dataset.mode).toBe('light');
-    expect(document.documentElement.style.getPropertyValue('--color-surface').trim()).toBe('250 246 236');
+    expect(document.documentElement.style.getPropertyValue('--color-surface').trim()).toBe('242 240 233');
 
     applyTheme(guardado, 'dark');
     expect(document.documentElement.dataset.mode).toBe('dark');

@@ -99,7 +99,7 @@ test('permite cambiar el modo a diurno y guarda la paleta clara', async () => {
   expect(await screen.findByText(/✓ Guardado/)).toBeInTheDocument();
   expect(saveTheme).toHaveBeenCalledWith(expect.objectContaining({
     mode: 'light',
-    colors: expect.objectContaining({ surface: '#FAF6EC' })
+    colors: expect.objectContaining({ surface: '#F2F0E9' })
   }));
 });
 

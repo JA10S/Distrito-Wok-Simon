@@ -44,7 +44,7 @@ test('toggleMode alterna el modo y lo escribe en el documento', () => {
   expect(screen.getByText('modo:light')).toBeInTheDocument();
   expect(screen.getByTestId('is-light')).toHaveTextContent('true');
   expect(document.documentElement.dataset.mode).toBe('light');
-  expect(surface()).toBe('250 246 236');
+  expect(surface()).toBe('242 240 233');
   expect(window.localStorage.getItem('dw-mode')).toBe('light');
 
   fireEvent.click(screen.getByText('modo:light'));

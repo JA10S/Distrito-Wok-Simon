@@ -26,19 +26,22 @@ export const PRESETS = [
       inkMuted: '#A99767',
       border: '#46391F'
     },
+    /* Modo diurno: inversión cálida del nocturno (fondo claro, texto oscuro).
+       `dorado` queda tostado/legible para textos; el CREMA se aplica en el
+       degradado de botones y acentos vía applyTheme (mix con crema). */
     light: {
-      dorado: '#96731A',
+      dorado: '#967A24',
       doradoClaro: '#3E3313',
       doradoOscuro: '#8B6914',
       rojo: '#B0121A',
       rojoOscuro: '#8B0A10',
-      negro: '#14120E',
-      surface: '#FAF6EC',
-      surface2: '#FFFFFF',
-      surface3: '#F1E9D6',
-      ink: '#14120E',
-      inkMuted: '#6B6152',
-      border: '#E4DAC4'
+      negro: '#16130E',
+      surface: '#F2F0E9',
+      surface2: '#FBFAF6',
+      surface3: '#E9E6DB',
+      ink: '#16130E',
+      inkMuted: '#6D6350',
+      border: '#D8D3C2'
     }
   },
   {
@@ -192,16 +195,22 @@ export function hexToRgbChannels(hex, fallback) {
   return `${(int >> 16) & 255} ${(int >> 8) & 255} ${int & 255}`;
 }
 
-function mixWithWhite(hex, ratio) {
-  if (!HEX_PATTERN.test(String(hex || ''))) return '#FFFFFF';
+/* Mezcla hex con un color objetivo (para el crema del modo diurno) */
+function mixWith(hex, targetHex, ratio) {
+  if (!HEX_PATTERN.test(String(hex || ''))) return targetHex;
   const int = parseInt(hex.slice(1), 16);
+  const tInt = parseInt(targetHex.slice(1), 16);
   const channel = (shift) => {
     const value = (int >> shift) & 255;
-    const mixed = Math.round(value + (255 - value) * ratio);
+    const target = (tInt >> shift) & 255;
+    const mixed = Math.round(value + (target - value) * ratio);
     return mixed.toString(16).padStart(2, '0');
   };
   return `#${channel(16)}${channel(8)}${channel(0)}`;
 }
+
+/* Crema del modo diurno: el acento se aclara hacia crema para botones */
+const CREAM = '#FFF6DB';
 
 const isValidHex = (value) => HEX_PATTERN.test(String(value || ''));
 
@@ -314,13 +323,14 @@ export function applyTheme(theme, modeOverride) {
   root.style.setProperty('--font-heading', heading.css);
   root.style.setProperty('--font-body', body.css);
 
-  /* Degradado del botón dorado: en modo claro se aclara el acento para que
-     el texto negro siga teniendo contraste. */
+  /* Degradado del botón dorado: en modo claro el acento se mezcla con CREMA
+     (no blanco puro) para que los botones/decoración queden dorado crema
+     con texto oscuro legible encima. */
   const accent = colors.dorado;
   if (effectiveMode === 'light') {
-    root.style.setProperty('--gold-from', mixWithWhite(accent, 0.55));
-    root.style.setProperty('--gold-mid', mixWithWhite(accent, 0.35));
-    root.style.setProperty('--gold-to', mixWithWhite(accent, 0.12));
+    root.style.setProperty('--gold-from', mixWith(accent, CREAM, 0.88));
+    root.style.setProperty('--gold-mid', mixWith(accent, CREAM, 0.72));
+    root.style.setProperty('--gold-to', mixWith(accent, CREAM, 0.42));
   } else {
     root.style.setProperty('--gold-from', colors.doradoClaro);
     root.style.setProperty('--gold-mid', colors.dorado);
