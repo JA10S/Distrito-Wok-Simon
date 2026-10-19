@@ -187,7 +187,7 @@ function DeliveryDashboard() {
 
       <main className="container mx-auto px-4 py-8">
         {/* Compartir ubicación con el administrador */}
-        <div className="mb-6 bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-4 flex flex-wrap items-center justify-between gap-3">
+        <div className="mb-6 panel p-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <span
               className={`text-2xl ${sharing ? 'text-green-500' : 'text-dorado-oscuro'}`}
@@ -257,7 +257,7 @@ function DeliveryDashboard() {
 
         {activeTab === 'available' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Pedidos Disponibles</h2>
+            <h2 className="section-title">Pedidos Disponibles</h2>
             {availableDeliveries.length === 0 ? (
               <EmptyState message="No hay pedidos disponibles para recoger" />
             ) : (
@@ -283,7 +283,7 @@ function DeliveryDashboard() {
 
         {activeTab === 'my deliveries' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Mis Entregas Activas</h2>
+            <h2 className="section-title">Mis Entregas Activas</h2>
             {myDeliveries.length === 0 ? (
               <EmptyState message="No tienes entregas activas en este momento" />
             ) : (
@@ -309,7 +309,7 @@ function DeliveryDashboard() {
 
         {activeTab === 'history' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Historial de Entregas</h2>
+            <h2 className="section-title">Historial de Entregas</h2>
             {historyDeliveries.length === 0 ? (
               <EmptyState message="Aún no hay entregas realizadas" />
             ) : (

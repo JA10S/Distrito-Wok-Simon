@@ -102,7 +102,7 @@ function ExpenseManager() {
 
   return (
     <div>
-      <h2 className="text-xl font-cormorant text-dorado mb-6">Caja Menor (Gastos del Día)</h2>
+      <h2 className="section-title">Caja Menor (Gastos del Día)</h2>
       <p className="text-dorado-oscuro font-inter text-sm mb-6">
         Registra las compras que se pagan con la caja menor. Aparecen en el cuadre de caja del cajero.
       </p>
@@ -116,7 +116,7 @@ function ExpenseManager() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Formulario */}
         <div className="lg:col-span-1">
-          <form onSubmit={handleSubmit} className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-5 space-y-4">
+          <form onSubmit={handleSubmit} className="panel p-5 space-y-4">
             <h3 className="font-cormorant text-lg font-bold text-dorado-claro flex items-center gap-2">
               <FaMoneyBillWave className="text-dorado" />
               {editingId ? 'Editar gasto' : 'Nuevo gasto'}
@@ -226,7 +226,7 @@ function ExpenseManager() {
             </span>
           </div>
 
-          <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
+          <div className="panel overflow-hidden">
             {todayExpenses.length === 0 ? (
               <p className="text-dorado-oscuro text-center py-6 font-inter">
                 No hay gastos registrados hoy

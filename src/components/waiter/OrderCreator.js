@@ -388,7 +388,7 @@ function OrderCreator({ tables, selectedTable, onTableSelect, onConfirmOrder, to
         )}
 
         {/* Items del menú */}
-        <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
+        <div className="panel">
           <div className="divide-y divide-dorado-oscuro/20 max-h-96 overflow-y-auto">
             {query && (
               <div className="px-4 py-2 text-dorado-oscuro text-sm border-b border-dorado-oscuro/20">

@@ -474,6 +474,13 @@ match /arroces/{itemId} {
   - **Migración de botones duplicados** en OrderCard (5), OrderEditor (1), DeliveryDashboard (3), RecentCancelledOrders (1), CashClosingsHistory (1: emerald→btn-success)
   - `sistema-visual` §3 actualizada con la tabla de variantes `.btn-*` y `.scrim`
   - Tests: 311 totales sin cambios; build OK
+- [x] Diseño v2: modernización de identidad en todas las páginas (2026-10-18)
+  - **Punto de retorno**: tag `diseno-v2-base` (commit `287ae50`) — volver con `git checkout diseno-v2-base`
+  - **Lenguaje v2** (`04-utilities.css`): `.section-title`/`.section-subtitle` (títulos serif con regla dorada vía `::after`), `.panel` (contenedor estándar `bg-surface-2 rounded-xl border-dorado-oscuro/25`), `.price-pill` (precio en píldora dorada del menú), `.stat-chip` (chip de icono en estadísticas)
+  - **Migración masiva**: 53+ instancias de `font-cormorant text-dorado mb-*` → `section-title/subtitle` y de `bg-surface-2 rounded-*/border-dorado-oscuro/*` → `panel` en AdminDashboard, WaiterDashboard, CashierDashboard, DeliveryDashboard, MenuManager, InvoiceCreator, CashClosingsHistory, ExpenseManager, ThemeManager, UsersManager, CustomersManager, DriversMap, OrderCreator, PaymentButton, RecentCancelledOrders y las tarjetas del menú público
+  - **SummaryStats**: iconos ahora en chip `.stat-chip` (afecta a todos los dashboards de una vez); botones sueltos dorados → `btn-primary` (Reportes admin, "＋ Agregar" del menú)
+  - LoginPage sin cambios (ya en nivel premium, decisión del usuario); identidad de marca intacta
+  - Tests: 311 totales sin cambios; build OK (solo warnings preexistentes de unused-vars)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: hooks — useOrders/useTables/useMenu, AdminDashboard, componentes admin y OrderCard)

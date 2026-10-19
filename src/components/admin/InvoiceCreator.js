@@ -315,7 +315,7 @@ function InvoiceCreator({ tables = [], invoices = [], onCreateInvoice, onUpdateI
 
   return (
     <div>
-      <h2 className="text-xl font-cormorant text-dorado mb-6">Facturas (Ventas Directas)</h2>
+      <h2 className="section-title">Facturas (Ventas Directas)</h2>
       <p className="text-dorado-oscuro font-inter text-sm mb-6">
         Registra una venta que se guarda directamente como pagada: no pasa por cocina ni domicilio
         y no ocupa mesas. El precio del menú ya incluye IVA.
@@ -353,7 +353,7 @@ function InvoiceCreator({ tables = [], invoices = [], onCreateInvoice, onUpdateI
             </div>
           )}
 
-          <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
+          <div className="panel">
             <div className="divide-y divide-dorado-oscuro/20 max-h-[28rem] overflow-y-auto">
               {query && (
                 <div className="px-4 py-2 text-dorado-oscuro text-sm border-b border-dorado-oscuro/20">
@@ -579,7 +579,7 @@ function InvoiceCreator({ tables = [], invoices = [], onCreateInvoice, onUpdateI
       </div>
 
       {/* Filtros */}
-      <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20 p-4 mb-4 flex flex-wrap items-end gap-3">
+      <div className="panel p-4 mb-4 flex flex-wrap items-end gap-3">
         <div>
           <label htmlFor="inv-filter-from" className="block text-dorado-oscuro text-xs mb-1">Desde</label>
           <input
@@ -647,7 +647,7 @@ function InvoiceCreator({ tables = [], invoices = [], onCreateInvoice, onUpdateI
         </span>
       </div>
 
-      <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
+      <div className="panel overflow-hidden">
         {pageInvoices.length === 0 ? (
           <p className="text-dorado-oscuro text-center py-6 font-inter">
             <FaPlus className="inline mr-2" />

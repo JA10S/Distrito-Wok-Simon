@@ -14,7 +14,7 @@ function RecentCancelledOrders({ orders, onReactivate, canReactivate = true, tit
 
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-cormorant text-dorado mb-4">{title}</h2>
+      <h2 className="section-title">{title}</h2>
       <div className="grid gap-4">
         {recent.map((order) => (
           <div key={order.id} className="bg-surface-2 rounded-lg p-4 border border-red-600/40">

@@ -123,7 +123,7 @@ function AdminDashboard() {
         {/* RESUMEN */}
         {activeTab === 'overview' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Resumen del Sistema</h2>
+            <h2 className="section-title">Resumen del Sistema</h2>
             
             {/* Estadísticas */}
             <SummaryStats
@@ -136,7 +136,7 @@ function AdminDashboard() {
             />
 
             {/* Acceso rápido a dashboards */}
-            <h3 className="text-lg font-cormorant text-dorado mb-4">Acceso Rápido</h3>
+            <h3 className="section-subtitle">Acceso Rápido</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
               {dashboards.map((dash) => (
                 <button
@@ -159,7 +159,7 @@ function AdminDashboard() {
             />
 
             {/* Últimos pedidos */}
-            <h3 className="text-lg font-cormorant text-dorado mb-4">Últimos Pedidos</h3>
+            <h3 className="section-subtitle">Últimos Pedidos</h3>
             <div className="bg-surface-card rounded-xl border border-dorado-oscuro/25 overflow-hidden">
               {orders.length === 0 ? (
                 <p className="text-dorado-oscuro text-center py-6 font-inter">
@@ -203,10 +203,10 @@ function AdminDashboard() {
         {/* DASHBOARDS */}
         {activeTab === 'dashboards' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Dashboards por Rol</h2>
+            <h2 className="section-title">Dashboards por Rol</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {dashboards.map((dash) => (
-                <div key={dash.path} className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-6 hover-lift">
+                <div key={dash.path} className="panel p-6 hover-lift">
                   <div className="text-center mb-4">
                     <span className="text-5xl inline-block" style={{ '--role': dash.role, color: 'rgb(var(--role))' }}>{dash.icon}</span>
                     <h3 className="text-xl font-cormorant text-dorado-claro mt-2">{dash.name}</h3>
@@ -250,7 +250,7 @@ function AdminDashboard() {
         {/* CIERRES DE CAJA (historial de arqueos del cajero) */}
         {activeTab === 'closings' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Cierres de Caja</h2>
+            <h2 className="section-title">Cierres de Caja</h2>
             <CashClosingsHistory />
           </div>
         )}
@@ -272,20 +272,20 @@ function AdminDashboard() {
         {/* REPORTES */}
         {activeTab === 'reports' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Reportes</h2>
+            <h2 className="section-title">Reportes</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20">
-                <h3 className="text-lg font-cormorant text-dorado mb-4">Reporte de Menú</h3>
+              <div className="panel p-6">
+                <h3 className="section-subtitle">Reporte de Menú</h3>
                 <p className="text-dorado-oscuro mb-4">Generar PDF con precios actuales</p>
                 <button
                   onClick={() => alert('Ejecuta: node scripts/generate-pdf-from-firestore.js')}
-                  className="bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded"
+                  className="btn-primary py-2 px-4"
                 >
                   Generar PDF
                 </button>
               </div>
-              <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20">
-                <h3 className="text-lg font-cormorant text-dorado mb-4">Reporte de Pedidos</h3>
+              <div className="panel p-6">
+                <h3 className="section-subtitle">Reporte de Pedidos</h3>
                 <p className="text-dorado-oscuro mb-4">Historial de pedidos del día</p>
                 <button className="bg-surface-3 hover:bg-ink/10 text-dorado-claro font-bold py-2 px-4 rounded">
                   Ver Pedidos

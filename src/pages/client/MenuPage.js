@@ -238,7 +238,7 @@ function MenuPage() {
 
                   <div className={`grid gap-3 ${sectionGridClass(section.columns, layout)}`}>
                     {items.map((item) => (
-                      <div key={item.id} className="bg-surface-2 rounded-lg p-4 border border-dorado-oscuro/20 hover:border-dorado/40 transition hover-lift animate-fade-in-up">
+                      <div key={item.id} className="panel p-4 hover:border-dorado/40 transition hover-lift animate-fade-in-up">
                         <div className="flex justify-between items-start gap-3">
                           <div className="flex-1 min-w-0">
                             <h3 className="font-cormorant text-lg font-bold text-dorado-claro">
@@ -250,13 +250,11 @@ function MenuPage() {
                               </p>
                             )}
                           </div>
-                          <div className="shrink-0 text-right">
-                            <div className="text-dorado font-semibold text-sm">
-                              {item.price}
-                            </div>
+                          <div className="shrink-0 text-right space-y-2">
+                            <span className="price-pill">{item.price}</span>
                             <button
                               onClick={() => addToCart(item)}
-                              className="mt-2 bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-1 px-3 rounded text-xs"
+                              className="btn-primary block w-full py-1 px-3 text-xs"
                             >
                               ＋ Agregar
                             </button>

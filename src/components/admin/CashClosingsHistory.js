@@ -137,7 +137,7 @@ function CashClosingsHistory() {
     <div>
       {/* Cierre manual para días anteriores (permiso cash_register) */}
       {hasPermission('cash_register') && (
-        <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-6 mb-6">
+        <div className="panel p-6 mb-6">
           <h3 className="text-lg font-cormorant text-dorado mb-1">Registrar cierre de un día</h3>
           <p className="text-dorado-oscuro text-sm mb-4">
             Para días que quedaron sin cerrar. Los totales se calculan con las ventas y compras registradas en esa fecha.
@@ -260,7 +260,7 @@ function CashClosingsHistory() {
       )}
 
       {/* Historial de cierres */}
-      <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
+      <div className="panel overflow-hidden">
         {closings.length > 0 && (
           <div className="p-4 border-b border-dorado-oscuro/20 flex flex-wrap items-center justify-between gap-3">
             <h3 className="text-lg font-cormorant text-dorado">Historial de cierres</h3>

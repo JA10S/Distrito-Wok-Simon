@@ -196,7 +196,7 @@ function UsersManager() {
       )}
 
       {/* Lista de usuarios */}
-      <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
+      <div className="panel">
         {users.length === 0 ? (
           <p className="text-dorado-oscuro text-center py-8">
             No hay usuarios registrados

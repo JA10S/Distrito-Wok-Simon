@@ -154,7 +154,7 @@ function CustomersManager({ user }) {
           </div>
 
           {/* Lista de clientes */}
-          <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20 max-h-[24rem] overflow-y-auto">
+          <div className="panel max-h-[24rem] overflow-y-auto">
             {filtered.length === 0 ? (
               <p className="text-dorado-oscuro text-center py-6 font-inter text-sm">
                 <FaUsers className="inline mr-2" /> No hay clientes registrados
@@ -181,7 +181,7 @@ function CustomersManager({ user }) {
         {/* Detalle del cliente seleccionado */}
         <div className="lg:col-span-2">
           {selected ? (
-            <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20 p-6">
+            <div className="panel p-6">
               <div className="flex flex-wrap items-start justify-between gap-3 mb-6">
                 <div>
                   <h3 className="text-lg font-cormorant text-dorado">{selected.name}</h3>
@@ -282,7 +282,7 @@ function CustomersManager({ user }) {
               )}
             </div>
           ) : (
-            <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20 p-12 text-center">
+            <div className="panel p-12 text-center">
               <FaUsers className="mx-auto text-dorado-oscuro text-4xl mb-3" />
               <p className="text-dorado-oscuro font-inter">Selecciona un cliente para ver su detalle</p>
             </div>

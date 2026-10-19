@@ -579,7 +579,7 @@ function WaiterDashboard() {
         {/* Vista de Mesas */}
         {activeTab === 'tables' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Estado de Mesas</h2>
+            <h2 className="section-title">Estado de Mesas</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {tables.map((table) => (
                 <TableCard
@@ -604,7 +604,7 @@ function WaiterDashboard() {
               canReactivate={hasPermission('update_order_status')}
             />
 
-            <h2 className="text-xl font-cormorant text-dorado mb-4">Pedidos Activos</h2>
+            <h2 className="section-title">Pedidos Activos</h2>
 
             {/* Filtro por tipo de pedido */}
             <div className="flex flex-wrap gap-2 mb-4">
@@ -664,14 +664,14 @@ function WaiterDashboard() {
         {/* Historial de pedidos pagados */}
         {activeTab === 'history' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Historial de Pedidos</h2>
+            <h2 className="section-title">Historial de Pedidos</h2>
             {paidOrders.length === 0 ? (
               <div className="bg-surface-2 rounded-xl p-6 border border-dorado-oscuro/25 text-center">
                 <FaHistory className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
                 <p className="text-dorado-oscuro">No hay pedidos pagados todavía</p>
               </div>
             ) : (
-              <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
+              <div className="panel overflow-hidden">
                 <div className="divide-y divide-dorado-oscuro/20">
                   {paidOrders.slice(0, 50).map((order) => (
                     <div key={order.id} className="px-5 py-4 flex justify-between items-center gap-3">
@@ -707,7 +707,7 @@ function WaiterDashboard() {
         {/* Llamados de atención de los clientes */}
         {activeTab === 'calls' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Llamados de Atención</h2>
+            <h2 className="section-title">Llamados de Atención</h2>
             {pendingCalls.length === 0 ? (
               <div className="bg-surface-2 rounded-xl p-6 border border-dorado-oscuro/25 text-center">
                 <FaBell className="mx-auto text-dorado-oscuro text-3xl mb-2" aria-hidden="true" />
@@ -750,8 +750,8 @@ function WaiterDashboard() {
           const displayed = shift && shift.summary ? shift.summary : shiftSummary;
           return (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Mi Turno de Hoy</h2>
-            <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-6 max-w-2xl">
+            <h2 className="section-title">Mi Turno de Hoy</h2>
+            <div className="panel p-6 max-w-2xl">
               {shift && (
                 <div
                   role="status"
@@ -813,7 +813,7 @@ function WaiterDashboard() {
         {/* Nuevo Pedido */}
         {activeTab === 'new-order' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Nuevo Pedido</h2>
+            <h2 className="section-title">Nuevo Pedido</h2>
             {hasPermission('create_order') ? (
               <OrderCreator
                 tables={tables}

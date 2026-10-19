@@ -9,9 +9,9 @@ function SummaryStats({ stats }) {
           className="bg-surface-card rounded-xl p-4 border border-dorado-oscuro/25 hover-lift animate-fade-in-up"
           style={{ animationDelay: `${index * 0.05}s` }}
         >
-          <div className="flex items-center justify-between text-dorado-oscuro text-sm">
+          <div className="flex items-center justify-between gap-3 text-dorado-oscuro text-sm">
             <span>{stat.label}</span>
-            <span className={stat.iconColor || 'text-dorado'} aria-hidden="true">
+            <span className={`stat-chip ${stat.iconColor || 'text-dorado'}`} aria-hidden="true">
               {stat.icon}
             </span>
           </div>

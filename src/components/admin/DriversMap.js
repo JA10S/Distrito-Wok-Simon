@@ -101,8 +101,8 @@ function DriversMap({ drivers = [], deliveries = [] }) {
   if (!drivers || drivers.length === 0) {
     return (
       <div>
-        <h2 className="text-xl font-cormorant text-dorado mb-6">Repartidores en Tiempo Real</h2>
-        <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-10 text-center">
+        <h2 className="section-title">Repartidores en Tiempo Real</h2>
+        <div className="panel p-10 text-center">
           <FaMapMarkerAlt className="mx-auto text-dorado-oscuro text-4xl mb-3" aria-hidden="true" />
           <p className="text-dorado-claro mb-1">Ningún repartidor ha compartido su ubicación</p>
           <p className="text-dorado-oscuro text-sm">
@@ -115,12 +115,12 @@ function DriversMap({ drivers = [], deliveries = [] }) {
 
   return (
     <div>
-      <h2 className="text-xl font-cormorant text-dorado mb-6">Repartidores en Tiempo Real</h2>
+      <h2 className="section-title">Repartidores en Tiempo Real</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Mapa */}
         {onMap.length > 0 && (
-        <div className="lg:col-span-2 bg-surface-2 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
+        <div className="lg:col-span-2 panel overflow-hidden">
           <MapContainer
             center={[4.65, -74.05]}
             zoom={12}
@@ -172,7 +172,7 @@ function DriversMap({ drivers = [], deliveries = [] }) {
         <div
           className={`${
             onMap.length > 0 ? 'lg:col-span-1' : 'lg:col-span-3'
-          } bg-surface-2 rounded-xl border border-dorado-oscuro/25 p-4 max-h-[480px] overflow-y-auto`}
+          } panel p-4 max-h-[480px] overflow-y-auto`}
         >
           <div className="text-dorado-oscuro text-xs uppercase tracking-wider mb-3">
             {drivers.length} repartidor{drivers.length === 1 ? '' : 'es'}

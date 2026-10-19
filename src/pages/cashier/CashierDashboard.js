@@ -226,7 +226,7 @@ function CashierDashboard() {
 
         {activeTab === 'orders' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Pedidos para Cobrar</h2>
+            <h2 className="section-title">Pedidos para Cobrar</h2>
             
             {loading ? (
               <LoadingScreen message="Cargando pedidos..." fullScreen={false} />
@@ -395,7 +395,7 @@ function CashierDashboard() {
 
         {activeTab === 'history' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Historial de Ventas</h2>
+            <h2 className="section-title">Historial de Ventas</h2>
             
             {paidOrders.length === 0 ? (
               <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20 text-center">
@@ -405,7 +405,7 @@ function CashierDashboard() {
                 </p>
               </div>
             ) : (
-              <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
+              <div className="panel">
                 <div className="divide-y divide-dorado-oscuro/20">
                   {paidOrders.map((order) => {
                     const detailOpen = !!expandedSales[order.id];
@@ -452,7 +452,7 @@ function CashierDashboard() {
 
         {activeTab === 'close' && (
           <div>
-            <h2 className="text-xl font-cormorant text-dorado mb-6">Cuadre de Caja</h2>
+            <h2 className="section-title">Cuadre de Caja</h2>
             <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20">
               <div className="grid grid-cols-2 gap-6">
                 <div>

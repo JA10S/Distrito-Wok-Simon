@@ -54,7 +54,7 @@ function PaymentButton({ amount, description, reference, onSuccess, onError }) {
       {showModal && (
         <div className="scrim fixed inset-0 flex items-center justify-center z-50">
           <div className="bg-surface-2 rounded-lg p-6 max-w-md w-full mx-4 border border-dorado-oscuro">
-            <h3 className="text-xl font-cormorant text-dorado mb-4">
+            <h3 className="section-subtitle">
               Link de Pago Creado
             </h3>
             

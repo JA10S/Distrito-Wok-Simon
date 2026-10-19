@@ -323,7 +323,7 @@ function MenuManager() {
           )}
 
           {query ? (
-            <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
+            <div className="panel">
               {searchResults.length === 0 ? (
                 <p className="text-dorado-oscuro text-center py-8">
                   No se encontraron productos para "{search.trim()}"
@@ -344,7 +344,7 @@ function MenuManager() {
               )}
             </div>
           ) : (
-            <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20">
+            <div className="panel">
               {items.length === 0 ? (
                 <p className="text-dorado-oscuro text-center py-8">
                   No hay productos en esta categoría
@@ -370,7 +370,7 @@ function MenuManager() {
                 <h3 className="font-cormorant text-dorado mb-2">
                   {col.icon} {col.name}
                 </h3>
-                <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20 divide-y divide-dorado-oscuro/20">
+                <div className="panel divide-y divide-dorado-oscuro/20">
                   {rows.map((item) => {
                     const draftKey = `${key}:${item.id}`;
                     const draft = priceDrafts[draftKey] ?? item.price ?? '';
@@ -417,7 +417,7 @@ function MenuManager() {
                 <h3 className="font-cormorant text-dorado mb-2">
                   {col.icon} {col.name}
                 </h3>
-                <div className="bg-surface-2 rounded-lg border border-dorado-oscuro/20 divide-y divide-dorado-oscuro/20">
+                <div className="panel divide-y divide-dorado-oscuro/20">
                   {rows.map((item) => {
                     const draftKey = `${key}:${item.id}`;
                     const isSaving = rowSaving === draftKey;

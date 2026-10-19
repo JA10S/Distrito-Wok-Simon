@@ -42,6 +42,10 @@ Nunca: editar el cuerpo de `App.css`, reordenar sus imports, crear un segundo ar
 |---|---|---|
 | `.btn-<variante>` | `.btn-primary` (dorado), `.btn-info` (azul), `.btn-success` (verde), `.btn-danger` (rojo), `.btn-carmesi` (cerrar sesión) | Botones de acción. La clase lleva **solo color + font-bold + rounded + transition**; el espaciado (`py-* px-*`), ancho (`w-full`) y tamaño de texto van en el JSX |
 | `.scrim` | — | Fondo de modales/overlays (negro 70%). El posicionamiento (`fixed/absolute inset-0 z-*`) va en el JSX. Excepciones: velos del login (`bg-black/45`) y PageDesigner (`bg-black/50`) |
+| `.section-title`, `.section-subtitle` | — | Títulos de sección/subsección en dashboards (serif + regla dorada `::after`); reemplazan `font-cormorant text-dorado mb-6/4` |
+| `.panel` | — | Contenedor estándar de paneles/listas/tarjetas (`bg-surface-2 rounded-xl border-dorado-oscuro/25`); reemplaza esas 4 clases en JSX |
+| `.price-pill` | — | Precio del menú público en píldora dorada |
+| `.stat-chip` | — | Chip de icono en tarjetas de `SummaryStats` |
 | `.hover-lift`, `.glow`, `.glass` | — | Efectos reutilizables |
 | `.login-*` | `.login-input`, `.login-form` | Zona login |
 | `.chef-*` | `.chef-arm`, `.chef-flame-1` | Ilustración SVG |

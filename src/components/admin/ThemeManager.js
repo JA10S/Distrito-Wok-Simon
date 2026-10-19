@@ -289,7 +289,7 @@ function ThemeManager() {
 
         {/* Colores */}
         <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20 lg:col-span-2">
-          <h3 className="text-lg font-cormorant text-dorado mb-4">Colores</h3>
+          <h3 className="section-subtitle">Colores</h3>
 
           <h4 className="text-dorado-claro text-sm font-semibold mb-3">Acentos</h4>
           <div className="mb-6">{renderColorFields(accentFields)}</div>
@@ -300,7 +300,7 @@ function ThemeManager() {
 
         {/* Tipos de letra */}
         <div className="bg-surface-2 rounded-lg p-6 border border-dorado-oscuro/20 lg:col-span-2">
-          <h3 className="text-lg font-cormorant text-dorado mb-4">Tipos de Letra</h3>
+          <h3 className="section-subtitle">Tipos de Letra</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-dorado-oscuro text-sm mb-1" htmlFor="heading-font">

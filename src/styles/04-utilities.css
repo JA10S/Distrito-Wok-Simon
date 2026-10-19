@@ -148,3 +148,45 @@
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
+
+/* ============ Lenguaje de diseño v2 (modernizar identidad) ============ */
+
+/* Títulos de sección de dashboards: serif + regla dorada decorativa */
+.section-title {
+  @apply font-cormorant text-xl font-semibold text-dorado flex items-center gap-3 mb-6;
+}
+
+.section-title::after {
+  content: '';
+  flex: 1;
+  max-width: 140px;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(var(--color-dorado) / 0.55), transparent);
+}
+
+.section-subtitle {
+  @apply font-cormorant text-lg font-semibold text-dorado flex items-center gap-3 mb-4;
+}
+
+.section-subtitle::after {
+  content: '';
+  flex: 1;
+  max-width: 90px;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(var(--color-dorado) / 0.45), transparent);
+}
+
+/* Contenedor estándar de paneles/listas/tarjetas en dashboards */
+.panel {
+  @apply bg-surface-2 rounded-xl border border-dorado-oscuro/25;
+}
+
+/* Precio del menú público en píldora dorada */
+.price-pill {
+  @apply inline-flex items-center bg-dorado/10 border border-dorado/30 text-dorado rounded-full px-2.5 py-0.5 font-inter text-sm font-semibold;
+}
+
+/* Chip de icono en tarjetas de estadísticas */
+.stat-chip {
+  @apply w-9 h-9 rounded-lg bg-dorado/10 border border-dorado/25 flex items-center justify-center shrink-0;
+}
