@@ -25,6 +25,7 @@ src/
 ├── contexts/       # React Context (AuthContext)
 ├── hooks/          # Custom hooks (useMenu, usePayment)
 ├── services/       # APIs externas (Firebase, Bold, WhatsApp)
+├── styles/         # CSS modular (App.css solo importa 00–06 en orden)
 ├── utils/          # Utilidades (helpers, constants, validations)
 └── config/         # Configuración Firebase
 
@@ -458,6 +459,13 @@ match /arroces/{itemId} {
   - **Columnas por sección del menú (distribución)**: los bloques de categoría de `settings/layout` aceptan `columns: 'auto'|'1'|'2'|'3'` — `layoutUtils.js` (`SECTION_COLUMNS`, `sectionGridClass(columns, themeLayout)`, sanitize con default `'auto'` → docs antiguos siguen funcionando); `MenuPage` lo aplica al grid de cada sección (antes era fijo según el layout del tema) y `PageDesigner` muestra un select **"Columnas de las tarjetas"** al expandir una categoría (la preview lo refleja en vivo; 'auto' = 1 col en clásica, 2 en sm+ para las demás)
   - `sanitizeBlock` solo añade `columns` a bloques `kind === 'category'`; hero/footer no lo llevan
   - Tests: 311 totales (17 nuevos: 2 en `layoutUtils.test` — columns en sanitize + sectionGridClass —, 3 en `PageDesigner.test` — cambiar columnas + preview 2/3 cols —, 2 en `MenuPage.design.test` — columns 1 y 3 en el menú real —, 1 en `ThemeManager.test` — pestaña 🧩 CSS —, 6 en `CustomCssEditor.test.js` — contador, guardar, error, copiar ejemplo, quitar, deshabilitado —, 4 en `CustomCssInjector.test.js.js` — inyecta, sin doc, error de lectura, limpia al desmontar — )
+- [x] App.css dividido en módulos por área en `src/styles/` (2026-10-18)
+  - **`src/App.css` es solo un índice** (13 líneas): `@import` de 7 archivos **en orden estricto** — `00-tailwind.css` (directivas), `01-tokens.css`, `02-base.css`, `03-light-overrides.css`, `04-utilities.css`, `05-login.css`, `06-chef-animation.css`. El orden de cascada del CSS compilado es idéntico al de un solo archivo; **no reordenar los imports** ni editar App.css
+  - ⚠️ **Lección**: el bundler de CRA **eleva los `@import` al inicio** del CSS compilado → si las directivas `@tailwind` estuvieran en App.css quedarían DESPUÉS de los tokens y las utilidades Tailwind pisarían los overrides (`.rounded*`). Por eso viven en `00-tailwind.css` importado **primero**
+  - Reglas nuevas → archivo de su área (tokens/base/overrides/utilidades/login/chef); cabeceras explicativas en cada archivo
+  - Limpieza: eliminado el `import './App.css'` duplicado en `App.js` (queda solo `index.js`)
+  - **Verificación de equivalencia**: mismo número de reglas (603 antes/después) y mismo orden de cascada; única diferencia: se perdieron declaraciones *fallback* hex (`#8b691433`) previas a las `var()` en 109 utilidades de color — navegadores que soportan variables CSS (todos los soportados) dan resultado visual idéntico; CSS compilado ~1,6 KB menor
+  - Tests: 311 totales sin cambios (33 suites)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: hooks — useOrders/useTables/useMenu, AdminDashboard, componentes admin y OrderCard)

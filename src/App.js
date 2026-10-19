@@ -13,8 +13,7 @@ import MenuPage from './pages/client/MenuPage';
 // Páginas privadas (carga diferida: cada panel baja su propio chunk)
 import LoginPage from './pages/auth/LoginPage';
 
-// Estilos
-import './App.css';
+// Estilos (App.css se importa una sola vez desde index.js)
 
 const WaiterDashboard = lazy(() => import('./pages/waiter/WaiterDashboard'));
 const CashierDashboard = lazy(() => import('./pages/cashier/CashierDashboard'));

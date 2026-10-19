@@ -1,0 +1,155 @@
+/* ============ 05 · Login ============ */
+/* Imagen de referencia del chef (máscara/viñeta/zoom/resplandor), botón
+   dorado metálico (.btn-gold), inputs (autofill + focus) y animaciones
+   de entrada del login. */
+
+/* ============ Ilustración animada: chef con wok (login) ============ */
+
+/* Imagen de referencia en el login: fusión + efectos */
+.login-chef {
+  -webkit-mask-image: radial-gradient(ellipse 78% 76% at 55% 48%, #000 58%, transparent 100%);
+  mask-image: radial-gradient(ellipse 78% 76% at 55% 48%, #000 58%, transparent 100%);
+}
+.login-chef-img {
+  mix-blend-mode: lighten;
+  transform-origin: 62% 45%;
+  animation: login-chef-zoom 16s ease-in-out infinite alternate;
+}
+
+@keyframes login-chef-zoom {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.07) translate(-1.5%, -1%); }
+}
+
+/* Resplandor pulsante sobre el fuego */
+.login-chef::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 62% 42%,
+    rgb(var(--color-dorado) / 0.35),
+    transparent 55%
+  );
+  mix-blend-mode: screen;
+  animation: login-chef-flicker 3.2s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes login-chef-flicker {
+  from { opacity: 0.45; }
+  to { opacity: 0.95; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-chef-img,
+  .login-chef::after,
+  .login-brand,
+  .login-form {
+    animation: none;
+  }
+}
+
+/* Botón principal del login: dorado metálico con degradado.
+   Los tonos --gold-* los escribe applyTheme (en modo claro se aclara el
+   acento para que el texto negro mantenga contraste). */
+.btn-gold {
+  background-image: linear-gradient(
+    135deg,
+    var(--gold-from) 0%,
+    var(--gold-mid) 50%,
+    var(--gold-to) 100%
+  );
+  background-size: 170% 170%;
+  background-position: 0% 50%;
+  box-shadow: 0 8px 22px -8px rgb(var(--color-dorado) / 0.55);
+  transition:
+    background-position 0.35s ease,
+    transform 0.25s ease,
+    filter 0.25s ease,
+    box-shadow 0.25s ease,
+    opacity 0.2s ease;
+}
+
+/* Hover: se eleva (translateY -2px) + escala 1.02, brillo dorado más vivo */
+.btn-gold:hover:not(:disabled) {
+  background-position: 100% 50%;
+  transform: translateY(-2px) scale(1.02);
+  filter: brightness(1.06);
+  box-shadow: 0 14px 30px -8px rgb(var(--color-dorado) / 0.75);
+}
+
+/* Active: encoge un 2% de forma fluida */
+.btn-gold:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Inputs del login: el autocompletado del navegador no los pone blancos */
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 40rem #050505 inset;
+  -webkit-text-fill-color: #ffffff;
+  caret-color: #ffffff;
+  transition: background-color 9999s ease-out;
+}
+
+/* En modo diurno el campo es claro: el autocompletado sigue claro */
+:root[data-mode='light'] .login-input:-webkit-autofill,
+:root[data-mode='light'] .login-input:-webkit-autofill:hover,
+:root[data-mode='light'] .login-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 40rem #f1e9d6 inset;
+  -webkit-text-fill-color: #14120e;
+  caret-color: #14120e;
+}
+
+/* Animación de carga: contenido de marca (izquierda) con fade-in suave 0 → 1 en 0.8s */
+.login-brand {
+  animation: login-fade 0.8s ease-out both;
+}
+
+@keyframes login-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Animación de carga: formulario (derecha) con retardo de 0.2s,
+   desliza desde translateY(20px) hasta su lugar en 1s */
+.login-form {
+  animation: login-slide-up 1s ease-out 0.2s both;
+}
+
+@keyframes login-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Texto de marca legible sobre la ilustración */
+.login-brand-text {
+  text-shadow: 0 2px 16px rgb(0 0 0 / 0.85);
+}
+
+/* Microinteracción de inputs: focus con transición a dorado + resplandor (0.3s) */
+.login-input {
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: rgb(var(--color-dorado));
+  box-shadow:
+    0 0 0 3px rgb(var(--color-dorado) / 0.15),
+    0 0 18px -4px rgb(var(--color-dorado) / 0.4);
+}

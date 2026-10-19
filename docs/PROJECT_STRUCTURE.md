@@ -38,6 +38,15 @@ restaurante/
 │   │   ├── whatsappNotification.js  # WhatsApp API
 │   │   └── pushNotification.js      # FCM
 │   │
+│   ├── 📁 styles/                    # CSS modular (ordenable 00–06)
+│   │   ├── 00-tailwind.css           # Directivas @tailwind (siempre primero)
+│   │   ├── 01-tokens.css             # Variables del tema y .surface-dark
+│   │   ├── 02-base.css               # Base, scrollbar y componentes genéricos
+│   │   ├── 03-light-overrides.css    # Overrides de utilidades en modo diurno
+│   │   ├── 04-utilities.css          # hover-lift, glass, quick-card, animate-*
+│   │   ├── 05-login.css              # Login: btn-gold, inputs, animaciones
+│   │   └── 06-chef-animation.css     # Ilustración SVG del chef
+│   │
 │   ├── 📁 utils/                    # Utilidades
 │   │   ├── 📁 helpers/              # Funciones auxiliares
 │   │   │   ├── formatCurrency.js
@@ -51,7 +60,7 @@ restaurante/
 │   │   └── firebase.js
 │   │
 │   ├── App.js                       # Componente principal
-│   ├── App.css                      # Estilos globales
+│   ├── App.css                      # Índice: solo @import de styles/ en orden
 │   └── index.js                     # Entry point
 │
 ├── 📁 public/                       # ARCHIVOS PÚBLICOS

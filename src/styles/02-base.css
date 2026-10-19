@@ -1,0 +1,104 @@
+/* ============ 02 · Estilos base y componentes genéricos ============ */
+/* body, helpers de fuente, scrollbar, animación fadeIn, componentes
+   genéricos (botones/tarjetas/inputs/mesas) y cajas de notas. */
+
+/* Estilos base */
+body {
+  font-family: var(--font-body);
+  background-color: rgb(var(--color-surface));
+  color: rgb(var(--color-dorado-claro));
+}
+
+/* Estilos personalizados */
+.font-cormorant {
+  font-family: var(--font-heading);
+}
+
+.font-montserrat {
+  font-family: var(--font-body);
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--color-surface));
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-dorado-oscuro));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-dorado));
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Botones */
+.btn-primary {
+  @apply bg-dorado hover:bg-dorado-oscuro text-negro font-bold py-2 px-4 rounded transition duration-200;
+}
+
+.btn-secondary {
+  @apply bg-surface-3 hover:bg-line/60 text-ink font-bold py-2 px-4 rounded transition duration-200;
+}
+
+.btn-danger {
+  @apply bg-rojo hover:bg-rojo-oscuro text-white font-bold py-2 px-4 rounded transition duration-200;
+}
+
+/* Tarjetas */
+.card {
+  @apply bg-surface-2 rounded-lg p-4 border border-line/60;
+}
+
+/* Inputs */
+.input {
+  @apply w-full bg-surface-3 border border-line rounded px-4 py-3 text-ink focus:outline-none focus:border-dorado;
+}
+
+/* Estados de mesa */
+.table-available {
+  @apply border-green-500 bg-green-500/10;
+}
+
+.table-occupied {
+  @apply border-red-500 bg-red-500/10;
+}
+
+.table-reserved {
+  @apply border-yellow-500 bg-yellow-500/10;
+}
+
+/* Notas (cocina / domicilio): tinte cálido legible en ambos modos */
+.notes-box {
+  background: rgb(180 83 9 / 0.14);
+  border: 1px solid rgb(202 138 4 / 0.45);
+}
+.notes-box-title { color: #b45309; }
+.notes-box-text { color: rgb(var(--color-ink) / 0.9); }
+
+:root[data-mode='dark'] .notes-box {
+  background: rgb(120 53 15 / 0.3);
+  border-color: rgb(180 83 9 / 0.35);
+}
+:root[data-mode='dark'] .notes-box-title { color: #fbbf24; }
+:root[data-mode='dark'] .notes-box-text { color: #fde68a; }
