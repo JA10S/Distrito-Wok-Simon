@@ -53,12 +53,12 @@ function TableCard({ table, onClick, onClose, canClose, hasActiveOrder }) {
   return (
     <div
       onClick={onClick}
-      className={`rounded-lg p-4 border-2 cursor-pointer transition hover-lift ${
+      className={`bg-surface-card rounded-lg p-4 border-2 cursor-pointer transition hover-lift ${
         table.status === 'available'
-          ? 'border-green-500 bg-green-500/10 hover:bg-green-500/20'
+          ? 'border-green-500'
           : table.status === 'occupied'
-          ? 'border-red-500 bg-red-500/10'
-          : 'border-yellow-500 bg-yellow-500/10'
+          ? 'border-red-500'
+          : 'border-yellow-500'
       }`}
     >
       <div className="text-center">

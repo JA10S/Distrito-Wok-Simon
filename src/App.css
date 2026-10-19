@@ -14,6 +14,7 @@
   --color-negro: 13 13 13;           /* #0d0d0d */
   --color-surface: 13 13 13;
   --color-surface-2: 23 23 26;
+  --color-surface-card: 23 23 26;
   --color-surface-3: 35 35 39;
   --color-ink: 255 255 255;
   --color-ink-muted: 169 151 103;
@@ -33,6 +34,7 @@
   --dk-negro: 13 13 13;
   --dk-surface: 13 13 13;
   --dk-surface-2: 23 23 26;
+  --dk-surface-card: 23 23 26;
   --dk-surface-3: 35 35 39;
   --dk-ink: 255 255 255;
   --dk-ink-muted: 169 151 103;
@@ -61,6 +63,7 @@
   --color-negro: var(--dk-negro);
   --color-surface: var(--dk-surface);
   --color-surface-2: var(--dk-surface-2);
+  --color-surface-card: var(--dk-surface-card);
   --color-surface-3: var(--dk-surface-3);
   --color-ink: var(--dk-ink);
   --color-ink-muted: var(--dk-ink-muted);
@@ -71,7 +74,7 @@
 /* Estilos base */
 body {
   font-family: var(--font-body);
-  background-color: rgb(var(--color-negro));
+  background-color: rgb(var(--color-surface));
   color: rgb(var(--color-dorado-claro));
 }
 
@@ -90,7 +93,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(var(--color-negro));
+  background: rgb(var(--color-surface));
 }
 
 ::-webkit-scrollbar-thumb {

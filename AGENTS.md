@@ -434,6 +434,17 @@ match /arroces/{itemId} {
   - **`applyTheme`**: en modo claro el degradado del botón (`--gold-from/mid/to`) ahora se mezcla con **`CREAM #FFF6DB`** (ratios 0.88/0.72/0.42) en vez de blanco puro → botones y `.btn-gold` quedan **dorado crema** con texto oscuro encima; helper local `mixWith(hex, targetHex, ratio)` reemplaza a `mixWithWhite`
   - Regla de diseño: un solo token `dorado` sirve para texto (debe quedar legible sobre claro) y para acentos (el crema se aplica solo en el degradado CSS) — si se quiere crema más intenso, subir los ratios de `mixWith` o el campo "Dorado (principal)" desde Apariencia
   - Tests: 294 totales (3 asserts actualizados a los nuevos hex: `themeUtils.test` (dorado '150 122 36', surface '242 240 233' y crema del degradado #f2e7c5/#e2d3a8/#c2ae71), `ThemeManager.test` (surface #F2F0E9), `ThemeContext.test` (surface '242 240 233'))
+- [x] Token individual para tarjetas destacadas: `surfaceCard` (2026-10-18)
+  - **Nuevo token de tema `surfaceCard`** (13 claves por paleta): fondo de las tarjetas "destacadas" — resúmenes/estadísticas (mesas disponibles/ocupadas), tarjetas de mesas del camarero y contenedor de "Últimos Pedidos" del admin — editable individualmente en **Admin → Apariencia → Superficies y texto** ("Fondo de tarjetas destacadas"); el default en las 6 paletas = mismo valor que `surface2` (así coinciden con el resto de tarjetas)
+  - `applyTheme` lo convierte a `--color-surface-card` (la conversión camelCase→kebab del loop de colores); `tailwind.config.js` añade `bg-surface-card`; `sanitizeTheme` lo acepta en temas guardados antiguos (valor faltante → default de la paleta)
+  - Aplicado en: `SummaryStats` (todas las pestañas con `view_summaries`), `TableCard` del WaiterDashboard (se quitó el tint semitransparente `bg-*-500/10` que pisaba el fondo — el estado se comunica con borde + badge) y el contenedor de "Últimos Pedidos" en AdminDashboard
+  - Tests: 294 totales (1 assert nuevo en ThemeManager — el campo aparece en Apariencia)
+- [x] Sweeping de fondos negros en modo diurno (2026-10-18)
+  - **Bug sistémico raíz**: `body` y el track del scrollbar en `App.css` usaban `var(--color-negro)` (oscuro en diurno) → cualquier zona sin fondo propio salía NEGRA; ahora usan `var(--color-surface)` (en nocturno es idéntico, #0d0d0d)
+  - **`--color-surface-card` sin default en `:root`**: el token nuevo quedaba transparente → tarjetas negras; agregado `--color-surface-card` + `--dk-surface-card` en `:root` y override en `.surface-dark`
+  - **`theme-color` del navegador**: `applyTheme` ahora actualiza `meta[name=theme-color]` con el hex de `surface` del modo activo (barra del móvil acompaña el tema)
+  - **Se conservan a propósito** (función, no bug): scrims de modales `bg-black/60-80`, velo de la imagen del login, marca del login y preview de PageDesigner (`.surface-dark`, siempre oscura), badge del carrito `bg-negro`, botón carmesí de cerrar sesión
+  - Tests: 294 totales sin cambios
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: hooks — useOrders/useTables/useMenu, AdminDashboard, componentes admin y OrderCard)

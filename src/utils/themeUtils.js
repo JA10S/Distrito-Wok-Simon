@@ -21,6 +21,7 @@ export const PRESETS = [
       negro: '#0d0d0d',
       surface: '#0d0d0d',
       surface2: '#17171A',
+      surfaceCard: '#17171A',
       surface3: '#232327',
       ink: '#FFFFFF',
       inkMuted: '#A99767',
@@ -38,6 +39,7 @@ export const PRESETS = [
       negro: '#16130E',
       surface: '#F2F0E9',
       surface2: '#FBFAF6',
+      surfaceCard: '#FBFAF6',
       surface3: '#E9E6DB',
       ink: '#16130E',
       inkMuted: '#6D6350',
@@ -58,6 +60,7 @@ export const PRESETS = [
       negro: '#0A1311',
       surface: '#0A1311',
       surface2: '#10201C',
+      surfaceCard: '#10201C',
       surface3: '#17302B',
       ink: '#FFFFFF',
       inkMuted: '#96C4B4',
@@ -72,6 +75,7 @@ export const PRESETS = [
       negro: '#0E1B17',
       surface: '#F4FAF7',
       surface2: '#FFFFFF',
+      surfaceCard: '#FFFFFF',
       surface3: '#E7F2EC',
       ink: '#0E1B17',
       inkMuted: '#4F635B',
@@ -92,6 +96,7 @@ export const PRESETS = [
       negro: '#120C0A',
       surface: '#120C0A',
       surface2: '#1C1310',
+      surfaceCard: '#1C1310',
       surface3: '#2A1C18',
       ink: '#FFFFFF',
       inkMuted: '#CBA89A',
@@ -106,6 +111,7 @@ export const PRESETS = [
       negro: '#1E1310',
       surface: '#FCF5F1',
       surface2: '#FFFFFF',
+      surfaceCard: '#FFFFFF',
       surface3: '#F6E9E2',
       ink: '#1E1310',
       inkMuted: '#6E5850',
@@ -170,6 +176,7 @@ export const COLOR_FIELDS = [
   { key: 'negro', label: 'Fondo principal', group: 'accent' },
   { key: 'surface', label: 'Fondo de página', group: 'surface' },
   { key: 'surface2', label: 'Fondo de tarjetas', group: 'surface' },
+  { key: 'surfaceCard', label: 'Fondo de tarjetas destacadas (mesas, resúmenes, últimos pedidos)', group: 'surface' },
   { key: 'surface3', label: 'Fondo de campos', group: 'surface' },
   { key: 'ink', label: 'Texto principal', group: 'surface' },
   { key: 'inkMuted', label: 'Texto secundario', group: 'surface' },
@@ -340,4 +347,17 @@ export function applyTheme(theme, modeOverride) {
   root.dataset.mode = effectiveMode;
   root.dataset.layout = safe.layout;
   root.dataset.radius = safe.radius;
+
+  /* Barra del navegador (móvil): sigue el fondo del tema activo */
+  try {
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'theme-color');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', colors.surface);
+  } catch (error) {
+    /* entornos sin document.head */
+  }
 }

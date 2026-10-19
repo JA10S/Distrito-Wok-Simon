@@ -14,6 +14,7 @@ module.exports = {
         'negro': 'rgb(var(--color-negro) / <alpha-value>)',
         'surface': 'rgb(var(--color-surface) / <alpha-value>)',
         'surface-2': 'rgb(var(--color-surface-2) / <alpha-value>)',
+        'surface-card': 'rgb(var(--color-surface-card) / <alpha-value>)',
         'surface-3': 'rgb(var(--color-surface-3) / <alpha-value>)',
         'ink': 'rgb(var(--color-ink) / <alpha-value>)',
         'ink-muted': 'rgb(var(--color-ink-muted) / <alpha-value>)',

@@ -160,7 +160,7 @@ function AdminDashboard() {
 
             {/* Últimos pedidos */}
             <h3 className="text-lg font-cormorant text-dorado mb-4">Últimos Pedidos</h3>
-            <div className="bg-surface-2 rounded-xl border border-dorado-oscuro/25 overflow-hidden">
+            <div className="bg-surface-card rounded-xl border border-dorado-oscuro/25 overflow-hidden">
               {orders.length === 0 ? (
                 <p className="text-dorado-oscuro text-center py-6 font-inter">
                   No hay pedidos registrados

@@ -28,6 +28,7 @@ test('muestra los campos de color y tipografía', () => {
   expect(screen.getByText('Apariencia de las Páginas')).toBeInTheDocument();
   expect(screen.getByLabelText('Dorado (principal)')).toBeInTheDocument();
   expect(screen.getByLabelText('Fondo principal')).toBeInTheDocument();
+  expect(screen.getByLabelText(/tarjetas destacadas/)).toBeInTheDocument();
   expect(screen.getByLabelText('Títulos y encabezados')).toBeInTheDocument();
   expect(screen.getByLabelText('Texto del cuerpo')).toBeInTheDocument();
 });
