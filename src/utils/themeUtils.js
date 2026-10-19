@@ -251,10 +251,37 @@ export function resolveMode(theme) {
   return 'dark';
 }
 
+/* Fuentes adicionales de Google Fonts: se descargan solo si el tema las usa,
+   para no bloquear la primera carga con las 7 familias. */
+const FONT_SPECS = {
+  Cormorant_Garamond:
+    'family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400',
+  Playfair_Display: 'family=Playfair+Display:wght@400;600;700',
+  Lora: 'family=Lora:wght@400;600',
+  Montserrat: 'family=Montserrat:wght@300;400;500;600',
+  Poppins: 'family=Poppins:wght@300;400;500;600',
+  Lato: 'family=Lato:wght@300;400;700'
+};
+
+export function ensureFontLoaded(fontCss) {
+  if (typeof document === 'undefined' || !fontCss) return;
+  const match = /^'([^']+)'/.exec(String(fontCss).trim());
+  if (!match) return;
+  const key = match[1].replace(/\s+/g, '_');
+  const spec = FONT_SPECS[key];
+  if (!spec) return;
+  const selector = `link[data-theme-font="${match[1]}"]`;
+  if (document.querySelector(selector)) return;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `https://fonts.googleapis.com/css2?${spec}&display=swap`;
+  link.setAttribute('data-theme-font', match[1]);
+  document.head.appendChild(link);
+}
+
 export function applyTheme(theme, modeOverride) {
   const safe = sanitizeTheme(theme);
   const root = document.documentElement;
-
   /* Modo al que pertenecen los colores personalizados guardados */
   const savedMode = safe.mode === 'system' ? resolveMode(safe) : safe.mode;
 
@@ -282,6 +309,8 @@ export function applyTheme(theme, modeOverride) {
 
   const heading = HEADING_FONTS.find((f) => f.id === safe.headingFont);
   const body = BODY_FONTS.find((f) => f.id === safe.bodyFont);
+  ensureFontLoaded(heading.css);
+  ensureFontLoaded(body.css);
   root.style.setProperty('--font-heading', heading.css);
   root.style.setProperty('--font-body', body.css);
 

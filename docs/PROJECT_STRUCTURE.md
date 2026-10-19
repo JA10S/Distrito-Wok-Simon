@@ -73,8 +73,20 @@ restaurante/
 │   ├── 📁 skills/                   # Skills (conocimiento reutilizable)
 │   │   ├── firebase-db-modeler/     # Diseño/modelado Firestore
 │   │   │   └── SKILL.md
-│   │   └── ilustraciones-svg/       # Ilustraciones SVG animadas
-│   │       └── SKILL.md
+│   │   ├── ilustraciones-svg/       # Ilustraciones SVG animadas
+│   │   │   └── SKILL.md
+│   │   ├── slack-gif-creator/       # GIFs animados (PIL, easing, validación)
+│   │   │   ├── SKILL.md
+│   │   │   └── core/                # gif_builder, validators, easing
+│   │   ├── motion-background/       # Fondos animados con bucle seamless
+│   │   │   ├── SKILL.md
+│   │   │   └── references/
+│   │   ├── animation-principles/    # Timing, easing y curvas
+│   │   │   ├── SKILL.md
+│   │   │   └── references/
+│   │   └── generative-illustration/ # Arte generado + motion por código
+│   │       ├── SKILL.md
+│   │       └── references/          # render-harness (deliver-and-verify)
 │   └── (node_modules/ — interno de opencode, ignorado por git)
 │
 ├── 📁 tools/                        # HERRAMIENTAS DEL PROYECTO
@@ -90,7 +102,8 @@ restaurante/
 │
 ├── 📁 scripts/                      # SCRIPTS
 │   ├── deploy.sh                    # Despliegue
-│   └── generate-pdf.ps1             # Generar PDF
+│   ├── generate-pdf.ps1             # Generar PDF
+│   └── generate-login-gif.py        # GIF animado del login (fuego+chispas)
 │
 ├── 📁 tests/                        # TESTS
 │   ├── App.test.js

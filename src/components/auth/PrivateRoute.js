@@ -1,16 +1,13 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import LoadingScreen from '../common/LoadingScreen';
 
 function PrivateRoute({ children, allowedRoles }) {
   const { currentUser, userRoles, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-surface">
-        <div className="text-dorado text-xl">Cargando...</div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!currentUser) {

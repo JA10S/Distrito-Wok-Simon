@@ -13,6 +13,7 @@ import {
   getDocs
 } from 'firebase/firestore';
 import app from '../services/firebase';
+import LoadingScreen from '../components/common/LoadingScreen';
 
 const AuthContext = createContext();
 
@@ -28,6 +29,32 @@ export function AuthProvider({ children }) {
 
   const auth = useRef(getAuth(app));
   const db = useRef(getFirestore(app));
+  const loadedUidRef = useRef(null);
+
+  const readCache = (key) => {
+    try {
+      const value = JSON.parse(localStorage.getItem(key));
+      return Array.isArray(value) ? value : [];
+    } catch (error) {
+      return [];
+    }
+  };
+
+  const writeCache = (key, value) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      /* almacenamiento no disponible */
+    }
+  };
+
+  const clearAccess = () => {
+    setUserRoles([]);
+    setUserPermissions([]);
+    loadedUidRef.current = null;
+    localStorage.removeItem('userRoles');
+    localStorage.removeItem('userPermissions');
+  };
 
   const getUserData = useCallback(async (userId) => {
     try {
@@ -56,53 +83,54 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const getUserPermissions = useCallback(async (roles) => {
-    if (!roles || roles.length === 0) return [];
-    
+  /* Trae usuario y roles en paralelo (antes eran 2 llamadas encadenadas) */
+  const loadAccessData = useCallback(async (userId) => {
     try {
-      const allRoles = await getAllRoles();
+      const [userData, allRoles] = await Promise.all([
+        getUserData(userId),
+        getAllRoles()
+      ]);
+      const roles = userData && userData.roles ? userData.roles : null;
+      if (!roles) return { hasAccess: false, roles: [], permissions: [] };
       const permissions = new Set();
-      
       roles.forEach((roleName) => {
         const role = allRoles[roleName];
         if (role && role.permissions) {
           role.permissions.forEach((perm) => permissions.add(perm));
         }
       });
-      
-      return Array.from(permissions);
+      return { hasAccess: true, roles, permissions: Array.from(permissions) };
     } catch (error) {
-      console.error('Error al obtener permisos:', error);
-      return [];
+      console.error('Error al cargar acceso:', error);
+      return { hasAccess: false, roles: [], permissions: [] };
     }
-  }, [getAllRoles]);
+  }, [getUserData, getAllRoles]);
 
   const login = useCallback(async (email, password) => {
     try {
       const result = await signInWithEmailAndPassword(auth.current, email, password);
-      
+
       if (result.user) {
-        const userData = await getUserData(result.user.uid);
-        if (userData && userData.roles) {
-          setUserRoles(userData.roles);
-          localStorage.setItem('userRoles', JSON.stringify(userData.roles));
-          const permissions = await getUserPermissions(userData.roles);
-          setUserPermissions(permissions);
-          return { ...result, roles: userData.roles };
+        const access = await loadAccessData(result.user.uid);
+        if (access.hasAccess) {
+          setUserRoles(access.roles);
+          setUserPermissions(access.permissions);
+          writeCache('userRoles', access.roles);
+          writeCache('userPermissions', access.permissions);
+          loadedUidRef.current = result.user.uid;
+          return { ...result, roles: access.roles };
         } else {
-          setUserRoles([]);
-          setUserPermissions([]);
-          localStorage.setItem('userRoles', '[]');
+          clearAccess();
           return { ...result, roles: [] };
         }
       }
-      
+
       return result;
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
       throw error;
     }
-  }, [getUserData, getUserPermissions]);
+  }, [loadAccessData]);
 
   const logout = useCallback(async () => {
     try {
@@ -125,30 +153,43 @@ export function AuthProvider({ children }) {
   }, [userPermissions]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth.current, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth.current, (user) => {
       setCurrentUser(user);
-      if (user) {
-        const userData = await getUserData(user.uid);
-        if (userData && userData.roles) {
-          setUserRoles(userData.roles);
-          localStorage.setItem('userRoles', JSON.stringify(userData.roles));
-          const permissions = await getUserPermissions(userData.roles);
-          setUserPermissions(permissions);
-        } else {
-          setUserRoles([]);
-          setUserPermissions([]);
-          localStorage.removeItem('userRoles');
-        }
-      } else {
-        setUserRoles([]);
-        setUserPermissions([]);
-        localStorage.removeItem('userRoles');
+
+      if (!user) {
+        clearAccess();
+        setLoading(false);
+        return;
+      }
+
+      /* Pintar enseguida con los roles/permisos guardados en este dispositivo:
+         el render NO espera a Firestore (los permisos son solo de UI,
+         la seguridad real la aplican las reglas de Firestore). */
+      const cachedRoles = readCache('userRoles');
+      if (cachedRoles.length > 0) {
+        setUserRoles(cachedRoles);
+        setUserPermissions(readCache('userPermissions'));
       }
       setLoading(false);
+
+      if (loadedUidRef.current === user.uid) return;
+
+      /* Refresco en segundo plano (usuario + roles en paralelo) */
+      loadAccessData(user.uid).then((access) => {
+        loadedUidRef.current = user.uid;
+        if (access.hasAccess) {
+          setUserRoles(access.roles);
+          setUserPermissions(access.permissions);
+          writeCache('userRoles', access.roles);
+          writeCache('userPermissions', access.permissions);
+        } else {
+          clearAccess();
+        }
+      });
     });
 
     return unsubscribe;
-  }, [getUserData, getUserPermissions]);
+  }, [loadAccessData]);
 
   const value = {
     currentUser,
@@ -163,7 +204,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {loading ? <LoadingScreen /> : children}
     </AuthContext.Provider>
   );
 }

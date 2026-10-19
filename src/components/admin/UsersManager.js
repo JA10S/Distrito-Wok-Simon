@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useRoles, useUsers } from '../../hooks/useRoles';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { app } from '../../services/firebase';
+import LoadingScreen from '../common/LoadingScreen';
 
 const auth = getAuth(app);
 
@@ -80,12 +81,7 @@ function UsersManager() {
   };
 
   if (loading) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-4xl mb-4 animate-bounce">🏮</div>
-        <p className="text-dorado">Cargando usuarios...</p>
-      </div>
-    );
+    return <LoadingScreen message="Cargando usuarios..." fullScreen={false} />;
   }
 
   return (

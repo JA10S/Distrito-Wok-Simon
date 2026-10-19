@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRoles } from '../../hooks/useRoles';
+import LoadingScreen from '../common/LoadingScreen';
 
 const ALL_PERMISSIONS = {
   create_order: 'Crear Pedidos',
@@ -21,7 +22,8 @@ const ALL_PERMISSIONS = {
   attend_calls: 'Atender Llamados de Clientes',
   transfer_order: 'Trasladar Pedidos a otra Mesa',
   close_shift: 'Cerrar Turno',
-  track_drivers: 'Ver Ubicación de Repartidores'
+  track_drivers: 'Ver Ubicación de Repartidores',
+  manage_credit: 'Gestionar Cartera de Clientes (Fiado)'
 };
 
 const ROLE_ICONS = {
@@ -67,12 +69,7 @@ function RolesManager() {
   };
 
   if (loading) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-4xl mb-4 animate-bounce">🏮</div>
-        <p className="text-dorado">Cargando roles...</p>
-      </div>
-    );
+    return <LoadingScreen message="Cargando roles..." fullScreen={false} />;
   }
 
   return (

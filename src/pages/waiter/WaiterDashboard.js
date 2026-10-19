@@ -12,6 +12,7 @@ import OrderEditor from '../../components/waiter/OrderEditor';
 import RecentCancelledOrders from '../../components/waiter/RecentCancelledOrders';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import SummaryStats from '../../components/common/SummaryStats';
+import LoadingScreen from '../../components/common/LoadingScreen';
 import { FaChair, FaReceipt, FaPlusCircle, FaCheckCircle, FaInbox, FaHistory, FaBell, FaRegClock } from 'react-icons/fa';
 import {
   findDuplicateOrder,
@@ -524,14 +525,7 @@ function WaiterDashboard() {
     : orders.filter(o => (o.type || 'table') === typeFilter);
 
   if (tablesLoading || ordersLoading) {
-    return (
-      <div className="min-h-screen bg-surface flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4 animate-bounce">🏮</div>
-          <p className="text-dorado font-cormorant text-xl">Cargando...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Cargando pedidos..." />;
   }
 
   return (
@@ -866,7 +860,7 @@ function WaiterDashboard() {
               <div className="font-inter text-3xl font-semibold text-dorado">
                 ${(chargingOrder.total || 0).toLocaleString()}
               </div>
-              <div className="text-xs text-dorado-oscuro">IVA 10% incluido</div>
+              <div className="text-xs text-dorado-oscuro">IVA incluido en el precio</div>
             </div>
 
             <div className="space-y-2 mb-4">

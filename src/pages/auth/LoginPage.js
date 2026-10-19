@@ -11,9 +11,22 @@ function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [chefImgOk, setChefImgOk] = useState(true);
+  const [motionOk, setMotionOk] = useState(true);
 
   const { login, userRoles, currentUser } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setMotionOk(!mq.matches);
+    const onChange = (e) => setMotionOk(!e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  const chefSrc = motionOk
+    ? '/assets/images/login-chef-animated.gif'
+    : '/assets/images/login-chef.jpg';
 
   useEffect(() => {
     if (currentUser && userRoles && userRoles.length > 0) {
@@ -49,7 +62,7 @@ function LoginPage() {
     chefImgOk ? (
       <div className="login-chef absolute inset-0">
         <img
-          src="/assets/images/login-chef.jpg"
+          src={chefSrc}
           alt=""
           aria-hidden="true"
           className="login-chef-img block w-full h-full object-cover"
@@ -78,16 +91,9 @@ function LoginPage() {
           {/* Velo oscuro para legibilidad del texto */}
           <div className="absolute inset-0 bg-black/45" aria-hidden="true" />
 
-          {/* Contenido de marca (aparece con fade-in de 0.8s) */}
-          <div className="relative h-full flex flex-col items-center justify-center text-center px-8">
-            <h1>
-              <img
-                src="/assets/images/Logo_actualizado.png"
-                alt="Distrito Wok Simón - Restaurante Chino"
-                className="w-[320px] max-w-[85%] rounded-xl border border-dorado/20 shadow-[0_8px_32px_rgba(0,0,0,0.55)]"
-              />
-            </h1>
-            <p className="login-brand-text font-cormorant italic text-dorado tracking-[0.3em] mt-6 text-lg">
+          {/* Contenido de marca: eslogan al pie para no tapar el GIF */}
+          <div className="relative h-full flex flex-col items-center justify-end text-center px-8 pb-7">
+            <p className="login-brand-text font-cormorant italic text-dorado tracking-[0.3em] text-lg">
               * SABOR QUE ENAMORA *
             </p>
           </div>
@@ -102,19 +108,12 @@ function LoginPage() {
               style={{ width: 270, maxWidth: '100%' }}
             >
               <img
-                src="/assets/images/login-chef.jpg"
+                src={chefSrc}
                 alt="Chef cocinando en un wok con llamas"
                 className="login-chef-img block w-full"
                 onError={() => setChefImgOk(false)}
               />
             </div>
-            <h1 className="mt-4">
-              <img
-                src="/assets/images/Logo_actualizado.png"
-                alt="Distrito Wok Simón - Restaurante Chino"
-                className="w-[220px] max-w-full mx-auto rounded-lg border border-dorado/20 shadow-lg"
-              />
-            </h1>
             <p className="login-brand-text font-cormorant italic text-dorado tracking-[0.25em] text-sm mt-3">
               * SABOR QUE ENAMORA *
             </p>
