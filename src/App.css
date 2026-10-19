@@ -15,6 +15,9 @@
   --color-surface: 13 13 13;
   --color-surface-2: 23 23 26;
   --color-surface-card: 23 23 26;
+  --color-surface-hero: 23 23 26;
+  --color-surface-header: 13 13 13;
+  --color-surface-footer: 23 23 26;
   --color-surface-3: 35 35 39;
   --color-ink: 255 255 255;
   --color-ink-muted: 169 151 103;
@@ -35,6 +38,9 @@
   --dk-surface: 13 13 13;
   --dk-surface-2: 23 23 26;
   --dk-surface-card: 23 23 26;
+  --dk-surface-hero: 23 23 26;
+  --dk-surface-header: 13 13 13;
+  --dk-surface-footer: 23 23 26;
   --dk-surface-3: 35 35 39;
   --dk-ink: 255 255 255;
   --dk-ink-muted: 169 151 103;
@@ -64,6 +70,9 @@
   --color-surface: var(--dk-surface);
   --color-surface-2: var(--dk-surface-2);
   --color-surface-card: var(--dk-surface-card);
+  --color-surface-hero: var(--dk-surface-hero);
+  --color-surface-header: var(--dk-surface-header);
+  --color-surface-footer: var(--dk-surface-footer);
   --color-surface-3: var(--dk-surface-3);
   --color-ink: var(--dk-ink);
   --color-ink-muted: var(--dk-ink-muted);

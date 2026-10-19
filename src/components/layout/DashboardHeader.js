@@ -17,7 +17,7 @@ function DashboardHeader({ title, user, onLogout, activeTab, onTabChange, tabs =
 
   return (
     <>
-      <header className="bg-surface border-b border-dorado/30 py-3 sm:py-4">
+      <header className="bg-surface-header border-b border-dorado/30 py-3 sm:py-4">
         <div className="container mx-auto px-4 flex flex-wrap justify-between items-center gap-3">
           <div className="flex items-center gap-3 min-w-0">
             {showMenuButton && (
@@ -53,7 +53,7 @@ function DashboardHeader({ title, user, onLogout, activeTab, onTabChange, tabs =
         </div>
       </header>
 
-      <nav className={`bg-surface/95 backdrop-blur-sm border-b border-dorado-oscuro/30 sticky top-0 z-20 ${barVisible}`}>
+      <nav className={`bg-surface-header/95 backdrop-blur-sm border-b border-dorado-oscuro/30 sticky top-0 z-20 ${barVisible}`}>
         <div className="container mx-auto px-4">
           <div className="flex space-x-1 sm:space-x-2 overflow-x-auto no-scrollbar">
             {onBack && (
@@ -97,7 +97,7 @@ function DashboardHeader({ title, user, onLogout, activeTab, onTabChange, tabs =
           )}
           <aside
             aria-label="Menú de secciones"
-            className={`fixed top-0 left-0 z-50 h-full w-64 max-w-[85vw] bg-surface border-r border-line/60 shadow-2xl p-4 flex flex-col gap-4 transition-transform duration-300 ${
+            className={`fixed top-0 left-0 z-50 h-full w-64 max-w-[85vw] bg-surface-header border-r border-line/60 shadow-2xl p-4 flex flex-col gap-4 transition-transform duration-300 ${
               menuOpen ? 'translate-x-0' : '-translate-x-full'
             } ${layout === 'side' ? 'lg:hidden' : ''}`}
           >

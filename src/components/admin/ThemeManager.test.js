@@ -29,6 +29,9 @@ test('muestra los campos de color y tipografía', () => {
   expect(screen.getByLabelText('Dorado (principal)')).toBeInTheDocument();
   expect(screen.getByLabelText('Fondo principal')).toBeInTheDocument();
   expect(screen.getByLabelText(/tarjetas destacadas/)).toBeInTheDocument();
+  expect(screen.getByLabelText('Fondo de portada (menú)')).toBeInTheDocument();
+  expect(screen.getByLabelText('Fondo de barra superior')).toBeInTheDocument();
+  expect(screen.getByLabelText('Fondo del pie')).toBeInTheDocument();
   expect(screen.getByLabelText('Títulos y encabezados')).toBeInTheDocument();
   expect(screen.getByLabelText('Texto del cuerpo')).toBeInTheDocument();
 });

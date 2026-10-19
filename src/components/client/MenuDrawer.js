@@ -18,7 +18,7 @@ function MenuDrawer({ open, onClose, sections, hideOnDesktop = false }) {
       )}
       <aside
         aria-label="Menú de categorías"
-        className={`fixed top-0 left-0 z-50 h-full w-72 max-w-[85vw] bg-surface border-r border-line/60 shadow-2xl p-5 flex flex-col gap-5 transition-transform duration-300 ${desktopClass} ${
+        className={`fixed top-0 left-0 z-50 h-full w-72 max-w-[85vw] bg-surface-header border-r border-line/60 shadow-2xl p-5 flex flex-col gap-5 transition-transform duration-300 ${desktopClass} ${
           open ? 'translate-x-0' : '-translate-x-full'
         }`}
       >

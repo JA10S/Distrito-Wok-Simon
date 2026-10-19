@@ -17,7 +17,7 @@ function SiteHeader({ layout, sections, onOpenMenu, showHero = true, heroTitle, 
       {/* Barra superior (solo disposiciones no clásicas) */}
       {compact && (
         <header
-          className={`sticky top-0 z-30 bg-surface/95 backdrop-blur-sm border-b border-line/60 ${
+          className={`sticky top-0 z-30 bg-surface-header/95 backdrop-blur-sm border-b border-line/60 ${
             layout === 'side' ? 'lg:hidden' : ''
           }`}
         >
@@ -45,7 +45,7 @@ function SiteHeader({ layout, sections, onOpenMenu, showHero = true, heroTitle, 
       {/* Hero de marca */}
       {showHero && (
         <header
-          className={`relative bg-gradient-to-b from-surface-2 via-surface to-surface border-b border-dorado-oscuro/30 ${
+          className={`relative bg-gradient-to-b from-surface-hero via-surface-hero to-surface border-b border-dorado-oscuro/30 ${
             compact ? 'py-6 sm:py-8' : 'py-10 sm:py-14'
           } overflow-hidden pattern-bg`}
         >

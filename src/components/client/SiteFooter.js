@@ -9,7 +9,7 @@ function SiteFooter({ config }) {
   const data = { ...DEFAULT_FOOTER, ...(config || {}) };
 
   return (
-    <footer className="bg-surface-2 border-t border-dorado-oscuro/30 py-10">
+    <footer className="bg-surface-footer border-t border-dorado-oscuro/30 py-10">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center sm:text-left">
           {/* Logo */}

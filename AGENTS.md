@@ -445,6 +445,13 @@ match /arroces/{itemId} {
   - **`theme-color` del navegador**: `applyTheme` ahora actualiza `meta[name=theme-color]` con el hex de `surface` del modo activo (barra del móvil acompaña el tema)
   - **Se conservan a propósito** (función, no bug): scrims de modales `bg-black/60-80`, velo de la imagen del login, marca del login y preview de PageDesigner (`.surface-dark`, siempre oscura), badge del carrito `bg-negro`, botón carmesí de cerrar sesión
   - Tests: 294 totales sin cambios
+- [x] Tokens por zona: portada, barra superior y pie (2026-10-18)
+  - **3 tokens nuevos** (paletas con 16 claves): `surfaceHero` (portada del menú), `surfaceHeader` (navbar pública, drawer, sidebar del menú y header/drawer de dashboards) y `surfaceFooter` (SiteFooter) — editables en **Apariencia → Superficies y texto**; defaults = aspecto anterior (portada/pie = superficie de tarjetas, barra = superficie de página)
+  - Componentes: `SiteHeader` (nav `bg-surface-header/95`, hero `from-surface-hero via-surface-hero to-surface`), `DashboardHeader` (header/nav/drawer), `MenuPage` sidebar lateral, `MenuDrawer`, `SiteFooter`
+  - `App.css`: `--color-surface-hero|header|footer` + `--dk-*` en `:root` y overrides en `.surface-dark`; `tailwind.config.js` añade `bg-surface-hero|header|footer`
+  - Temas guardados antiguos → campos faltantes toman el default del preset (`sanitizeTheme`)
+  - **Contexto**: el tema guardado en Firestore tenía colores experimentales rotos (surface2 `#df0707`, negro `#ecbb5b`, ink casi blanco) → **reparado con `node scripts/repair-theme.js`** (script de uso único: se autentica con las credenciales de prueba, sobrescribe `settings/theme` con la paleta Clásico Diurna limpia de 16 campos conservando `layout`/fuentes; reutilizable si el tema se vuelve a dañar)
+  - Tests: 294 totales (3 asserts nuevos en ThemeManager por los labels de zona)
 - [ ] Crear componente de inventario
 - [x] Smoke tests básicos (App, Login, Menu)
 - [ ] Ampliar cobertura de tests (faltan: hooks — useOrders/useTables/useMenu, AdminDashboard, componentes admin y OrderCard)

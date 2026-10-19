@@ -165,7 +165,7 @@ function MenuPage() {
         {layout === 'side' && (
           <aside
             aria-label="Navegación lateral"
-            className="hidden lg:flex flex-col w-60 shrink-0 bg-surface-2 border-r border-dorado-oscuro/30 p-5 gap-4 sticky top-0 h-screen"
+            className="hidden lg:flex flex-col w-60 shrink-0 bg-surface-header border-r border-dorado-oscuro/30 p-5 gap-4 sticky top-0 h-screen"
           >
             <Logo size={56} />
             <p className="font-cormorant text-xl font-bold text-gold-gradient">

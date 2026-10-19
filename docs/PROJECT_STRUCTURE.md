@@ -104,7 +104,8 @@ restaurante/
 ├── 📁 scripts/                      # SCRIPTS
 │   ├── deploy.sh                    # Despliegue
 │   ├── generate-pdf.ps1             # Generar PDF
-│   └── generate-login-gif.py        # GIF animado del login (fuego+chispas)
+│   ├── generate-login-gif.py        # GIF animado del login (fuego+chispas)
+│   └── repair-theme.js              # Repara settings/theme (paleta Clásico Diurna)
 │
 ├── 📁 tests/                        # TESTS
 │   ├── App.test.js
